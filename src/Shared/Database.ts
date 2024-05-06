@@ -67,6 +67,7 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
 
 export class DatabaseHelper {
     private static database: DatabaseManager;
+    
 
     constructor(db: DatabaseManager) {
         DatabaseHelper.database = db;
