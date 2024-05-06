@@ -73,6 +73,12 @@ export class DatabaseHelper {
     }
 
     public static async addNomination(submitterId: string, bsrId: string, category: string) {
+        let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}})
+        
+        if (existingRecords.count > 0) {
+            return null;
+        }
+
         return await DatabaseHelper.database.nominations.create({
             submitterId: submitterId,
             bsrId: bsrId,
