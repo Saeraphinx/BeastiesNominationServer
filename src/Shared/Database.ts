@@ -65,9 +65,37 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
     }
 }
 
+export enum NominationCategory {
+    OST = `Gen-OST`,
+    AlternativeMap = `Gen-Alternative`, //360,90,one saber, na
+    FullSpreadMap = `Gen-FullSpread`,
+
+    Lightshow = `Mods-Lightshow`,
+    Modchart = `Mods-Modchart`,
+    ArtMap = `Mods-ArtMap`,
+
+    RankedMap = `Ranked-RankedMap`,
+
+    BalancedMap = `Style-Balanced`,
+    TechMap = `Style-Tech`,
+    SpeedMap = `Style-Speed`,
+    DanceMap = `Style-Dance`,
+    FitnessMap = `Style-Fitness`,
+    ChallengeMap = `Style-Challenge`,
+    AccMap = `Style-Acc`,
+    PoodleMap = `Style-Poodle`,
+
+    PackOfTheYear = `OTY-Pack`,
+    MapOfTheYear = `OTY-Map`,
+    MapperOfTheYear = `OTY-Mapper`,
+    LighterOfTheYear = `OTY-Lighter`,
+    RookieLighterOfTheYear = `OTY-RookieLighter`,
+    RookieMapperOfTheYear = `OTY-RookieMapper`,
+}
+
 export class DatabaseHelper {
     private static database: DatabaseManager;
-    
+
 
     constructor(db: DatabaseManager) {
         DatabaseHelper.database = db;
@@ -80,10 +108,22 @@ export class DatabaseHelper {
             return null;
         }
 
+        if (!validateEnumValue(category, NominationCategory)) {
+            return null;
+        }
+
         return await DatabaseHelper.database.nominations.create({
             submitterId: submitterId,
             bsrId: bsrId,
             category: category,
         });
     }
+}
+
+// yoink thankies bstoday
+function validateEnumValue(value:string|number, enumType:object):boolean {
+    if (Object.values(enumType).includes(value)) {
+        return true;
+    }
+    return false;
 }

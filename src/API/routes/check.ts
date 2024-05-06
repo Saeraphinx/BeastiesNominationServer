@@ -29,7 +29,11 @@ export class TempRoute {
                 return;
             }
 
-            await DatabaseHelper.addNomination(userId, bsrId, category);
+            let status = await DatabaseHelper.addNomination(userId, bsrId, category);
+            if (!status) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            }
             res.status(200).send({ message : `Nomination submitted.` });
         });
     }
