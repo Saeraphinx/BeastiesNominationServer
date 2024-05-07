@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<head>
+    <title>Form</title>
+</head>
+<body>
+    <script>
+        window.onload = async function checkSignedIn() {
+            const auth = await fetch('/api/auth/check', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (auth.status !== 401) {
+                window.location.href = '/api/auth/beatleader';
+            }
+        }       
+    </script>
+    <form action="/api/submitmap">
+        <label for="category">Category:</label><br>
+        <input type="text" id="category" name="category"><br>
+        <label for="key">Key:</label><br>
+        <input type="text" id="key" name="key"><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
