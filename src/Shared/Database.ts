@@ -56,13 +56,6 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
     public submitterId: string;
     public bsrId: string;
     public category: string;
-
-    /**
-     * test
-     */
-    public test() {
-        
-    }
 }
 
 export enum NominationCategory {
