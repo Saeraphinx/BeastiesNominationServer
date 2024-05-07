@@ -111,5 +111,6 @@ declare module 'express-session' {
     export interface Session {
         state:string;
         userId: string;
+        username: string;
     }
 }

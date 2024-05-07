@@ -11,6 +11,14 @@ export class BeatLeaderAuthRoutes {
     }
 
     private async loadRoutes() {
+        this.app.get(`/api/auth`, async (req, res) => {
+            if (req.session.userId) {
+                return res.status(200).send({ message: `Hello, ${req.session.username}!` });
+            } else {
+                return res.status(401).send({ error: `Not logged in.` });
+            }
+        });
+
         this.app.get(`/api/auth/beatleader`, async (req, res) => {
             let state = HTTPTools.createRandomString(16);
             req.session.state = state;
@@ -29,6 +37,7 @@ export class BeatLeaderAuthRoutes {
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
 
             req.session.userId = user.id;
+            req.session.username = user.name;
             return res.status(200).send({ message: `Successfully logged in.` });
         });
     }
