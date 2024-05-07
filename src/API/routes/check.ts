@@ -1,7 +1,7 @@
 import e, { Express } from 'express';
-import { DatabaseHelper } from '../../Shared/Database';
+import { DatabaseHelper, NominationStatusResponse } from '../../Shared/Database';
 
-export class TempRoute {
+export class SubmissionRoutes {
     private app: Express;
     private recentSubmissions: string[] = [];
 
@@ -14,7 +14,7 @@ export class TempRoute {
     }
 
     private async loadRoutes() {
-        this.app.post(`/api/submitnomination`, async (req, res) => {
+        this.app.post(`/api/mod/submitmap`, async (req, res) => {
             const userId = req.body[`id`].toString();
             const bsrId = req.body[`bsrId`].toString();
             const category = req.body[`category`].toString();
@@ -61,8 +61,48 @@ export class TempRoute {
             }
 
             let status = await DatabaseHelper.addNomination(userId, bsrId, category);
-            if (!status) {
+            if (status == NominationStatusResponse.InvalidCategory || status == NominationStatusResponse.Invalid) {
                 res.status(400).send(`Invalid request.`);
+                return;
+            } else if (status == NominationStatusResponse.AlreadyVoted) {
+                res.status(400).send(`Already voted.`);
+                return;
+            }
+            res.status(200).send({ message : `Nomination submitted.` });
+        });
+
+        this.app.post(`/api/submitmap`, async (req, res) => {
+            const bsrId = req.body[`bsrId`].toString();
+            const category = req.body[`category`].toString();
+
+            if (!req.session.userId) {
+                res.status(401).send(`Unauthorized.`);
+                return;
+            }
+
+            if (!bsrId || !category) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            }
+
+            if (bsrId.length != 5) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            }
+
+            this.recentSubmissions.push(bsrId);
+            if (this.recentSubmissions.filter(id => id == bsrId).length > 3) {
+                res.status(429).send(`Rate Limited.`);
+                return;
+            }
+
+            let gameId;
+            let status = await DatabaseHelper.addNomination(req.session.userId, bsrId, category);
+            if (status == NominationStatusResponse.InvalidCategory || status == NominationStatusResponse.Invalid) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            } else if (status == NominationStatusResponse.AlreadyVoted) {
+                res.status(400).send(`Already voted.`);
                 return;
             }
             res.status(200).send({ message : `Nomination submitted.` });

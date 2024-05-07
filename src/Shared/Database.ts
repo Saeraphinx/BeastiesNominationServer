@@ -94,23 +94,32 @@ export class DatabaseHelper {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, bsrId: string, category: string) {
+    public static async addNomination(submitterId: string, bsrId: string, category: string): Promise<NominationStatusResponse> {
         let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}})
         
         if (existingRecords.count > 0) {
-            return null;
+            return NominationStatusResponse.AlreadyVoted;
         }
 
         if (!validateEnumValue(category, NominationCategory)) {
-            return null;
+            return NominationStatusResponse.InvalidCategory;
         }
 
-        return await DatabaseHelper.database.nominations.create({
+        await DatabaseHelper.database.nominations.create({
             submitterId: submitterId,
             bsrId: bsrId,
             category: category,
         });
+
+        return NominationStatusResponse.Accepted;
     }
+}
+
+export enum NominationStatusResponse {
+    Accepted,
+    AlreadyVoted,
+    InvalidCategory,
+    Invalid
 }
 
 // yoink thankies bstoday
