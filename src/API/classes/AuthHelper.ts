@@ -50,11 +50,66 @@ export interface OAuth2Response {
     scope: string,
 }
 
+export class BeatLeaderAuthHelper extends OAuth2Helper {
+    private static readonly callbackUrl = `${express.url}/api/auth/beatleader/callback`;
+    
+    public static getUrl(state:string): string {
+        return `https://api.beatleader.xyz/oauth2/authorize?client_id=${oauth2.beatleader.clientId}&response_type=code&scope=profile&redirect_uri=${BeatLeaderAuthHelper.callbackUrl}&state=${state}`;
+    }
 
+    public static getToken(code:string): Promise<OAuth2Response> {
+        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, oauth2.beatleader, `${express.url}/api/auth/beatleader/callback`);
+    }
+
+    public static async getUser(token: string): Promise<BeatLeaderMinimalUser | null> {
+        const userIdRequest = await fetch(`https://api.beatleader.xyz/oauth2/identity`, super.getRequestData(token));
+        const Idjson: BeatLeaderIdentify = await userIdRequest.json() as BeatLeaderIdentify;
+
+        if (!Idjson.id) {
+            return null;
+        } else {
+            const userRequest = await fetch(`https://api.beatleader.xyz/player/${Idjson.id}?stats=false`, super.getRequestData(token));
+            const userJjson: BeatLeaderMinimalUser = await userRequest.json() as BeatLeaderMinimalUser;
+            if (!userJjson.id) {
+                return null;
+            } else {
+                return userJjson;
+            }
+        }
+    }
+}
+
+export interface BeatLeaderIdentify {
+    id: string,
+    username: string,
+}
+
+export interface BeatLeaderMinimalUser {
+    mapperId: number
+    banned: boolean
+    inactive: boolean
+    banDescription: string
+    externalProfileUrl: string
+    id: string
+    name: string
+    platform: string
+    avatar: string
+    country: string
+    bot: boolean
+    role: string
+    socials: {
+        service: string
+        userId: string
+        user: string
+        link: string
+        playerId: string
+    }[]
+}
 
 // eslint-disable-next-line quotes
 declare module 'express-session' {
     export interface Session {
+        state:string;
         userId: string;
     }
 }
