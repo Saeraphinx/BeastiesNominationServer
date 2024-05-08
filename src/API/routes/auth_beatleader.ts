@@ -4,6 +4,7 @@ import { HTTPTools } from '../classes/HTTPTools';
 
 export class BeatLeaderAuthRoutes {
     private app: Express;
+    private validStates: string[] = [];
 
     constructor(app: Express) {
         this.app = app;
@@ -21,17 +22,25 @@ export class BeatLeaderAuthRoutes {
 
         this.app.get(`/api/auth/beatleader`, async (req, res) => {
             let state = HTTPTools.createRandomString(16);
-            req.session.state = state;
-            req.session.save();
+            //req.session.state = state;
+            //req.session.save();
+            this.validStates.push(state + req.ip);
+            setTimeout(() => {
+                this.validStates = this.validStates.filter((s) => s !== state + req.ip);
+            }, 1000 * 60 * 3);
             return res.redirect(302, BeatLeaderAuthHelper.getUrl(state));
         });
 
         this.app.get(`/api/auth/beatleader/callback`, async (req, res) => {
             const code = req.query[`code`].toString();
             const state = req.query[`state`].toString();
-            if (state !== req.session.state) {
+            //if (state !== req.session.state) {
+            //    return res.status(400).send({ error: `Invalid state.` });
+            //}
+            if (!this.validStates.includes(state + req.ip)) {
                 return res.status(400).send({ error: `Invalid state.` });
             }
+            this.validStates = this.validStates.filter((s) => s !== state);
             let token = BeatLeaderAuthHelper.getToken(code);
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
             let user = await BeatLeaderAuthHelper.getUser((await token).access_token);
