@@ -1,5 +1,5 @@
 //@ts-ignore
-import { oauth2, server } from '../../../storage/config.json';
+import { auth, server } from '../../../storage/config.json';
 
 class OAuth2Helper {
     public static async getToken(url:string, code: string, oAuth2Data:{clientId:string, clientSecret:string}, callbackUrl:string): Promise<OAuth2Response | null> {
@@ -54,11 +54,11 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     private static readonly callbackUrl = `${server.url}/api/auth/beatleader/callback`;
     
     public static getUrl(state:string): string {
-        return `https://api.beatleader.xyz/oauth2/authorize?client_id=${oauth2.beatleader.clientId}&response_type=code&scope=profile&redirect_uri=${BeatLeaderAuthHelper.callbackUrl}&state=${state}`;
+        return `https://api.beatleader.xyz/oauth2/authorize?client_id=${auth.beatleader.clientId}&response_type=code&scope=profile&redirect_uri=${BeatLeaderAuthHelper.callbackUrl}&state=${state}`;
     }
 
     public static getToken(code:string): Promise<OAuth2Response> {
-        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, oauth2.beatleader, `${server.url}/api/auth/beatleader/callback`);
+        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, auth.beatleader, `${server.url}/api/auth/beatleader/callback`);
     }
 
     public static async getUser(token: string): Promise<BeatLeaderMinimalUser | null> {

@@ -1,5 +1,6 @@
 import { Express } from 'express';
 import { DatabaseHelper, NominationStatusResponse } from '../../Shared/Database';
+import { auth } from '../../../storage/config.json';
 
 export class SubmissionRoutes {
     private app: Express;
@@ -39,7 +40,7 @@ export class SubmissionRoutes {
 
             let gameId;
             if (platform == `steam`) {
-                let steamResponse = await fetch(`https://api.steampowered.com/ISteamUserAuth/AuthenticateUserTicket/v1?key=${steam.key}&appid=620980&ticket=${ticket}`);
+                let steamResponse = await fetch(`https://api.steampowered.com/ISteamUserAuth/AuthenticateUserTicket/v1?key=${auth.steam.clientId}&appid=620980&ticket=${ticket}`);
                 if (steamResponse.status != 200) {
                     res.status(500).send(`Internal server error.`);
                     return;
