@@ -1,4 +1,4 @@
-import e, { Express } from 'express';
+import { Express } from 'express';
 import { DatabaseHelper, NominationStatusResponse } from '../../Shared/Database';
 
 export class SubmissionRoutes {

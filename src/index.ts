@@ -4,16 +4,18 @@ import MemoryStore from 'memorystore';
 import { HTTPTools } from './API/classes/HTTPTools';
 import { DatabaseManager } from './Shared/Database';
 import { SubmissionRoutes } from './API/routes/check';
+import path from 'path';
+import { server, devmode } from '../storage/config.json';
 
 console.log(`Starting setup...`);
 const app = express();
 const memstore = MemoryStore(session);
-const port = hostingInfo.port;
+const port = server.port;
 let database: DatabaseManager = new DatabaseManager();
 
 
 app.use(session({
-    secret: other.sessionSecret,
+    secret: server.sessionSecret,
     name: `session`,
     store: new memstore({
         checkPeriod: 86400000
@@ -29,8 +31,12 @@ app.use(session({
     }
 }));
 
-app.get(`/`, (req, res) => {
+app.get(`/pinkcute`, (req, res) => {
     res.send({ message: `pink cute` });
+});
+
+app.get(`/` , (req, res) => {
+    res.sendFile(path.resolve(`./DemoForm/index.html`));
 });
 
 new SubmissionRoutes(app);
