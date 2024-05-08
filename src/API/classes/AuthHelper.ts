@@ -1,4 +1,3 @@
-//@ts-ignore
 import { auth, server } from '../../../storage/config.json';
 
 class OAuth2Helper {

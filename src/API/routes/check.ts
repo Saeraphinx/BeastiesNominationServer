@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { DatabaseHelper, NominationStatusResponse } from '../../Shared/Database';
+import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue } from '../../Shared/Database';
 import { auth } from '../../../storage/config.json';
 
 export class SubmissionRoutes {
@@ -16,26 +16,40 @@ export class SubmissionRoutes {
 
     private async loadRoutes() {
         this.app.post(`/api/mod/submitmap`, async (req, res) => {
-            const userId = req.body[`id`].toString();
-            const bsrId = req.body[`bsrId`].toString();
-            const category = req.body[`category`].toString();
-            const ticket = req.body[`ticket`].toString();
-            const platform = req.body[`platform`].toString();
+            const userId = req.body[`id`];
+            const bsrId = req.body[`bsrId`];
+            const category = req.body[`category`];
+            const ticket = req.body[`ticket`];
+            const platform = req.body[`platform`];
 
-            if (!userId || !bsrId || !category || !ticket) {
+            if (!userId ||
+                !bsrId ||
+                !category ||
+                !ticket ||
+                !platform ||
+                typeof userId !== `string` ||
+                typeof bsrId !== `string` ||
+                typeof category !== `string` ||
+                typeof ticket !== `string` ||
+                typeof platform !== `string`) {
                 res.status(400).send(`Invalid request.`);
                 return;
             }
 
-            if (bsrId.length != 5) {
-                res.status(400).send(`Invalid request.`);
-                return;
-            }
-
-            this.recentSubmissions.push(bsrId);
-            if (this.recentSubmissions.filter(id => id == bsrId).length > 3) {
-                res.status(429).send(`Rate Limited.`);
-                return;
+            let submissionStatus = this.validateSubmission(bsrId, category);
+            switch (submissionStatus) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.RateLimited:
+                    res.status(429).send({ message: `Rate limited.` });
+                    return;
+                case RequestSubmissionStatus.OldKey:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
             }
 
             let gameId;
@@ -54,59 +68,127 @@ export class SubmissionRoutes {
             } else if (platform == `oculus`) {
                 res.status(400).send(`Invalid request.`);
                 return;
-                let oculusResponse = await fetch(`https://graph.oculus.com/app?access_token=${ticket}`);
+                //let oculusResponse = await fetch(`https://graph.oculus.com/app?access_token=${ticket}`);
 
             } else {
                 res.status(400).send(`Invalid request.`);
                 return;
             }
 
-            let status = await DatabaseHelper.addNomination(userId, bsrId, category);
-            if (status == NominationStatusResponse.InvalidCategory || status == NominationStatusResponse.Invalid) {
-                res.status(400).send(`Invalid request.`);
-                return;
-            } else if (status == NominationStatusResponse.AlreadyVoted) {
-                res.status(400).send(`Already voted.`);
-                return;
+            
+            submissionStatus = await this.sendSubmission(gameId, bsrId, category);
+            switch (submissionStatus) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.AlreadyVoted:
+                    res.status(400).send({ message: `Already voted.` });
+                    return;
+                case RequestSubmissionStatus.Success:
+                    res.status(200).send({ message: `Nomination submitted.` });
+                    return;
             }
-            res.status(200).send({ message : `Nomination submitted.` });
         });
 
         this.app.post(`/api/submitmap`, async (req, res) => {
-            const bsrId = req.body[`bsrId`].toString();
-            const category = req.body[`category`].toString();
+            const bsrId = req.body[`bsrId`];
+            const category = req.body[`category`];
 
             if (!req.session.userId) {
                 res.status(401).send(`Unauthorized.`);
                 return;
             }
 
-            if (!bsrId || !category) {
+            if (!bsrId || !category || typeof bsrId != `string` || typeof category != `string`) {
                 res.status(400).send(`Invalid request.`);
                 return;
             }
 
-            if (bsrId.length != 5) {
-                res.status(400).send(`Invalid request.`);
-                return;
+            let submissionStatus = this.validateSubmission(bsrId, category);
+
+            switch (submissionStatus) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.RateLimited:
+                    res.status(429).send({ message: `Rate limited.` });
+                    return;
+                case RequestSubmissionStatus.OldKey:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
             }
 
-            this.recentSubmissions.push(bsrId);
-            if (this.recentSubmissions.filter(id => id == bsrId).length > 3) {
-                res.status(429).send(`Rate Limited.`);
-                return;
-            }
+            submissionStatus = await this.sendSubmission(req.session.userId, bsrId, category);
 
-            let gameId;
-            let status = await DatabaseHelper.addNomination(req.session.userId, bsrId, category);
-            if (status == NominationStatusResponse.InvalidCategory || status == NominationStatusResponse.Invalid) {
-                res.status(400).send(`Invalid request.`);
-                return;
-            } else if (status == NominationStatusResponse.AlreadyVoted) {
-                res.status(400).send(`Already voted.`);
-                return;
+            switch (submissionStatus) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.AlreadyVoted:
+                    res.status(400).send({ message: `Already voted.` });
+                    return;
+                case RequestSubmissionStatus.Success:
+                    res.status(200).send({ message: `Nomination submitted.` });
+                    return;
             }
-            res.status(200).send({ message : `Nomination submitted.` });
         });
     }
+
+    private validateSubmission(bsrId: string, category: string) : RequestSubmissionStatus {
+        if (bsrId.length != 5) {
+            return RequestSubmissionStatus.Invalid;
+        }
+
+        let bsrIdNoHex = parseInt(bsrId, 16);
+
+        if (isNaN(bsrIdNoHex)) {
+            return RequestSubmissionStatus.Invalid;
+        }
+
+        if (bsrIdNoHex <= 228010) {
+            return RequestSubmissionStatus.OldKey;
+        }
+
+        if (!validateEnumValue(category, NominationCategory)) {
+            return RequestSubmissionStatus.InvalidCategory;
+        }
+
+        this.recentSubmissions.push(bsrId);
+        if (this.recentSubmissions.filter(id => id == bsrId).length > 3) {
+            return RequestSubmissionStatus.RateLimited;
+        }
+    }
+
+    private async sendSubmission(id: string, bsrId: string, category: string) : Promise<RequestSubmissionStatus> {
+        let status = await DatabaseHelper.addNomination(id, bsrId, category);
+        switch (status) {
+            case NominationStatusResponse.Invalid:
+                return RequestSubmissionStatus.Invalid;
+            case NominationStatusResponse.InvalidCategory:
+                return RequestSubmissionStatus.InvalidCategory;
+            case NominationStatusResponse.AlreadyVoted:
+                return RequestSubmissionStatus.AlreadyVoted;
+            case NominationStatusResponse.Accepted:
+                return RequestSubmissionStatus.Success;
+        }
+    }
+}
+
+
+enum RequestSubmissionStatus {
+    Invalid,
+    InvalidCategory,
+    RateLimited,
+    OldKey,
+    AlreadyVoted,
+    Success
 }

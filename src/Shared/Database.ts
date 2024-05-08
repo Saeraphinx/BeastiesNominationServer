@@ -1,9 +1,7 @@
 import path from "path";
 import { exit } from "process";
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from "sequelize";
-//@ts-ignore
 import { storage } from '../../storage/config.json';
-import { Logger } from "./Logger";
 
 export class DatabaseManager {
     public sequelize: Sequelize;
@@ -95,7 +93,7 @@ export class DatabaseHelper {
     }
 
     public static async addNomination(submitterId: string, bsrId: string, category: string): Promise<NominationStatusResponse> {
-        let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}})
+        let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}});
         
         if (existingRecords.count > 0) {
             return NominationStatusResponse.AlreadyVoted;
@@ -123,7 +121,7 @@ export enum NominationStatusResponse {
 }
 
 // yoink thankies bstoday
-function validateEnumValue(value:string|number, enumType:object):boolean {
+export function validateEnumValue(value:string|number, enumType:object):boolean {
     if (Object.values(enumType).includes(value)) {
         return true;
     }

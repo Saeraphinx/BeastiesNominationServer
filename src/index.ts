@@ -14,7 +14,7 @@ const memstore = MemoryStore(session);
 const port = server.port;
 let database: DatabaseManager = new DatabaseManager();
 
-
+app.use(express.urlencoded({limit : 10000, parameterLimit: 10 }));
 app.use(session({
     secret: server.sessionSecret,
     name: `session`,
@@ -36,7 +36,7 @@ app.get(`/pinkcute`, (req, res) => {
     res.send({ message: `pink cute` });
 });
 
-app.get(`/` , (req, res) => {
+app.get(`/`, (req, res) => {
     res.sendFile(path.resolve(`./src/DemoForm/index.html`));
 });
 

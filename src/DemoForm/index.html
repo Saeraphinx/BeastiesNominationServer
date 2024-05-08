@@ -10,7 +10,7 @@
         <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}" required><br><br>
         <label for="category">Category</label>
         <select id="category" name="category"></select><br><br>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
     </form>
     <script>
         window.onload = async function checkSignedIn() {
