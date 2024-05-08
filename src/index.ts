@@ -6,6 +6,7 @@ import { DatabaseManager } from './Shared/Database';
 import { SubmissionRoutes } from './API/routes/check';
 import path from 'path';
 import { server, devmode } from '../storage/config.json';
+import { BeatLeaderAuthRoutes } from './API/routes/auth_beatleader';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -36,10 +37,11 @@ app.get(`/pinkcute`, (req, res) => {
 });
 
 app.get(`/` , (req, res) => {
-    res.sendFile(path.resolve(`./DemoForm/index.html`));
+    res.sendFile(path.resolve(`./src/DemoForm/index.html`));
 });
 
 new SubmissionRoutes(app);
+new BeatLeaderAuthRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 
