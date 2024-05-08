@@ -22,6 +22,7 @@ export class BeatLeaderAuthRoutes {
         this.app.get(`/api/auth/beatleader`, async (req, res) => {
             let state = HTTPTools.createRandomString(16);
             req.session.state = state;
+            req.session.save();
             return res.redirect(302, BeatLeaderAuthHelper.getUrl(state));
         });
 
@@ -38,6 +39,7 @@ export class BeatLeaderAuthRoutes {
 
             req.session.userId = user.id;
             req.session.username = user.name;
+            req.session.save();
             return res.status(200).send({ message: `Successfully logged in.` }).redirect(302, `/`); // i need to double check that this is the correct way to redirect
         });
     }
