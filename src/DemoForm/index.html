@@ -6,21 +6,21 @@
 
 <body>
     <form action="api/submitmap" method="post" id="nominationForm">
-        <label for="key">BSR Key (e.g. "d00c", "25f", "ff9"). Must be 5 charceters.</label><br>
-        <input type="text" id="key" name="key" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}" required><br><br>
+        <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9"). Must be 5 charceters.</label><br>
+        <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}" required><br><br>
         <label for="category">Category</label>
         <select id="category" name="category"></select><br><br>
         <input type="submit" value="Submit">
     </form>
     <script>
         window.onload = async function checkSignedIn() {
-            const auth = await fetch('/api/auth/check', {
+            const auth = await fetch('/api/auth', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 }
             });
-            if (auth.status !== 401) {
+            if (auth.status !== 200) {
                 window.location.href = '/api/auth/beatleader';
             }
         }
