@@ -4,13 +4,13 @@ import { auth } from '../../../storage/config.json';
 
 export class SubmissionRoutes {
     private app: Express;
-    private recentSubmissions: string[] = [];
+    private static recentSubmissions: string[] = [];
 
     constructor(app: Express) {
         this.app = app;
         this.loadRoutes();
         setInterval(() => {
-            this.recentSubmissions = [];
+            SubmissionRoutes.recentSubmissions = [];
         }, 10000);
     }
 
@@ -36,8 +36,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            let submissionStatus = this.validateSubmission(bsrId, category);
-            switch (submissionStatus) {
+            switch (SubmissionRoutes.validateSubmission(bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -75,9 +74,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            
-            submissionStatus = await this.sendSubmission(gameId, bsrId, category);
-            switch (submissionStatus) {
+            switch (await SubmissionRoutes.sendSubmission(gameId, bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -107,9 +104,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            let submissionStatus = this.validateSubmission(bsrId, category);
-
-            switch (submissionStatus) {
+            switch (SubmissionRoutes.validateSubmission(bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -123,10 +118,8 @@ export class SubmissionRoutes {
                     res.status(400).send({ message: `Invalid request.` });
                     return;
             }
-
-            submissionStatus = await this.sendSubmission(req.session.userId, bsrId, category);
-
-            switch (submissionStatus) {
+            
+            switch (await SubmissionRoutes.sendSubmission(req.session.userId, bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -143,7 +136,7 @@ export class SubmissionRoutes {
         });
     }
 
-    private validateSubmission(bsrId: string, category: string) : RequestSubmissionStatus {
+    private static validateSubmission(bsrId: string, category: string) : RequestSubmissionStatus {
         if (bsrId.length != 5) {
             return RequestSubmissionStatus.Invalid;
         }
@@ -168,7 +161,7 @@ export class SubmissionRoutes {
         }
     }
 
-    private async sendSubmission(id: string, bsrId: string, category: string) : Promise<RequestSubmissionStatus> {
+    private static async sendSubmission(id: string, bsrId: string, category: string) : Promise<RequestSubmissionStatus> {
         let status = await DatabaseHelper.addNomination(id, bsrId, category);
         switch (status) {
             case NominationStatusResponse.Invalid:
