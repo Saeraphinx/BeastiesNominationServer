@@ -1,8 +1,17 @@
 <!DOCTYPE html>
+
 <head>
     <title>Form</title>
 </head>
+
 <body>
+    <form action="api/submitmap" method="post" id="nominationForm">
+        <label for="key">BSR Key (e.g. "d00c", "25f", "ff9"). Must be 5 charceters.</label><br>
+        <input type="text" id="key" name="key" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}" required><br><br>
+        <label for="category">Category</label>
+        <select id="category" name="category"></select><br><br>
+        <input type="submit" value="Submit">
+    </form>
     <script>
         window.onload = async function checkSignedIn() {
             const auth = await fetch('/api/auth/check', {
@@ -14,14 +23,44 @@
             if (auth.status !== 401) {
                 window.location.href = '/api/auth/beatleader';
             }
-        }       
+        }
+
+        const NominationCategory = {
+            OST: `Gen-OST`,
+            AlternativeMap: `Gen-Alternative`,
+            FullSpreadMap: `Gen-FullSpread`,
+            Lightshow: `Mods-Lightshow`,
+            Modchart: `Mods-Modchart`,
+            ArtMap: `Mods-ArtMap`,
+            RankedMap: `Ranked-RankedMap`,
+            BalancedMap: `Style-Balanced`,
+            TechMap: `Style-Tech`,
+            SpeedMap: `Style-Speed`,
+            DanceMap: `Style-Dance`,
+            FitnessMap: `Style-Fitness`,
+            ChallengeMap: `Style-Challenge`,
+            AccMap: `Style-Acc`,
+            PoodleMap: `Style-Poodle`,
+            PackOfTheYear: `OTY-Pack`,
+            MapOfTheYear: `OTY-Map`,
+            MapperOfTheYear: `OTY-Mapper`,
+            LighterOfTheYear: `OTY-Lighter`,
+            RookieLighterOfTheYear: `OTY-RookieLighter`,
+            RookieMapperOfTheYear: `OTY-RookieMapper`,
+        };
+
+        // Get the form element
+        const selectTag = document.getElementById('category');
+
+        // Generate the radio buttons
+        for (const category in NominationCategory) {
+            const option = document.createElement('option');
+            option.value = NominationCategory[category];
+            option.innerHTML = NominationCategory[category].substring(NominationCategory[category].indexOf('-') + 1);
+
+            selectTag.appendChild(option);
+        }
     </script>
-    <form action="/api/submitmap">
-        <label for="category">Category:</label><br>
-        <input type="text" id="category" name="category"><br>
-        <label for="key">Key:</label><br>
-        <input type="text" id="key" name="key"><br>
-        <input type="submit" value="Submit">
-    </form>
 </body>
+
 </html>

@@ -38,7 +38,7 @@ export class BeatLeaderAuthRoutes {
 
             req.session.userId = user.id;
             req.session.username = user.name;
-            return res.status(200).send({ message: `Successfully logged in.` });
+            return res.status(200).send({ message: `Successfully logged in.` }).redirect(302, `/`); // i need to double check that this is the correct way to redirect
         });
     }
 }
