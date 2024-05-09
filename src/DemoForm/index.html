@@ -4,14 +4,22 @@
     <title>Form</title>
 
     <style>
+        @keyframes bg {
+            0% { background-position: 0% 24% }
+            50% { background-position: 100% 77% }
+            100% { background-position: 0% 24% }
+        }
+
         body {
             background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+            background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
+            background-size: 1000% 1000%;
+            animation: bg 90s ease infinite;
             font-family: Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             margin: 4vh;
         }
 
@@ -19,7 +27,7 @@
             margin: 10px;
             max-width: 600px;
             min-width: 250px;
-            width: 50%;
+            width: 80%;
             padding: 20px;
             border: 1px solid rgb(92, 4, 255);
             color: white;
@@ -58,15 +66,32 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        h1 {
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0px;
+        }
+
+        h4 {
+            margin-top: 0px;
+        }
     </style>
 </head>
 
 <body>
     <div id="info">
-        <h1>Beasties Submission Form</h1>
-        <p>Fill out the form below to submit a map for nomination.</p>
+        <h1>The BeastSaber Mapping Awards</h1>
+        <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
+        <p>The BeastSaber Mapping Awards were launched in 2021 to highlight the best of the best of the art (and science) of making custom Beat Saber maps. The first year featured 29 categories, garnered 760 nominated maps, resulting in 96 finalists, with more than 45 medals won.
+        <br><br>
+        Map curation is focused on maps that avoid objectively bad mapping and have a “fun factor” that appeals to a member of our curation team - the “blockbuster movies” of the custom map world. The Beasties go beyond the fun factor to dig deep into mapping theory and practices to highlight the maps that may not have grabbed the spotlight but are well-constructed and have incredible representation, emphasis, and flow to truly capture the feel of the song - the art films of the custom map world.</p>
     </div>
     <div id="form">
+        <h2>2024 Map Submission Form</h2>
         <form action="api/submitmap" method="post" id="nominationForm">
             <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9")</label><br>
             <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}"
