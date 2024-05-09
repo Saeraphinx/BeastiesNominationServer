@@ -2,16 +2,80 @@
 
 <head>
     <title>Form</title>
+
+    <style>
+        body {
+            background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 4vh;
+        }
+
+        div {
+            margin: 10px;
+            max-width: 600px;
+            min-width: 250px;
+            width: 50%;
+            padding: 20px;
+            border: 1px solid rgb(92, 4, 255);
+            color: white;
+            border-radius: 5px;
+            background-color: black;
+        }
+
+        div#info {
+            padding: 0px 20px 20px 20px;
+            text-align: center;
+        }
+
+        #nominationForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"],
+        select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+
+        input[type="submit"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 
 <body>
-    <form action="api/submitmap" method="post" id="nominationForm">
-        <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9"). Must be 5 charceters.</label><br>
-        <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}" required><br><br>
-        <label for="category">Category</label>
-        <select id="category" name="category"></select><br><br>
-        <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
-    </form>
+    <div id="info">
+        <h1>Beasties Submission Form</h1>
+        <p>Fill out the form below to submit a map for nomination.</p>
+    </div>
+    <div id="form">
+        <form action="api/submitmap" method="post" id="nominationForm">
+            <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9")</label><br>
+            <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}"
+                required><br><br>
+            <label for="category">Category</label>
+            <select id="category" name="category"></select><br><br>
+            <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
+        </form>
+    </div>
     <script>
         window.onload = async function checkSignedIn() {
             const auth = await fetch('/api/auth', {
@@ -21,6 +85,7 @@
                 }
             });
             if (auth.status !== 200) {
+                //commit this line out when working on the page
                 window.location.href = '/api/auth/beatleader';
             }
         }
