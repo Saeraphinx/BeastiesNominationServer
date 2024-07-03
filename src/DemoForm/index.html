@@ -125,7 +125,7 @@
             <select id="category" name="category"></select><br><br>
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
-        <p id="username"><a href="/api/auth/beatleader">Not currently logged in.</a></p>
+        <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png" width="200px" /></a></p>
     </div>
     <script>
         window.onload = async function checkSignedIn() {
@@ -137,7 +137,8 @@
             });
             if (auth.status !== 200) {
                 //commit this line out when working on the page
-                window.location.href = '/api/auth/beatleader';
+                //window.location.href = '/api/auth/beatleader';
+                document.getElementById('nominationForm').style.display = 'none';
             } else {
                 const data = await auth.json();
                 const element = document.getElementById('username');
