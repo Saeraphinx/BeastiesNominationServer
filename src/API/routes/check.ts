@@ -141,6 +141,10 @@ export class SubmissionRoutes {
             return RequestSubmissionStatus.Invalid;
         }
 
+        if (bsrId.match(/[0123456789abcdefABCDEF]{5}/) == null) {
+            return RequestSubmissionStatus.Invalid;
+        }
+
         let bsrIdNoHex = parseInt(bsrId, 16);
 
         if (isNaN(bsrIdNoHex)) {

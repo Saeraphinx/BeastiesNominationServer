@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import { BeatLeaderAuthHelper } from '../classes/AuthHelper';
 import { HTTPTools } from '../classes/HTTPTools';
+import { server } from '../../../storage/config.json';
 
 export class BeatLeaderAuthRoutes {
     private app: Express;
@@ -49,7 +50,7 @@ export class BeatLeaderAuthRoutes {
             req.session.userId = user.id;
             req.session.username = user.name;
             req.session.save();
-            return res.status(200).send({ message: `Successfully logged in.` }); // i need to double check that this is the correct way to redirect
+            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
     }
 }

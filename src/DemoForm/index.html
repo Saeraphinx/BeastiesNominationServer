@@ -31,7 +31,7 @@
             padding: 20px;
             border: 1px solid rgb(92, 4, 255);
             color: white;
-            border-radius: 5px;
+            border-radius: 10px;
             background-color: black;
         }
 
@@ -79,6 +79,23 @@
         h4 {
             margin-top: 0px;
         }
+
+        footer {
+            font-family: Arial, sans-serif;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        a, a:visited, a:active, a:hover {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+        }
     </style>
 </head>
 
@@ -94,7 +111,7 @@
         <h2>2024 Map Submission Form</h2>
         <form action="api/submitmap" method="post" id="nominationForm">
             <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9")</label><br>
-            <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdef]{5}"
+            <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"
                 required><br><br>
             <label for="category">Category</label>
             <select id="category" name="category"></select><br><br>
@@ -151,6 +168,9 @@
             selectTag.appendChild(option);
         }
     </script>
+    <footer>
+        <p>Created by <a href="https://saeraphinx.dev">Saeraphinx</a></p>
+    </footer>
 </body>
 
 </html>
