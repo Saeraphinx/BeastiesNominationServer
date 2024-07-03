@@ -147,27 +147,27 @@
         }
 
         const NominationCategory = {
-            OST: `Gen-OST`,
-            AlternativeMap: `Gen-Alternative`,
-            FullSpreadMap: `Gen-FullSpread`,
-            Lightshow: `Mods-Lightshow`,
-            Modchart: `Mods-Modchart`,
-            ArtMap: `Mods-ArtMap`,
-            RankedMap: `Ranked-RankedMap`,
-            BalancedMap: `Style-Balanced`,
-            TechMap: `Style-Tech`,
-            SpeedMap: `Style-Speed`,
-            DanceMap: `Style-Dance`,
-            FitnessMap: `Style-Fitness`,
-            ChallengeMap: `Style-Challenge`,
-            AccMap: `Style-Acc`,
-            PoodleMap: `Style-Poodle`,
-            PackOfTheYear: `OTY-Pack`,
-            MapOfTheYear: `OTY-Map`,
-            MapperOfTheYear: `OTY-Mapper`,
-            LighterOfTheYear: `OTY-Lighter`,
-            RookieLighterOfTheYear: `OTY-RookieLighter`,
-            RookieMapperOfTheYear: `OTY-RookieMapper`,
+            //OST: [`Gen-OST`, ``],
+            AlternativeMap: [`Gen-Alternative`, "Alternative"],
+            FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
+            Lightshow: [`Mods-Lightshow`, "Lightshow"],
+            Modchart: [`Mods-Modchart`, "Modchart"],
+            ArtMap: [`Mods-ArtMap`, "Art Map"],
+            RankedMap: [`Ranked-RankedMap`, "Ranked Map"],
+            BalancedMap: [`Style-Balanced`, "Balanced"],
+            TechMap: [`Style-Tech`, "Tech"],
+            SpeedMap: [`Style-Speed`, "Speed"],
+            DanceMap: [`Style-Dance`, "Dance"],
+            FitnessMap: [`Style-Fitness`, "Fitness"],
+            ChallengeMap: [`Style-Challenge`, "Challenge"],
+            AccMap: [`Style-Acc`, "Acc"],
+            PoodleMap: [`Style-Poodle`, "Poodle"],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
+            MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
+            LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
+            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
+            MapOfTheYear: [`OTY-Map`, "Map of the Year"],
         };
 
         // Get the form element
@@ -176,8 +176,8 @@
         // Generate the radio buttons
         for (const category in NominationCategory) {
             const option = document.createElement('option');
-            option.value = NominationCategory[category];
-            option.innerHTML = NominationCategory[category].substring(NominationCategory[category].indexOf('-') + 1);
+            option.value = NominationCategory[category][0];
+            option.innerHTML = NominationCategory[category][1];
 
             selectTag.appendChild(option);
         }
