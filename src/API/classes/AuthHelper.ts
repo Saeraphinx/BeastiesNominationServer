@@ -108,7 +108,7 @@ export interface BeatLeaderMinimalUser {
 // eslint-disable-next-line quotes
 declare module 'express-session' {
     export interface Session {
-        state:string;
+        state: string;
         userId: string;
         username: string;
     }

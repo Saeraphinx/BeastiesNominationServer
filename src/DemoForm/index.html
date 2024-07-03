@@ -80,6 +80,14 @@
             margin-top: 0px;
         }
 
+        #username, a.username, a:visited.username, a:active.username, a:hover.username{
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            margin-bottom: 0px;
+        }
+
         footer {
             font-family: Arial, sans-serif;
             position: fixed;
@@ -92,7 +100,7 @@
             font-size: 12px;
         }
 
-        a, a:visited, a:active, a:hover {
+        a.footer, a:visited.footer, a:active.footer, a:hover.footer {
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
         }
@@ -117,6 +125,7 @@
             <select id="category" name="category"></select><br><br>
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
+        <p id="username"><a href="/api/auth/beatleader">Not currently logged in.</a></p>
     </div>
     <script>
         window.onload = async function checkSignedIn() {
@@ -129,6 +138,10 @@
             if (auth.status !== 200) {
                 //commit this line out when working on the page
                 window.location.href = '/api/auth/beatleader';
+            } else {
+                const data = await auth.json();
+                const element = document.getElementById('username');
+                element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`;
             }
         }
 
@@ -169,7 +182,7 @@
         }
     </script>
     <footer>
-        <p>Created by <a href="https://saeraphinx.dev">Saeraphinx</a></p>
+        <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
     </footer>
 </body>
 
