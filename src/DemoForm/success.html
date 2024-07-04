@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Form</title>
+    <style>
+        @keyframes bg {
+            0% { background-position: 0% 24% }
+            50% { background-position: 100% 77% }
+            100% { background-position: 0% 24% }
+        }
+
+        body {
+            background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+            background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
+            background-size: 1000% 1000%;
+            animation: bg 90s ease infinite;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 4vh;
+        }
+
+        div#info, div#form, div#countsContainer{
+            margin: 10px;
+            max-width: 600px;
+            min-width: 250px;
+            width: 80%;
+            padding: 20px;
+            border: 1px solid rgb(92, 4, 255);
+            color: white;
+            border-radius: 10px;
+            background-color: black;
+            text-align: center;
+        }
+
+        div#info {
+            padding: 0px 20px 20px 20px;
+            text-align: center;
+        }
+
+        #nominationForm {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input[type="text"],
+        select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+        }
+
+        input[type="submit"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        h1 {
+            margin-bottom: 0px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0px;
+        }
+
+        h4 {
+            margin-top: 0px;
+        }
+
+        #username, a.username, a:visited.username, a:active.username, a:hover.username{
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 12px;
+            margin-bottom: 0px;
+        }
+
+        footer {
+            font-family: Arial, sans-serif;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        a.footer, a:visited.footer, a:active.footer, a:hover.footer {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <h1>The BeastSaber Mapping Awards</h1>
+        <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
+    </div>
+    <div id="form">
+        <h2>2024 Map Submission Form</h2>
+        <p>Your submission has been received.<br><br>Thank you for submitting a map to the BeastSaber Mapping Awards!<br><br>Redirecting back to homepage in <idrk>5</idrk> seconds. <a href="/">Click here if you don't get redirected.</a></p>
+    </div>    
+    <footer>
+        <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
+    </footer>
+    <script>
+        
+        window.onload = async function checkSignedIn() {
+            let count = 5;
+            setInterval(() => {
+                let countElement = document.querySelector('idrk');
+                if (count <= 0) return;
+                countElement.innerText = count;
+                count--;
+            }, 1000);
+            setTimeout(() => {
+                window.location.href = '/';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

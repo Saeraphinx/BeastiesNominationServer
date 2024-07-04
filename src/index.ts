@@ -42,6 +42,10 @@ app.get(`/`, (req, res) => {
     res.sendFile(path.resolve(`./src/DemoForm/index.html`));
 });
 
+app.get(`/success`, (req, res) => {
+    res.sendFile(path.resolve(`./src/DemoForm/success.html`));
+});
+
 app.get(`/cdn/loginbl.png`, (req, res) => {
     res.sendFile(path.resolve(`./src/DemoForm/loginbl.png`));
 });

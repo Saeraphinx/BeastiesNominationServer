@@ -148,7 +148,7 @@
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
-        <form action="api/submitmap" method="post" id="nominationForm">
+        <form action="form/submitmap" method="post" id="nominationForm">
             <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9")</label><br>
             <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"
                 required><br><br>
@@ -191,7 +191,7 @@
             </span>
             <span>
                 <p class="countLabel">Alternative Map</p>
-                <p class="count" id="motyCount">0</p>
+                <p class="count" id="altCount">0</p>
             </span>
             <span>
                 <p class="countLabel">Full Spread Map</p>
@@ -319,6 +319,34 @@
             */
         }
         onChange();
+
+        function updateCounts() {
+            fetch('/api/counts', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    document.getElementById('totalCount').innerHTML = data.Total;
+                    document.getElementById('motyCount').innerHTML = data.MapOfTheYear;
+                    document.getElementById('altCount').innerHTML = data.AlternativeMap;
+                    document.getElementById('fullspreadCount').innerHTML = data.FullSpreadMap;
+                    document.getElementById('lightshowCount').innerHTML = data.Lightshow;
+                    document.getElementById('modchartCount').innerHTML = data.Modchart;
+                    document.getElementById('artmapCount').innerHTML = data.ArtMap;
+                    document.getElementById('rankedmapCount').innerHTML = data.RankedMap;
+                    document.getElementById('balancedCount').innerHTML = data.BalancedMap;
+                    document.getElementById('techCount').innerHTML = data.TechMap;
+                    document.getElementById('speedCount').innerHTML = data.SpeedMap;
+                    document.getElementById('danceCount').innerHTML = data.DanceMap;
+                    document.getElementById('fitnessCount').innerHTML = data.FitnessMap;
+                    document.getElementById('challengeCount').innerHTML = data.ChallengeMap;
+                    document.getElementById('accCount').innerHTML = data.AccMap;
+                    document.getElementById('poodleCount').innerHTML = data.PoodleMap;
+                });
+        }
+        updateCounts();
     </script>
     <footer>
         <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>

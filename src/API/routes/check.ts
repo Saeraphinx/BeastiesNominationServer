@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue } from '../../Shared/Database';
 import { auth } from '../../../storage/config.json';
+import path from 'path';
 
 export class SubmissionRoutes {
     private app: Express;
@@ -90,59 +91,59 @@ export class SubmissionRoutes {
             }
         });
 
-        this.app.post(`/api/submitmap`, async (req, res) => {
+        this.app.post(`/form/submitmap`, async (req, res) => {
             const bsrId = req.body[`bsrId`];
             const category = req.body[`category`];
             const charecteristics = req.body[`charecteristics`];
             const difficulty = req.body[`difficulty`];
 
             if (!req.session.userId) {
-                res.status(401).send(`Unauthorized.`);
+                res.status(401).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
             if (!bsrId || !category || typeof bsrId != `string` || typeof category != `string`) {
-                res.status(400).send(`Invalid request.`);
+                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
             if (charecteristics && typeof charecteristics != `string`) {
-                res.status(400).send(`Invalid request.`);
+                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
             if (difficulty && typeof difficulty != `string`) {
-                res.status(400).send(`Invalid request.`);
+                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
             switch (SubmissionRoutes.validateSubmission(bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
-                    res.status(400).send({ message: `Invalid request.` });
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
                 case RequestSubmissionStatus.InvalidCategory:
-                    res.status(400).send({ message: `Invalid category.` });
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
                 case RequestSubmissionStatus.RateLimited:
                     res.status(429).send({ message: `Rate limited.` });
                     return;
                 case RequestSubmissionStatus.OldKey:
-                    res.status(400).send({ message: `Invalid request.` });
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
             }
             
             switch (await SubmissionRoutes.sendSubmission(req.session.userId, bsrId, category)) {
                 case RequestSubmissionStatus.Invalid:
-                    res.status(400).send({ message: `Invalid request.` });
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
                 case RequestSubmissionStatus.InvalidCategory:
-                    res.status(400).send({ message: `Invalid category.` });
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
                 case RequestSubmissionStatus.AlreadyVoted:
                     res.status(400).send({ message: `Already voted.` });
                     return;
                 case RequestSubmissionStatus.Success:
-                    res.status(200).send({ message: `Nomination submitted.` });
+                    res.status(200).sendFile(path.resolve(`./src/DemoForm/success.html`));
                     return;
             }
         });
@@ -201,3 +202,4 @@ enum RequestSubmissionStatus {
     AlreadyVoted,
     Success
 }
+

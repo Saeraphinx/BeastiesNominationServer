@@ -8,13 +8,16 @@ export class MiscRoutes {
     constructor(app: Express) {
         this.app = app;
         this.loadRoutes();
+        setTimeout(() => {
+            this.getCount();
+        }, 5000);
         setInterval(() => {
             this.getCount();
         }, 60000);
     }
 
     private async loadRoutes() {
-        this.app.get(`/api/count`, async (req, res) => {
+        this.app.get(`/api/counts`, async (req, res) => {
             res.status(200).send(this.submissionCountCache);
         });
     }
