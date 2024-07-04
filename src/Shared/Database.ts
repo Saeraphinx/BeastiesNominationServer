@@ -41,6 +41,14 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            difficulty: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            characteristic: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             category: {
                 type: DataTypes.STRING,
                 allowNull: false,
@@ -53,8 +61,13 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
     public nominationId: number;
     public submitterId: string;
     public bsrId: string;
+    public difficulty: Difficulty;
+    public characteristic: Characteristic;
     public category: string;
 }
+
+export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus`;
+export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other`;
 
 export enum NominationCategory {
     OST = `Gen-OST`,
@@ -92,7 +105,7 @@ export class DatabaseHelper {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, bsrId: string, category: string): Promise<NominationStatusResponse> {
+    public static async addNomination(submitterId: string, bsrId: string, category: string, difficulty?:Difficulty, characteristic?:Characteristic): Promise<NominationStatusResponse> {
         let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}});
         
         if (existingRecords.count > 0) {
@@ -106,6 +119,8 @@ export class DatabaseHelper {
         await DatabaseHelper.database.nominations.create({
             submitterId: submitterId,
             bsrId: bsrId,
+            difficulty: difficulty,
+            characteristic: characteristic,
             category: category,
         });
 

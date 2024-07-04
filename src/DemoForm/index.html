@@ -122,7 +122,27 @@
             <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"
                 required><br><br>
             <label for="category">Category</label>
-            <select id="category" name="category"></select><br><br>
+            <select id="category" name="category" onchange="onChange()"></select><br><br>
+            <label for="charecteristic">Characteristic</label><br>
+            <select id="charecteristic" name="charecteristic">
+                <option value="Standard">Standard</option>
+                <option value="One Saber">One Saber</option>
+                <option value="No Arrows">No Arrows</option>
+                <option value="360 Degree">360 Degree</option>
+                <option value="90 Degree">90 Degree</option>
+                <option value="Lawless">Lawless</option>
+                <option value="Lightshow">Lightshow</option>
+                <option value="Other">All</option>
+            </select>
+            <label for="difficulty">Difficulty</label><br>
+            <select id="difficulty" name="difficulty">
+                <option value="Easy">Easy</option>
+                <option value="Normal">Normal</option>
+                <option value="Hard">Hard</option>
+                <option value="Expert">Expert</option>
+                <option value="ExpertPlus">Expert+</option>
+                <option value="Other">All</option>
+            </select>
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
         <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png" width="200px" /></a></p>
@@ -148,6 +168,12 @@
 
         const NominationCategory = {
             //OST: [`Gen-OST`, ``],
+            //PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
+            MapOfTheYear: [`OTY-Map`, "Map of the Year"],
+            //MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
+            //LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
+            //RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
+            //RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
             AlternativeMap: [`Gen-Alternative`, "Alternative"],
             FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
             Lightshow: [`Mods-Lightshow`, "Lightshow"],
@@ -162,12 +188,6 @@
             ChallengeMap: [`Style-Challenge`, "Challenge"],
             AccMap: [`Style-Acc`, "Acc"],
             PoodleMap: [`Style-Poodle`, "Poodle"],
-            RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
-            RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
-            MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
-            LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
-            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
-            MapOfTheYear: [`OTY-Map`, "Map of the Year"],
         };
 
         // Get the form element
@@ -181,6 +201,22 @@
 
             selectTag.appendChild(option);
         }
+
+        function onChange() {
+            const category = document.getElementById('category').value;
+            const charecteristic = document.getElementById('charecteristic');
+            const difficulty = document.getElementById('difficulty');
+            if (category == "Gen-FullSpread" || category == "Mods-Lightshow" || category == "Mods-Modchart" || category == "Mods-ArtMap" || category == "Ranked-RankedMap" || category == "OTY-Map") {
+                charecteristic.value = "Other";
+                charecteristic.disabled = true;
+                difficulty.value = "Other";
+                difficulty.disabled = true;
+            } else {
+                charecteristic.disabled = false;
+                difficulty.disabled = false;
+            }
+        }
+        onChange();
     </script>
     <footer>
         <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
