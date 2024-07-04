@@ -7,6 +7,7 @@ import { SubmissionRoutes } from './API/routes/check';
 import path from 'path';
 import { server, devmode } from '../storage/config.json';
 import { BeatLeaderAuthRoutes } from './API/routes/auth_beatleader';
+import { MiscRoutes } from './API/routes/mics';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -47,6 +48,7 @@ app.get(`/cdn/loginbl.png`, (req, res) => {
 
 new SubmissionRoutes(app);
 new BeatLeaderAuthRoutes(app);
+new MiscRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 

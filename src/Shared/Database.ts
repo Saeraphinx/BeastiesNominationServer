@@ -126,6 +126,51 @@ export class DatabaseHelper {
 
         return NominationStatusResponse.Accepted;
     }
+
+    public static async getNominationCount() {
+        const counts = {
+            Total: await DatabaseHelper.database.nominations.count(),
+            MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapOfTheYear } }),
+            //MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
+            //LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
+            //RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
+            //RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
+            AlternativeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AlternativeMap } }),
+            FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FullSpreadMap } }),
+            Lightshow: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Lightshow } }),
+            Modchart: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Modchart } }),
+            ArtMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ArtMap } }),
+            RankedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RankedMap } }),
+            BalancedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.BalancedMap } }),
+            TechMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.TechMap } }),
+            SpeedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.SpeedMap } }),
+            DanceMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.DanceMap } }),
+            FitnessMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FitnessMap } }),
+            ChallengeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ChallengeMap } }),
+            AccMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AccMap } }),
+            PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
+        };
+        return counts;
+    }
+}
+
+export type NominationCount = {
+    Total: number;
+    MapOfTheYear: number;
+    AlternativeMap: number;
+    FullSpreadMap: number;
+    Lightshow: number;
+    Modchart: number;
+    ArtMap: number;
+    RankedMap: number;
+    BalancedMap: number;
+    TechMap: number;
+    SpeedMap: number;
+    DanceMap: number;
+    FitnessMap: number;
+    ChallengeMap: number;
+    AccMap: number;
+    PoodleMap: number;
 }
 
 export enum NominationStatusResponse {

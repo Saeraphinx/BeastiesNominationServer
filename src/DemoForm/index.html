@@ -23,7 +23,7 @@
             margin: 4vh;
         }
 
-        div {
+        div#info, div#form, div#countsContainer{
             margin: 10px;
             max-width: 600px;
             min-width: 250px;
@@ -88,6 +88,37 @@
             margin-bottom: 0px;
         }
 
+        div#countsContainer {
+            padding: 0px 20px 20px 20px;
+            text-align: center;
+        }
+
+        div#counts {
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        p.countLabel {
+            margin: 0;
+        }
+
+        p.count {
+            display: inline;
+            font-size: 26px;
+        }
+
+        span {
+            display: inline-block;
+            margin: 10px;
+            margin-bottom: 2px;
+            padding: 10px;
+            padding-bottom: 8px;
+            border-radius: 8px;
+            border: rgb(52, 52, 52) 1px solid;
+        }
+
         footer {
             font-family: Arial, sans-serif;
             position: fixed;
@@ -123,7 +154,7 @@
                 required><br><br>
             <label for="category">Category</label>
             <select id="category" name="category" onchange="onChange()"></select><br><br>
-            <label for="charecteristic">Characteristic</label><br>
+            <!--<label for="charecteristic">Characteristic</label><br>
             <select id="charecteristic" name="charecteristic">
                 <option value="Standard">Standard</option>
                 <option value="One Saber">One Saber</option>
@@ -142,10 +173,79 @@
                 <option value="Expert">Expert</option>
                 <option value="ExpertPlus">Expert+</option>
                 <option value="Other">All</option>
-            </select>
+            </select>!-->
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
         <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png" width="200px" /></a></p>
+    </div>
+    <div id="countsContainer">
+        <h1>Submission Counts</h1>
+        <span>
+            <p class="countLabel">Total Submissions</p>
+            <p class="count" id="totalCount">0</p>
+        </span>
+        <div id="counts">
+            <span>
+                <p class="countLabel">Map of the Year</p>
+                <p class="count" id="motyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Alternative Map</p>
+                <p class="count" id="motyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Full Spread Map</p>
+                <p class="count" id="fullspreadCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Lightshow</p>
+                <p class="count" id="lightshowCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Modchart</p>
+                <p class="count" id="modchartCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Art Map</p>
+                <p class="count" id="artmapCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Ranked Map</p>
+                <p class="count" id="rankedmapCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Balanced Map</p>
+                <p class="count" id="balancedCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Tech Map</p>
+                <p class="count" id="techCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Speed Map</p>
+                <p class="count" id="speedCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Dance Map</p>
+                <p class="count" id="danceCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Fitness Map</p>
+                <p class="count" id="fitnessCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Challenge Map</p>
+                <p class="count" id="challengeCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Acc Map</p>
+                <p class="count" id="accCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Poodle Map</p>
+                <p class="count" id="poodleCount">0</p>
+            </span>
+        </div>
     </div>
     <script>
         window.onload = async function checkSignedIn() {
@@ -203,6 +303,7 @@
         }
 
         function onChange() {
+            /*
             const category = document.getElementById('category').value;
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
@@ -215,6 +316,7 @@
                 charecteristic.disabled = false;
                 difficulty.disabled = false;
             }
+            */
         }
         onChange();
     </script>

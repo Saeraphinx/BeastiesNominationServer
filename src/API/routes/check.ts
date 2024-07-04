@@ -93,6 +93,8 @@ export class SubmissionRoutes {
         this.app.post(`/api/submitmap`, async (req, res) => {
             const bsrId = req.body[`bsrId`];
             const category = req.body[`category`];
+            const charecteristics = req.body[`charecteristics`];
+            const difficulty = req.body[`difficulty`];
 
             if (!req.session.userId) {
                 res.status(401).send(`Unauthorized.`);
@@ -100,6 +102,16 @@ export class SubmissionRoutes {
             }
 
             if (!bsrId || !category || typeof bsrId != `string` || typeof category != `string`) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            }
+
+            if (charecteristics && typeof charecteristics != `string`) {
+                res.status(400).send(`Invalid request.`);
+                return;
+            }
+
+            if (difficulty && typeof difficulty != `string`) {
                 res.status(400).send(`Invalid request.`);
                 return;
             }
