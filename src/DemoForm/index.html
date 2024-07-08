@@ -149,13 +149,17 @@
     <div id="form">
         <h2>2024 Map Submission Form</h2>
         <form action="form/submitmap" method="post" id="nominationForm">
-            <label for="bsrId">BSR Key (e.g. "d00c", "25f", "ff9")</label><br>
-            <input type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"
-                required><br><br>
             <label for="category">Category</label>
             <select id="category" name="category" onchange="onChange()"></select><br><br>
-            <!--<label for="charecteristic">Characteristic</label><br>
-            <select id="charecteristic" name="charecteristic">
+            
+            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
+            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"><br><br>
+
+            <label class="FORMname" for="name">Pack/Mapper Name</label><br>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-Z]{5}"><br><br>
+
+            <label class="FORMchardiff" for="charecteristic">Characteristic</label><br>
+            <select class="FORMchardiff" id="charecteristic" name="charecteristic">
                 <option value="Standard">Standard</option>
                 <option value="One Saber">One Saber</option>
                 <option value="No Arrows">No Arrows</option>
@@ -165,15 +169,17 @@
                 <option value="Lightshow">Lightshow</option>
                 <option value="Other">All</option>
             </select>
-            <label for="difficulty">Difficulty</label><br>
-            <select id="difficulty" name="difficulty">
+
+            <label class="FORMchardiff" for="difficulty">Difficulty</label><br>
+            <select class="FORMchardiff" id="difficulty" name="difficulty">
                 <option value="Easy">Easy</option>
                 <option value="Normal">Normal</option>
                 <option value="Hard">Hard</option>
                 <option value="Expert">Expert</option>
                 <option value="ExpertPlus">Expert+</option>
                 <option value="Other">All</option>
-            </select>!-->
+            </select>
+
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
         <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png" width="200px" /></a></p>
@@ -267,14 +273,14 @@
         }
 
         const NominationCategory = {
-            //OST: [`Gen-OST`, ``],
-            //PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
+            OST: [`Gen-OST`, `OST`],
+            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
             MapOfTheYear: [`OTY-Map`, "Map of the Year"],
-            //MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
-            //LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
-            //RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
-            //RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
-            AlternativeMap: [`Gen-Alternative`, "Alternative"],
+            MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
+            LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
+            AlternativeMap: [`Gen-Alternative`, "Non-Standard"],
             FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
             Lightshow: [`Mods-Lightshow`, "Lightshow"],
             Modchart: [`Mods-Modchart`, "Modchart"],
@@ -293,7 +299,7 @@
         // Get the form element
         const selectTag = document.getElementById('category');
 
-        // Generate the radio buttons
+        // Generate the category options
         for (const category in NominationCategory) {
             const option = document.createElement('option');
             option.value = NominationCategory[category][0];
@@ -303,22 +309,61 @@
         }
 
         function onChange() {
-            /*
             const category = document.getElementById('category').value;
+
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
-            if (category == "Gen-FullSpread" || category == "Mods-Lightshow" || category == "Mods-Modchart" || category == "Mods-ArtMap" || category == "Ranked-RankedMap" || category == "OTY-Map") {
+            if (category == "Gen-FullSpread" || category == "OTY-Map"  || category == "OTY-Pack") {
+                toggleCharDiff(false, false);
+            } else if (category == "OTY-Pack" || category == "OTY-Mapper" || category == "OTY-Lighter" || category == "OTY-RookieMapper" || category == "OTY-RookieLighter") {
+                toggleCharDiff(false, true);
+            } else {
+                toggleCharDiff(true, false);
+            }
+        }
+        onChange();
+
+        function toggleCharDiff(showDiffChar, showName) {
+            const charecteristic = document.getElementById('charecteristic');
+            const difficulty = document.getElementById('difficulty');
+            const bsrId = document.getElementById('bsrId');
+            const name = document.getElementById('name');
+            if (show) {
+                document.getElementsByClassName('FORMchardiff').forEach(element => {
+                    element.style.display = 'block';
+                });
+                charecteristic.disabled = false;
+                difficulty.disabled = false;
+            } else {
+                document.getElementsByClassName('FORMchardiff').forEach(element => {
+                    element.style.display = 'none';
+                });
                 charecteristic.value = "Other";
                 charecteristic.disabled = true;
                 difficulty.value = "Other";
                 difficulty.disabled = true;
-            } else {
-                charecteristic.disabled = false;
-                difficulty.disabled = false;
             }
-            */
+
+            if (showName) {
+                document.getElementsByClassName('FORMbsr').forEach(element => {
+                    element.style.display = 'none';
+                });
+                document.getElementsByClassName('FORMname').forEach(element => {
+                    element.style.display = 'block';
+                });
+                bsrId.value = "";
+                name.value = "";
+            } else {
+                document.getElementsByClassName('FORMbsr').forEach(element => {
+                    element.style.display = 'Block';
+                });
+                document.getElementsByClassName('FORMname').forEach(element => {
+                    element.style.display = 'none';
+                });
+                bsrId.value = "";
+                name.value = "";
+            }
         }
-        onChange();
 
         function updateCounts() {
             fetch('/api/counts', {
@@ -346,6 +391,7 @@
                     document.getElementById('poodleCount').innerHTML = data.PoodleMap;
                 });
         }
+        setInterval(updateCounts, 60000);
         updateCounts();
     </script>
     <footer>
