@@ -41,6 +41,10 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             difficulty: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -61,6 +65,7 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
     public nominationId: number;
     public submitterId: string;
     public bsrId: string;
+    public name: string;
     public difficulty: Difficulty;
     public characteristic: Characteristic;
     public category: string;
@@ -100,14 +105,23 @@ export enum NominationCategory {
 export class DatabaseHelper {
     private static database: DatabaseManager;
 
-
     constructor(db: DatabaseManager) {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, bsrId: string, category: string, difficulty?:Difficulty, characteristic?:Characteristic): Promise<NominationStatusResponse> {
-        let existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: {submitterId : submitterId, bsrId: bsrId, category: category}});
-        
+    public static async addNomination(submitterId: string, category: NominationCategory, content: {
+        bsrId?: string,
+        name?: string,
+        difficulty?: Difficulty,
+        characteristic?: Characteristic,
+    }): Promise<NominationStatusResponse> {
+        let existingRecords;
+        if (this.isNameRequired(category)) {
+            existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, name: content.name, category: category } });
+        } else {
+            existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
+        }
+
         if (existingRecords.count > 0) {
             return NominationStatusResponse.AlreadyVoted;
         }
@@ -116,15 +130,33 @@ export class DatabaseHelper {
             return NominationStatusResponse.InvalidCategory;
         }
 
-        await DatabaseHelper.database.nominations.create({
-            submitterId: submitterId,
-            bsrId: bsrId,
-            difficulty: difficulty,
-            characteristic: characteristic,
-            category: category,
-        });
+        if (this.isNameRequired(category)) {
+            await DatabaseHelper.database.nominations.create({
+                submitterId: submitterId,
+                category: category,
+                name: content.name,
+            });
+        } else {
+            if (this.isDiffCharRequired(category)) {
+                await DatabaseHelper.database.nominations.create({
+                    submitterId: submitterId,
+                    category: category,
+                    bsrId: content.bsrId,
+                    name: content.name,
+                    difficulty: content.difficulty,
+                    characteristic: content.characteristic,
+                });
+            } else {
+                await DatabaseHelper.database.nominations.create({
+                    submitterId: submitterId,
+                    category: category,
+                    bsrId: content.bsrId,
+                    name: content.name,
+                });
+            }
 
-        return NominationStatusResponse.Accepted;
+            return NominationStatusResponse.Accepted;
+        }
     }
 
     public static async getNominationCount() {
@@ -151,6 +183,14 @@ export class DatabaseHelper {
             PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
         };
         return counts;
+    }
+
+    public static isNameRequired(category: NominationCategory): boolean {
+        return category == NominationCategory.PackOfTheYear || category == NominationCategory.MapperOfTheYear || category == NominationCategory.LighterOfTheYear || category == NominationCategory.RookieMapperOfTheYear || category == NominationCategory.RookieLighterOfTheYear;
+    }
+
+    public static isDiffCharRequired(category: NominationCategory): boolean {
+        return category != NominationCategory.PackOfTheYear && category != NominationCategory.MapperOfTheYear && category != NominationCategory.LighterOfTheYear && category != NominationCategory.RookieMapperOfTheYear && category != NominationCategory.RookieLighterOfTheYear && category != NominationCategory.FullSpreadMap;
     }
 }
 
@@ -181,7 +221,7 @@ export enum NominationStatusResponse {
 }
 
 // yoink thankies bstoday
-export function validateEnumValue(value:string|number, enumType:object):boolean {
+export function validateEnumValue(value: string | number, enumType: object): boolean {
     if (Object.values(enumType).includes(value)) {
         return true;
     }
