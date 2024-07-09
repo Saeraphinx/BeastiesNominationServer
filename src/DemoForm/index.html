@@ -156,7 +156,7 @@
             <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"><br><br>
 
             <label class="FORMname" for="name">Pack/Mapper Name</label><br>
-            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-Z]{5}"><br><br>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-Z:-]"><br><br>
 
             <label class="FORMchardiff" for="charecteristic">Characteristic</label><br>
             <select class="FORMchardiff" id="charecteristic" name="charecteristic">
@@ -313,7 +313,7 @@
 
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
-            if (category == "Gen-FullSpread" || category == "OTY-Map"  || category == "OTY-Pack") {
+            if (category == "Gen-FullSpread") {
                 toggleCharDiff(false, false);
             } else if (category == "OTY-Pack" || category == "OTY-Mapper" || category == "OTY-Lighter" || category == "OTY-RookieMapper" || category == "OTY-RookieLighter") {
                 toggleCharDiff(false, true);

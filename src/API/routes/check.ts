@@ -150,6 +150,8 @@ export class SubmissionRoutes {
     }
 
     private static validateSubmission(bsrId: string, category: string) : RequestSubmissionStatus {
+        let isName = DatabaseHelper.isNameRequired(category);
+        let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
         if (bsrId.length != 5) {
             return RequestSubmissionStatus.Invalid;
         }
