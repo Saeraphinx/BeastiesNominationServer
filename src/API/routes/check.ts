@@ -1,28 +1,36 @@
 import { Express } from 'express';
-import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue, Difficulty, Characteristic, DifficultyEnum, CharacteristicEnum } from '../../Shared/Database';
 import { auth } from '../../../storage/config.json';
 import path from 'path';
 
 export class SubmissionRoutes {
     private app: Express;
     private static recentSubmissions: string[] = [];
+    private static ip: string[];
 
     constructor(app: Express) {
         this.app = app;
         this.loadRoutes();
         setInterval(() => {
             SubmissionRoutes.recentSubmissions = [];
+            SubmissionRoutes.ip = [];
         }, 10000);
     }
 
     private async loadRoutes() {
         this.app.post(`/api/mod/submitmap`, async (req, res) => {
+            SubmissionRoutes.ip.push(req.ip);
+            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
+                res.status(429).send({ message: `Rate limited.` });
+                return;
+            }
+            
             const userId = req.body[`id`];
             const bsrId = req.body[`bsrId`];
             const category = req.body[`category`];
             const ticket = req.body[`ticket`];
             const platform = req.body[`platform`];
-
+            
             if (!userId ||
                 !bsrId ||
                 !category ||
@@ -92,32 +100,67 @@ export class SubmissionRoutes {
         });
 
         this.app.post(`/form/submitmap`, async (req, res) => {
+            SubmissionRoutes.ip.push(req.ip);
+            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
+                res.status(429).send({ message: `Rate limited.` });
+                return;
+            }
+
             const bsrId = req.body[`bsrId`];
+            const name = req.body[`name`];
             const category = req.body[`category`];
-            const charecteristics = req.body[`charecteristics`];
+            const charecteristic = req.body[`charecteristic`];
             const difficulty = req.body[`difficulty`];
+
+            SubmissionRoutes.ip.push(req.ip);
+            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
+                res.status(429).send({ message: `Rate limited.` });
+                return;
+            }
 
             if (!req.session.userId) {
                 res.status(401).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
-            if (!bsrId || !category || typeof bsrId != `string` || typeof category != `string`) {
+            if (!category || typeof category != `string`) {
                 res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                 return;
             }
 
-            if (charecteristics && typeof charecteristics != `string`) {
-                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
-                return;
+            let isName = DatabaseHelper.isNameRequired(category);
+            let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);            
+
+            if (isDiffCharRequired) {
+                if (charecteristic && typeof charecteristic != `string`) {
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    return;
+                }
+
+                if (difficulty && typeof difficulty != `string`) {
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    return;
+                }
             }
 
-            if (difficulty && typeof difficulty != `string`) {
-                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
-                return;
+            if (!isName) {
+                if (!bsrId || typeof bsrId != `string`) {
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    return;
+                }
+            } else {
+                if (!name || typeof name != `string`) {
+                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    return;
+                }
             }
 
-            switch (SubmissionRoutes.validateSubmission(bsrId, category)) {
+            switch (SubmissionRoutes.validateSubmission(category, {
+                bsrId: bsrId,
+                name: name,
+                difficulty: difficulty,
+                charecteristic: charecteristic
+            })) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
@@ -131,8 +174,13 @@ export class SubmissionRoutes {
                     res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
             }
-            
-            switch (await SubmissionRoutes.sendSubmission(req.session.userId, bsrId, category)) {
+
+            switch (await SubmissionRoutes.sendSubmission(req.session.userId, category, {
+                bsrId: bsrId,
+                name: name,
+                difficulty: difficulty as Difficulty,
+                characteristic: charecteristic as Characteristic
+            })) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
                     return;
@@ -149,39 +197,81 @@ export class SubmissionRoutes {
         });
     }
 
-    private static validateSubmission(bsrId: string, category: string) : RequestSubmissionStatus {
-        let isName = DatabaseHelper.isNameRequired(category);
-        let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
-        if (bsrId.length != 5) {
-            return RequestSubmissionStatus.Invalid;
-        }
-
-        if (bsrId.match(/[0123456789abcdefABCDEF]{5}/) == null) {
-            return RequestSubmissionStatus.Invalid;
-        }
-
-        let bsrIdNoHex = parseInt(bsrId, 16);
-
-        if (isNaN(bsrIdNoHex)) {
-            return RequestSubmissionStatus.Invalid;
-        }
-
-        if (bsrIdNoHex <= 228010) {
-            return RequestSubmissionStatus.OldKey;
-        }
-
+    private static validateSubmission(category: string, content: {
+        bsrId?: string,
+        name?: string
+        difficulty?: string,
+        charecteristic?: string
+    }): RequestSubmissionStatus {
         if (!validateEnumValue(category, NominationCategory)) {
             return RequestSubmissionStatus.InvalidCategory;
         }
 
-        this.recentSubmissions.push(bsrId);
-        if (this.recentSubmissions.filter(id => id == bsrId).length > 3) {
-            return RequestSubmissionStatus.RateLimited;
+        let isName = DatabaseHelper.isNameRequired(category);
+        let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
+
+        if (isName) {
+            if (content.bsrId || content.difficulty || content.charecteristic) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (!content.name || content.name.length == 0 || content.name.length > 100) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (content.name.match(/[a-zA-Z0-9_ ]{1,100}/) == null) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            this.recentSubmissions.push(content.name);
+            if (this.recentSubmissions.filter(id => id == content.name).length > 3) {
+                return RequestSubmissionStatus.RateLimited;
+            }
+        } else {
+            if (content.bsrId.length != 5) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (content.bsrId.match(/[0123456789abcdefABCDEF]{5}/) == null) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            let bsrIdNoHex = parseInt(content.bsrId, 16);
+
+            if (isNaN(bsrIdNoHex)) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (bsrIdNoHex <= 228010) {
+                return RequestSubmissionStatus.OldKey;
+            }
+
+            this.recentSubmissions.push(content.bsrId);
+            if (this.recentSubmissions.filter(id => id == content.bsrId).length > 3) {
+                return RequestSubmissionStatus.RateLimited;
+            }
+
+            if (isDiffCharRequired) {
+                if (!content.difficulty || !content.charecteristic) {
+                    return RequestSubmissionStatus.Invalid;
+                }
+
+                if (!validateEnumValue(content.difficulty, DifficultyEnum) || !validateEnumValue(content.charecteristic, CharacteristicEnum)) {
+                    return RequestSubmissionStatus.Invalid;
+                }
+            }
         }
+
+        return RequestSubmissionStatus.Success;
     }
 
-    private static async sendSubmission(id: string, bsrId: string, category: string) : Promise<RequestSubmissionStatus> {
-        let status = await DatabaseHelper.addNomination(id, bsrId, category);
+    private static async sendSubmission(id: string, category: string, content: {
+        bsrId?: string;
+        name?: string;
+        difficulty?: Difficulty;
+        characteristic?: Characteristic;
+    }): Promise<RequestSubmissionStatus> {
+        let status = await DatabaseHelper.addNomination(id, category, content);
         switch (status) {
             case NominationStatusResponse.Invalid:
                 return RequestSubmissionStatus.Invalid;

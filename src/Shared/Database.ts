@@ -71,8 +71,28 @@ export class NominationAttributes extends Model<InferAttributes<NominationAttrib
     public category: string;
 }
 
-export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus`;
-export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other`;
+export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus` | `All`;
+export enum DifficultyEnum {
+    Easy = `Easy`,
+    Normal = `Normal`,
+    Hard = `Hard`,
+    Expert = `Expert`,
+    ExpertPlus = `ExpertPlus`,
+    All = `All`,
+    Other = `Other`,
+}
+export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other` | `All`;
+export enum CharacteristicEnum {
+    Standard = `Standard`,
+    OneSaber = `OneSaber`,
+    NoArrows = `NoArrows`,
+    NinetyDegree = `90Degree`,
+    ThreeSixtyDegree = `360Degree`,
+    Lightshow = `Lightshow`,
+    Lawless = `Lawless`,
+    Other = `Other`,
+    All = `All`,
+}
 
 export enum NominationCategory {
     OST = `Gen-OST`,
@@ -109,7 +129,7 @@ export class DatabaseHelper {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, category: NominationCategory, content: {
+    public static async addNomination(submitterId: string, category: string, content: {
         bsrId?: string,
         name?: string,
         difficulty?: Difficulty,
@@ -185,11 +205,11 @@ export class DatabaseHelper {
         return counts;
     }
 
-    public static isNameRequired(category: NominationCategory): boolean {
+    public static isNameRequired(category: string): boolean {
         return category == NominationCategory.PackOfTheYear || category == NominationCategory.MapperOfTheYear || category == NominationCategory.LighterOfTheYear || category == NominationCategory.RookieMapperOfTheYear || category == NominationCategory.RookieLighterOfTheYear;
     }
 
-    public static isDiffCharRequired(category: NominationCategory): boolean {
+    public static isDiffCharRequired(category: string): boolean {
         return category != NominationCategory.PackOfTheYear && category != NominationCategory.MapperOfTheYear && category != NominationCategory.LighterOfTheYear && category != NominationCategory.RookieMapperOfTheYear && category != NominationCategory.RookieLighterOfTheYear && category != NominationCategory.FullSpreadMap;
     }
 }
