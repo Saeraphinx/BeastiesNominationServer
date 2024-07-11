@@ -11,7 +11,7 @@ export class DatabaseManager {
         this.sequelize = new Sequelize(`database`, `user`, `password`, {
             host: `localhost`,
             dialect: `sqlite`,
-            logging: true,
+            logging: false,
             storage: path.resolve(storage.database),
         });
 
@@ -175,6 +175,8 @@ export class DatabaseHelper {
                 });
             }
         }
+        console.log(`Added nomination from ${submitterId} in category ${category}`);
+        console.log(content);
         return NominationStatusResponse.Accepted;
     }
 
