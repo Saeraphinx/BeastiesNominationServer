@@ -39,15 +39,15 @@ app.get(`/pinkcute`, (req, res) => {
 });
 
 app.get(`/`, (req, res) => {
-    res.sendFile(path.resolve(`./src/DemoForm/index.html`));
+    res.sendFile(path.resolve(`./assets/index.html`));
 });
 
 app.get(`/success`, (req, res) => {
-    res.sendFile(path.resolve(`./src/DemoForm/success.html`));
+    res.sendFile(path.resolve(`./assets/success.html`));
 });
 
 app.get(`/cdn/loginbl.png`, (req, res) => {
-    res.sendFile(path.resolve(`./src/DemoForm/loginbl.png`));
+    res.sendFile(path.resolve(`./assets/loginbl.png`));
 });
 
 new SubmissionRoutes(app);

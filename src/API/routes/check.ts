@@ -2,11 +2,13 @@ import { Express } from 'express';
 import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue, Difficulty, Characteristic, DifficultyEnum, CharacteristicEnum } from '../../Shared/Database';
 import { auth } from '../../../storage/config.json';
 import path from 'path';
+import fs from 'fs';
 
 export class SubmissionRoutes {
     private app: Express;
     private static recentSubmissions: string[] = [];
-    private static ip: string[];
+    private static ip: string[] = [];
+    private static readonly errorHtml = fs.readFileSync(path.resolve(`./assets/error.html`)).toString();
 
     constructor(app: Express) {
         this.app = app;
@@ -45,7 +47,12 @@ export class SubmissionRoutes {
                 return;
             }
 
-            switch (SubmissionRoutes.validateSubmission(bsrId, category)) {
+            switch (SubmissionRoutes.validateSubmission(category, {
+                bsrId: bsrId,
+                name: undefined,
+                difficulty: undefined,
+                charecteristic: undefined
+            })) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -83,7 +90,13 @@ export class SubmissionRoutes {
                 return;
             }
 
-            switch (await SubmissionRoutes.sendSubmission(gameId, bsrId, category)) {
+            switch (await SubmissionRoutes.sendSubmission(gameId, category, {
+                bsrId: bsrId,
+                name: undefined,
+                difficulty: undefined,
+                characteristic: undefined
+            }
+            )) {
                 case RequestSubmissionStatus.Invalid:
                     res.status(400).send({ message: `Invalid request.` });
                     return;
@@ -102,29 +115,21 @@ export class SubmissionRoutes {
         this.app.post(`/form/submitmap`, async (req, res) => {
             SubmissionRoutes.ip.push(req.ip);
             if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
-                res.status(429).send({ message: `Rate limited.` });
+                res.status(429).send(this.getErrorResponseString(`You've been rate limited. Please try again later.`));
                 return;
             }
-
-            const bsrId = req.body[`bsrId`];
-            const name = req.body[`name`];
             const category = req.body[`category`];
+            if (!category || typeof category != `string`) {
+                res.status(400).send(this.getErrorResponseString(`Invalid request.`));
+                return;
+            }
+            const bsrId = req.body[`bsrId`];
+            const name = (category == NominationCategory.OST) ? req.body[`OSTname`] : req.body[`name`];
             const charecteristic = req.body[`charecteristic`];
             const difficulty = req.body[`difficulty`];
 
-            SubmissionRoutes.ip.push(req.ip);
-            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
-                res.status(429).send({ message: `Rate limited.` });
-                return;
-            }
-
             if (!req.session.userId) {
-                res.status(401).sendFile(path.resolve(`./src/DemoForm/error.html`));
-                return;
-            }
-
-            if (!category || typeof category != `string`) {
-                res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                res.status(401).send(this.getErrorResponseString(`You need to be logged in to submit a nomination.`));
                 return;
             }
 
@@ -133,24 +138,24 @@ export class SubmissionRoutes {
 
             if (isDiffCharRequired) {
                 if (charecteristic && typeof charecteristic != `string`) {
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 }
 
                 if (difficulty && typeof difficulty != `string`) {
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 }
             }
 
             if (!isName) {
                 if (!bsrId || typeof bsrId != `string`) {
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 }
             } else {
                 if (!name || typeof name != `string`) {
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 }
             }
@@ -162,16 +167,16 @@ export class SubmissionRoutes {
                 charecteristic: charecteristic
             })) {
                 case RequestSubmissionStatus.Invalid:
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`One or more of the fields are invalid.`));
                     return;
                 case RequestSubmissionStatus.InvalidCategory:
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 case RequestSubmissionStatus.RateLimited:
-                    res.status(429).send({ message: `Rate limited.` });
+                    res.status(429).send(this.getErrorResponseString(`You've been rate limited. Please try again later.`));
                     return;
                 case RequestSubmissionStatus.OldKey:
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`This BSR key is not eligible for submission.`));
                     return;
             }
 
@@ -182,16 +187,16 @@ export class SubmissionRoutes {
                 characteristic: charecteristic as Characteristic
             })) {
                 case RequestSubmissionStatus.Invalid:
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid request.`));
                     return;
                 case RequestSubmissionStatus.InvalidCategory:
-                    res.status(400).sendFile(path.resolve(`./src/DemoForm/error.html`));
+                    res.status(400).send(this.getErrorResponseString(`Invalid category.`));
                     return;
                 case RequestSubmissionStatus.AlreadyVoted:
-                    res.status(400).send({ message: `Already voted.` });
+                    res.status(400).send(this.getErrorResponseString(`You've already submitted this map.`));
                     return;
                 case RequestSubmissionStatus.Success:
-                    res.status(200).sendFile(path.resolve(`./src/DemoForm/success.html`));
+                    res.status(200).sendFile(path.resolve(`./assets/success.html`));
                     return;
             }
         });
@@ -211,7 +216,13 @@ export class SubmissionRoutes {
         let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
 
         if (isName) {
-            if (content.bsrId || content.difficulty || content.charecteristic) {
+            if (content.bsrId) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (DatabaseHelper.isDiffCharRequired(category) && (!content.difficulty || !content.charecteristic)) {
+                return RequestSubmissionStatus.Invalid;
+            } else if (!DatabaseHelper.isDiffCharRequired(category) && (content.difficulty || content.charecteristic)) { // this is probably not necessary
                 return RequestSubmissionStatus.Invalid;
             }
 
@@ -282,6 +293,10 @@ export class SubmissionRoutes {
             case NominationStatusResponse.Accepted:
                 return RequestSubmissionStatus.Success;
         }
+    }
+
+    private getErrorResponseString(message: string): string {
+        return SubmissionRoutes.errorHtml.replace(`##ERRORTEXT##`, message);
     }
 }
 

@@ -5,9 +5,17 @@
 
     <style>
         @keyframes bg {
-            0% { background-position: 0% 24% }
-            50% { background-position: 100% 77% }
-            100% { background-position: 0% 24% }
+            0% {
+                background-position: 0% 24%
+            }
+
+            50% {
+                background-position: 100% 77%
+            }
+
+            100% {
+                background-position: 0% 24%
+            }
         }
 
         body {
@@ -23,7 +31,9 @@
             margin: 4vh;
         }
 
-        div#info, div#form, div#countsContainer{
+        div#info,
+        div#form,
+        div#countsContainer {
             margin: 10px;
             max-width: 600px;
             min-width: 250px;
@@ -43,6 +53,8 @@
         #nominationForm {
             display: flex;
             flex-direction: column;
+            margin: auto;
+            max-width: 350px;
         }
 
         input[type="text"],
@@ -71,7 +83,8 @@
             margin-bottom: 0px;
         }
 
-        h2 {
+        h2,
+        h3 {
             text-align: center;
             margin-top: 0px;
         }
@@ -80,7 +93,11 @@
             margin-top: 0px;
         }
 
-        #username, a.username, a:visited.username, a:active.username, a:hover.username{
+        #username,
+        a.username,
+        a:visited.username,
+        a:active.username,
+        a:hover.username {
             text-align: center;
             color: white;
             text-decoration: none;
@@ -131,7 +148,10 @@
             font-size: 12px;
         }
 
-        a.footer, a:visited.footer, a:active.footer, a:hover.footer {
+        a.footer,
+        a:visited.footer,
+        a:active.footer,
+        a:hover.footer {
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
         }
@@ -142,21 +162,39 @@
     <div id="info">
         <h1>The BeastSaber Mapping Awards</h1>
         <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
-        <p>The BeastSaber Mapping Awards were launched in 2021 to highlight the best of the best of the art (and science) of making custom Beat Saber maps. The first year featured 29 categories, garnered 760 nominated maps, resulting in 96 finalists, with more than 45 medals won.
-        <br><br>
-        Map curation is focused on maps that avoid objectively bad mapping and have a “fun factor” that appeals to a member of our curation team - the “blockbuster movies” of the custom map world. The Beasties go beyond the fun factor to dig deep into mapping theory and practices to highlight the maps that may not have grabbed the spotlight but are well-constructed and have incredible representation, emphasis, and flow to truly capture the feel of the song - the art films of the custom map world.</p>
+        <p>The BeastSaber Mapping Awards were launched in 2021 to highlight the best of the best of the art (and
+            science) of making custom Beat Saber maps. The first year featured 29 categories, garnered 760 nominated
+            maps, resulting in 96 finalists, with more than 45 medals won.
+            <br><br>
+            Map curation is focused on maps that avoid objectively bad mapping and have a “fun factor” that appeals to a
+            member of our curation team - the “blockbuster movies” of the custom map world. The Beasties go beyond the
+            fun factor to dig deep into mapping theory and practices to highlight the maps that may not have grabbed the
+            spotlight but are well-constructed and have incredible representation, emphasis, and flow to truly capture
+            the feel of the song - the art films of the custom map world.
+            <br><br>
+            The Beasties are a community-driven event, with submissions and voting open to the public. Please input more submission info here before going public.
+        </p>
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
-        <form action="form/submitmap" method="post" id="nominationForm">
+        <h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>
+        <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
             <label for="category">Category</label>
             <select id="category" name="category" onchange="onChange()"></select><br><br>
-            
-            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
-            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}"><br><br>
 
-            <label class="FORMname" for="name">Pack/Mapper Name</label><br>
-            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-Z:-]"><br><br>
+            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
+            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
+                pattern="[0123456789abcdefABCDEF]{5}"><br><br>
+
+            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name</label><br>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
+                pattern="[a-Z:- ]"><br><br>
+
+            <label class="FORMOSTName" for="OSTname">OST Map</label><br>
+            <select class="FORMOSTName" id="OSTname" name="OSTname">
+                <option value="" style="display: none;"></option>
+            </select>
+    
 
             <label class="FORMchardiff" for="charecteristic">Characteristic</label><br>
             <select class="FORMchardiff" id="charecteristic" name="charecteristic">
@@ -167,7 +205,7 @@
                 <option value="90 Degree">90 Degree</option>
                 <option value="Lawless">Lawless</option>
                 <option value="Lightshow">Lightshow</option>
-                <option value="Other">All</option>
+                <option value="Other" style="display: none;">All</option>
             </select>
 
             <label class="FORMchardiff" for="difficulty">Difficulty</label><br>
@@ -177,12 +215,13 @@
                 <option value="Hard">Hard</option>
                 <option value="Expert">Expert</option>
                 <option value="ExpertPlus">Expert+</option>
-                <option value="Other">All</option>
+                <option value="Other" style="display: none;">All</option>
             </select>
 
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
-        <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png" width="200px" /></a></p>
+        <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png"
+                    width="200px" /></a></p>
     </div>
     <div id="countsContainer">
         <h1>Submission Counts</h1>
@@ -192,8 +231,8 @@
         </span>
         <div id="counts">
             <span>
-                <p class="countLabel">Map of the Year</p>
-                <p class="count" id="motyCount">0</p>
+                <p class="countLabel">OST Map</p>
+                <p class="count" id="ostCount">0</p>
             </span>
             <span>
                 <p class="countLabel">Alternative Map</p>
@@ -251,9 +290,34 @@
                 <p class="countLabel">Poodle Map</p>
                 <p class="count" id="poodleCount">0</p>
             </span>
+            <span>
+                <p class="countLabel">Mapper of the Year</p>
+                <p class="count" id="mapperotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Lighter of the Year</p>
+                <p class="count" id="lighterotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Rookie Mapper of the Year</p>
+                <p class="count" id="rookiemapperotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Rookie Lighter of the Year</p>
+                <p class="count" id="rookielighterotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Pack of the Year</p>
+                <p class="count" id="packotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Map of the Year</p>
+                <p class="count" id="mapotyCount">0</p>
+            </span>
         </div>
     </div>
     <script>
+        // #region OnLoad
         window.onload = async function checkSignedIn() {
             const auth = await fetch('/api/auth', {
                 method: 'GET',
@@ -264,28 +328,28 @@
             if (auth.status !== 200) {
                 //commit this line out when working on the page
                 //window.location.href = '/api/auth/beatleader';
-                document.getElementById('nominationForm').style.display = 'none';
             } else {
                 const data = await auth.json();
                 const element = document.getElementById('username');
-                element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`;
+                document.getElementById('nominationForm').style.display = null;
+                element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
             }
         }
 
         const NominationCategory = {
-            OST: [`Gen-OST`, `OST`],
-            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
             MapOfTheYear: [`OTY-Map`, "Map of the Year"],
             MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
             LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
             RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
             RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
-            AlternativeMap: [`Gen-Alternative`, "Non-Standard"],
+            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
+            OST: [`Gen-OST`, `OST`],
             FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
+            AlternativeMap: [`Gen-Alternative`, "Non-Standard"],
+            RankedMap: [`Ranked-RankedMap`, "Ranked Map"],
             Lightshow: [`Mods-Lightshow`, "Lightshow"],
             Modchart: [`Mods-Modchart`, "Modchart"],
             ArtMap: [`Mods-ArtMap`, "Art Map"],
-            RankedMap: [`Ranked-RankedMap`, "Ranked Map"],
             BalancedMap: [`Style-Balanced`, "Balanced"],
             TechMap: [`Style-Tech`, "Tech"],
             SpeedMap: [`Style-Speed`, "Speed"],
@@ -295,6 +359,33 @@
             AccMap: [`Style-Acc`, "Acc"],
             PoodleMap: [`Style-Poodle`, "Poodle"],
         };
+
+        const OSTMaps = [
+            "OST 7 | F.O.O.L - Damage",
+            "OST 7 | Camellia - Lustre",
+            "OST 7 | Teminite x Boom Kitty - The Master",
+            "OST 7 | Lindsey Stirling - Untamed",
+            "OST 7 | Nitro Fun - World Wide Web",
+            "Hip Hop Mixtape | 2Pac - All Eyez On Me (featuring Big Syke)",
+            "Hip Hop Mixtape | Nicki Minaj - Anaconda",
+            "Hip Hop Mixtape | Snoop Dogg - Gin and Juice",
+            "Hip Hop Mixtape | Eminem - Godzilla (feat. Juice WRLD)",
+            "Hip Hop Mixtape | Outkast - Hey Ya!",
+            "Hip Hop Mixtape | The Notorious B.I.G. - Hypnotize",
+            "Hip Hop Mixtape | Dr Dre - Nuthin’ But A “G” Thang",
+            "Hip Hop Mixtape | Grandmaster Flash & The Furious Five - The Message",
+            "Hip Hop Mixtape | Pop Smoke - The Woo (feat. 50 Cent, Roddy Ricch)",
+            "Daft Punk Pack | Daft Punk - Around The World",
+            "Daft Punk Pack | Daft Punk - Around The World / Harder Better Faster Stronger (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Da Funk / Daftendirekt (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Get Lucky (feat. Pharrell Williams and Nile Rodgers)",
+            "Daft Punk Pack | Daft Punk - Harder, Better, Faster, Stronger",
+            "Daft Punk Pack | Daft Punk - Lose Yourself to Dance (feat. Pharrell Williams)",
+            "Daft Punk Pack | Daft Punk - One More Time",
+            "Daft Punk Pack | Daft Punk - Technologic",
+            "Daft Punk Pack | Daft Punk - The Prime Time of Your Life (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Veridis Quo"
+        ]
 
         // Get the form element
         const selectTag = document.getElementById('category');
@@ -308,60 +399,107 @@
             selectTag.appendChild(option);
         }
 
+        const selectOSTMap = document.getElementById('OSTname');
+
+        OSTMaps.forEach(OSTMap => {
+            const option = document.createElement('option');
+            option.value = OSTMap
+            option.innerHTML = OSTMap;
+
+            selectOSTMap.appendChild(option);
+        });
+        // #endregion
+
         function onChange() {
             const category = document.getElementById('category').value;
-
+            const nameLabel = document.getElementById('nameLabel');
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
             if (category == "Gen-FullSpread") {
-                toggleCharDiff(false, false);
-            } else if (category == "OTY-Pack" || category == "OTY-Mapper" || category == "OTY-Lighter" || category == "OTY-RookieMapper" || category == "OTY-RookieLighter") {
-                toggleCharDiff(false, true);
+                toggleCharDiff(false, false, false);
+            } else if (category == "OTY-Mapper" || category == "OTY-RookieMapper") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Mapper Name";
+            } else if (category == "OTY-RookieLighter" || category == "OTY-Lighter") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Lighter Name";
+            } else if (category == "OTY-Pack") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Pack Name";
+            } else if (category == "Gen-OST") {
+                toggleCharDiff(true, true, true);
             } else {
-                toggleCharDiff(true, false);
+                toggleCharDiff(true, false, false);
             }
         }
         onChange();
 
-        function toggleCharDiff(showDiffChar, showName) {
+        function toggleCharDiff(showDiffChar, showName, showOSTName) {
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
             const bsrId = document.getElementById('bsrId');
             const name = document.getElementById('name');
-            if (show) {
-                document.getElementsByClassName('FORMchardiff').forEach(element => {
-                    element.style.display = 'block';
-                });
+            const OSTname = document.getElementById('OSTname');
+            let formCharDiff = document.getElementsByClassName('FORMchardiff');
+            if (showDiffChar) {
+                for (let i = 0; i < formCharDiff.length; i++) {
+                    formCharDiff[i].style.display = 'block';
+                }
                 charecteristic.disabled = false;
+                charecteristic.value = "Standard";
                 difficulty.disabled = false;
+                difficulty.value = "ExpertPlus";
             } else {
-                document.getElementsByClassName('FORMchardiff').forEach(element => {
-                    element.style.display = 'none';
-                });
+                for (let i = 0; i < formCharDiff.length; i++) {
+                    formCharDiff[i].style.display = 'none';
+                }
                 charecteristic.value = "Other";
                 charecteristic.disabled = true;
                 difficulty.value = "Other";
                 difficulty.disabled = true;
             }
 
+            let formName = document.getElementsByClassName('FORMname');
+            let formBSR = document.getElementsByClassName('FORMbsr');
             if (showName) {
-                document.getElementsByClassName('FORMbsr').forEach(element => {
-                    element.style.display = 'none';
-                });
-                document.getElementsByClassName('FORMname').forEach(element => {
-                    element.style.display = 'block';
-                });
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'block';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'none';
+                }
                 bsrId.value = "";
                 name.value = "";
             } else {
-                document.getElementsByClassName('FORMbsr').forEach(element => {
-                    element.style.display = 'Block';
-                });
-                document.getElementsByClassName('FORMname').forEach(element => {
-                    element.style.display = 'none';
-                });
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'none';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'block';
+                }
                 bsrId.value = "";
                 name.value = "";
+            }
+
+            let formOSTName = document.getElementsByClassName('FORMOSTName');
+
+            if (showOSTName) {
+                for (let i = 0; i < formOSTName.length; i++) {
+                    formOSTName[i].style.display = 'block';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'none';
+                }
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'none';
+                }
+                bsrId.value = "";
+                name.value = "";
+            } else {
+                for (let i = 0; i < formOSTName.length; i++) {
+                    formOSTName[i].style.display = 'none';
+                }
+                OSTname.value = "";
             }
         }
 
@@ -374,7 +512,13 @@
             }).then(response => response.json())
                 .then(data => {
                     document.getElementById('totalCount').innerHTML = data.Total;
-                    document.getElementById('motyCount').innerHTML = data.MapOfTheYear;
+                    document.getElementById('mapotyCount').innerHTML = data.MapOfTheYear;
+                    document.getElementById('mapperotyCount').innerHTML = data.MapperOfTheYear;
+                    document.getElementById('lighterotyCount').innerHTML = data.LighterOfTheYear;
+                    document.getElementById('rookiemapperotyCount').innerHTML = data.RookieMapperOfTheYear;
+                    document.getElementById('rookielighterotyCount').innerHTML = data.RookieLighterOfTheYear;
+                    document.getElementById('packotyCount').innerHTML = data.PackOfTheYear;
+                    document.getElementById('ostCount').innerHTML = data.OSTMap;
                     document.getElementById('altCount').innerHTML = data.AlternativeMap;
                     document.getElementById('fullspreadCount').innerHTML = data.FullSpreadMap;
                     document.getElementById('lightshowCount').innerHTML = data.Lightshow;

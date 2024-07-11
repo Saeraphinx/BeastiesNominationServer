@@ -11,7 +11,7 @@ export class DatabaseManager {
         this.sequelize = new Sequelize(`database`, `user`, `password`, {
             host: `localhost`,
             dialect: `sqlite`,
-            logging: false,
+            logging: true,
             storage: path.resolve(storage.database),
         });
 
@@ -39,7 +39,7 @@ export class DatabaseManager {
             },
             bsrId: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,
             },
             name: {
                 type: DataTypes.STRING,
@@ -174,19 +174,20 @@ export class DatabaseHelper {
                     name: content.name,
                 });
             }
-
-            return NominationStatusResponse.Accepted;
         }
+        return NominationStatusResponse.Accepted;
     }
 
-    public static async getNominationCount() {
+    public static async getNominationCount() : Promise<NominationCount> {
         const counts = {
             Total: await DatabaseHelper.database.nominations.count(),
             MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapOfTheYear } }),
-            //MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
-            //LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
-            //RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
-            //RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
+            MapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapperOfTheYear } }),
+            LighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.LighterOfTheYear } }),
+            RookieMapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RookieMapperOfTheYear } }),
+            RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RookieLighterOfTheYear } }),
+            PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PackOfTheYear } }),
+            OSTMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.OST } }),
             AlternativeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AlternativeMap } }),
             FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FullSpreadMap } }),
             Lightshow: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Lightshow } }),
@@ -206,7 +207,7 @@ export class DatabaseHelper {
     }
 
     public static isNameRequired(category: string): boolean {
-        return category == NominationCategory.PackOfTheYear || category == NominationCategory.MapperOfTheYear || category == NominationCategory.LighterOfTheYear || category == NominationCategory.RookieMapperOfTheYear || category == NominationCategory.RookieLighterOfTheYear;
+        return category == NominationCategory.PackOfTheYear || category == NominationCategory.MapperOfTheYear || category == NominationCategory.LighterOfTheYear || category == NominationCategory.RookieMapperOfTheYear || category == NominationCategory.RookieLighterOfTheYear || category == NominationCategory.OST;
     }
 
     public static isDiffCharRequired(category: string): boolean {
@@ -217,6 +218,12 @@ export class DatabaseHelper {
 export type NominationCount = {
     Total: number;
     MapOfTheYear: number;
+    MapperOfTheYear: number;
+    LighterOfTheYear: number;
+    RookieMapperOfTheYear: number;
+    RookieLighterOfTheYear: number;
+    PackOfTheYear: number;
+    OSTMap: number;
     AlternativeMap: number;
     FullSpreadMap: number;
     Lightshow: number;

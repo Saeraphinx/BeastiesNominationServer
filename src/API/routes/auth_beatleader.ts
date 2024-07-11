@@ -21,6 +21,15 @@ export class BeatLeaderAuthRoutes {
             }
         });
 
+        this.app.get(`/api/auth/logout`, async (req, res) => {
+            req.session.destroy((err) => {
+                if (err) {
+                    return res.status(500).send({ error: `Internal server error.` });
+                }
+                return res.status(200).send({ message: `Logged out.` });
+            });
+        });
+
         this.app.get(`/api/auth/beatleader`, (req, res) => {
             let state = HTTPTools.createRandomString(16);
             //req.session.state = state;
