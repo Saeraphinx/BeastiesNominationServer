@@ -1,5 +1,6 @@
 import { Express } from 'express';
 import { DatabaseHelper, NominationCount } from '../../Shared/Database';
+import path from 'node:path';
 
 export class MiscRoutes {
     private app: Express;
@@ -16,13 +17,51 @@ export class MiscRoutes {
         }, 60000);
     }
 
+    private async getCount() {
+        this.submissionCountCache = await DatabaseHelper.getNominationCount();
+    }
+
     private async loadRoutes() {
         this.app.get(`/api/counts`, async (req, res) => {
             res.status(200).send(this.submissionCountCache);
         });
+
+        this.app.get(`/cdn/loginbl.png`, (req, res) => {
+            res.sendFile(path.resolve(`assets/loginbl.png`));
+        });
+
+        this.app.get(`/cdn/char/standard.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/standard.svg`));
+        });
+
+        this.app.get(`/cdn/char/one-saber.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/one-saber.svg`));
+        });
+
+        this.app.get(`/cdn/char/no-arrows.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/no-arrows.svg`));
+        });
+
+        this.app.get(`/cdn/char/lightshow.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/lightshow.svg`));
+        });
+
+        this.app.get(`/cdn/char/360-degree.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/360-degree.svg`));
+        });
+
+        this.app.get(`/cdn/char/90-degree.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/90-degree.svg`));
+        });
+
+        this.app.get(`/cdn/char/lawless.svg`, (req, res) => {
+            res.sendFile(path.resolve(`assets/lawless.svg`));
+        });
+
+        this.app.get(`/cdn/char/legacy.svg`, (req, res) => {
+            res.sendFile(path.resolve(`../../../assets/legacy.svg`));
+        });
     }
 
-    private async getCount() {
-        this.submissionCountCache = await DatabaseHelper.getNominationCount();
-    }
+   
 }

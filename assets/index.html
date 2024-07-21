@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 
 <head>
-    <title>Form</title>
-
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
     <style>
         @keyframes bg {
             0% {
@@ -155,6 +154,85 @@
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
         }
+
+
+        /* #region beatmaps */
+        div.beatmaps-container {
+            align-content: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        div.beatmap {
+            background-color: rgb(41, 41, 41);
+            border-radius: 10px;
+            width: 400px;
+            display: flex;
+            padding: 10px;
+            margin-top: 15px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-bottom: 0px;
+        }
+
+        img.beatmaps.cover {
+            border-radius: 10px;
+            color: #000;
+        }
+
+        div.beatmaps.difficulties {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 5px;
+        }
+
+        div.beatmaps.difficulty {
+	        display: flex;
+	        align-items: center;
+	        width: 28px;
+	        height: 28px;
+	        border-radius: 15px;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+
+        div.beatmaps.image {
+            /* flex: 1; */
+            width: 100px;
+            height: 100px;
+            padding-right: 5px;
+        }
+
+        div.beatmaps.title {
+            flex: 2;
+            padding-left: 10px;
+            font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 16px;
+        }
+
+        a.beatmaps.title:link,
+        a.beatmaps.title:visited {
+            color: rgb(0, 207, 138);
+            text-decoration: none;
+        }
+
+        a.beatmaps.title:hover,
+        a.beatmaps.title:active {
+            color: rgb(0, 159, 118);
+            text-decoration: underline;
+        }
+
+        p.beatmaps.title {
+            margin-top: 2px;
+            margin-bottom: 2px;
+
+            color: #FFF;
+            font-size: 12px;
+        }
     </style>
 </head>
 
@@ -172,7 +250,7 @@
             spotlight but are well-constructed and have incredible representation, emphasis, and flow to truly capture
             the feel of the song - the art films of the custom map world.
             <br><br>
-            The Beasties are a community-driven event, with submissions and voting open to the public. Please input more submission info here before going public.
+            The Beasties are a community-driven event, with submissions and voting open to the public.
         </p>
     </div>
     <div id="form">
@@ -183,8 +261,7 @@
             <select id="category" name="category" onchange="onChange()"></select><br><br>
 
             <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
-            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
-                pattern="[0123456789abcdefABCDEF]{5}"><br><br>
+            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()"><br><br>
 
             <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name</label><br>
             <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
@@ -194,7 +271,7 @@
             <select class="FORMOSTName" id="OSTname" name="OSTname">
                 <option value="" style="display: none;"></option>
             </select>
-    
+
 
             <label class="FORMchardiff" for="charecteristic">Characteristic</label><br>
             <select class="FORMchardiff" id="charecteristic" name="charecteristic">
@@ -220,6 +297,9 @@
 
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
+        <div class="beatmaps-container" id="beatmaps-container">
+            <div id="TEMP_PLACEHOLDER"></div>
+        </div>
         <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbl.png"
                     width="200px" /></a></p>
     </div>
@@ -420,6 +500,7 @@
             const nameLabel = document.getElementById('nameLabel');
             const charecteristic = document.getElementById('charecteristic');
             const difficulty = document.getElementById('difficulty');
+            document.getElementById("beatmaps-container").innerHTML = "";
             if (category == "Gen-FullSpread") {
                 toggleCharDiff(false, false, false);
             } else if (category == "OTY-Mapper" || category == "OTY-RookieMapper") {
@@ -542,6 +623,141 @@
         }
         setInterval(updateCounts, 60000);
         updateCounts();
+
+
+        // #region Beatmaps
+        function onBSRInput() {
+            const bsrId = document.getElementById('bsrId').value;
+            let container = document.getElementById("beatmaps-container");
+            container.innerHTML = "";
+            if (bsrId.length == 5) {
+                fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => {
+                    if (response.status == 200) {
+                        response.json().then(data => {
+                            createBeatmap(data);
+                        });
+                    }
+                });
+            }
+        }
+
+        function createBeatmap(bsapi) {
+            // setup div
+            let currMapDiv = document.createElement("div");
+            currMapDiv.classList.add("beatmaps");
+            currMapDiv.classList.add("beatmap");
+            //image
+            let imageDiv = document.createElement("div");
+            imageDiv.classList.add("beatmaps");
+            imageDiv.classList.add("image");
+
+            let coverImg = document.createElement("img");
+            coverImg.src = bsapi.versions[0].coverURL;
+            coverImg.alt = bsapi.name;
+            coverImg.width = "100";
+            coverImg.height = "100";
+            coverImg.classList.add("beatmaps");
+            coverImg.classList.add("cover");
+
+            currMapDiv.appendChild(imageDiv);
+            imageDiv.appendChild(coverImg);
+
+            // title    
+            let titleDiv = document.createElement("div");
+            titleDiv.classList.add("beatmaps");
+            titleDiv.classList.add("title");
+
+            let titleLink = document.createElement("a");
+            titleLink.href = "https://beatsaver.com/maps/" + bsapi.id;
+            titleLink.innerHTML = bsapi.name;
+            titleLink.target = "_blank";
+            titleLink.classList.add("beatmaps");
+            titleLink.classList.add("title");
+
+            let titleInfo = document.createElement("p");
+            titleInfo.innerHTML = `!bsr ${bsapi.id}<br>Mapper(s): ${bsapi.metadata.levelAuthorName}<br>Duration: ${Math.floor(bsapi.metadata.duration / 60)}:${Math.floor(bsapi.metadata.duration % 60)}`;
+            titleInfo.classList.add("beatmaps");
+            titleInfo.classList.add("title");
+
+            let diffColors = document.createElement("div");
+            diffColors.classList.add("beatmaps");
+            diffColors.classList.add("difficulties");
+            for (let map of bsapi.versions[0].diffs) {
+                let bnsStuff = convertToBNS(map.characteristic, map.difficulty);
+                let diff = document.createElement("div");
+                diff.classList.add("beatmaps");
+                diff.classList.add("difficulty");
+                diff.style.backgroundColor = "#" + bnsStuff.color;
+                let img = document.createElement("img");
+                img.src = "/cdn/char/" + bnsStuff.charecteristic + ".svg";
+                img.alt = map.characteristic + " " + map.difficulty;
+                img.width = "20";
+                img.height = "20";
+                img.style = "padding-left: 4px;";
+                diff.appendChild(img);
+                diffColors.appendChild(diff);
+            }
+
+            currMapDiv.appendChild(titleDiv);
+            titleDiv.appendChild(titleLink);
+            titleDiv.appendChild(titleInfo);
+            titleDiv.appendChild(diffColors);
+
+            let test = document.getElementById("beatmaps-container");
+            let placeholder = document.getElementById("TEMP_PLACEHOLDER");
+            test.insertBefore(currMapDiv, placeholder);
+        }
+
+        function convertToBNS(charecteristic, difficulty) {
+            let returnObj = {
+                charecteristic: "",
+                color: "000"
+            };
+            switch (charecteristic) {
+                case "Standard":
+                    returnObj.charecteristic = "standard";
+                    break;
+                case "OneSaber":
+                    returnObj.charecteristic = "one-saber";
+                    break;
+                case "NoArrows":
+                    returnObj.charecteristic = "no-arrows";
+                    break;
+                case "360Degree":
+                    returnObj.charecteristic = "360-degree";
+                    break;
+                case "90Degree":
+                    returnObj.charecteristic = "90-degree";
+                    break;
+                case "Lawless":
+                    returnObj.charecteristic = "lawless";
+                    break;
+                case "Lightshow":
+                    returnObj.charecteristic = "lightshow";
+                    break;
+                case "Legacy":
+                    returnObj.charecteristic = "legacy";
+                    break;
+            }
+            switch (difficulty) {
+                case "Easy":
+                    returnObj.color = "008055";
+                    break;
+                case "Normal":
+                    returnObj.color = "1268a1";
+                    break;
+                case "Hard":
+                    returnObj.color = "bd5500";
+                    break;
+                case "Expert":
+                    returnObj.color = "b52a1c";
+                    break;
+                case "ExpertPlus":
+                    returnObj.color = "7646af";
+                    break;
+            }
+            return returnObj;
+        }
     </script>
     <footer>
         <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>

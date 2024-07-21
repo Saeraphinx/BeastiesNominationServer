@@ -46,10 +46,6 @@ app.get(`/success`, (req, res) => {
     res.sendFile(path.resolve(`./assets/success.html`));
 });
 
-app.get(`/cdn/loginbl.png`, (req, res) => {
-    res.sendFile(path.resolve(`./assets/loginbl.png`));
-});
-
 new SubmissionRoutes(app);
 new BeatLeaderAuthRoutes(app);
 new MiscRoutes(app);

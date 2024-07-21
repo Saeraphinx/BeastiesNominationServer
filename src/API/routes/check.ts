@@ -134,7 +134,7 @@ export class SubmissionRoutes {
             }
 
             let isName = DatabaseHelper.isNameRequired(category);
-            let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);            
+            let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
 
             if (isDiffCharRequired) {
                 if (charecteristic && typeof charecteristic != `string`) {
