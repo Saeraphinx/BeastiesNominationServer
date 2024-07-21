@@ -26,7 +26,7 @@ export class BeatLeaderAuthRoutes {
                 if (err) {
                     return res.status(500).send({ error: `Internal server error.` });
                 }
-                return res.status(200).send({ message: `Logged out.` });
+                return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`);
             });
         });
 
