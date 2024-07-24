@@ -371,6 +371,10 @@
                 <p class="count" id="poodleCount">0</p>
             </span>
             <span>
+                <p class="countLabel">Gimmick Map</p>
+                <p class="count" id="gimmickCount">0</p>
+            </span>
+            <span>
                 <p class="countLabel">Mapper of the Year</p>
                 <p class="count" id="mapperotyCount">0</p>
             </span>
@@ -438,6 +442,7 @@
             ChallengeMap: [`Style-Challenge`, "Challenge"],
             AccMap: [`Style-Acc`, "Acc"],
             PoodleMap: [`Style-Poodle`, "Poodle"],
+            GimmickMap: [`Style-Gimmick`, "Gimmick"],
         };
 
         const OSTMaps = [
@@ -619,6 +624,7 @@
                     document.getElementById('challengeCount').innerHTML = data.ChallengeMap;
                     document.getElementById('accCount').innerHTML = data.AccMap;
                     document.getElementById('poodleCount').innerHTML = data.PoodleMap;
+                    document.getElementById('gimmickCount').innerHTML = data.GimmickMap;
                 });
         }
         setInterval(updateCounts, 60000);

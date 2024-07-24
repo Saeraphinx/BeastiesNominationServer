@@ -113,6 +113,7 @@ export enum NominationCategory {
     ChallengeMap = `Style-Challenge`,
     AccMap = `Style-Acc`,
     PoodleMap = `Style-Poodle`,
+    GimmickMap = `Style-Gimmick`,
 
     PackOfTheYear = `OTY-Pack`,
     MapOfTheYear = `OTY-Map`,
@@ -204,6 +205,7 @@ export class DatabaseHelper {
             ChallengeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ChallengeMap } }),
             AccMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AccMap } }),
             PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
+            GimmickMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.GimmickMap } }),
         };
         return counts;
     }
@@ -240,6 +242,7 @@ export type NominationCount = {
     ChallengeMap: number;
     AccMap: number;
     PoodleMap: number;
+    GimmickMap: number;
 }
 
 export enum NominationStatusResponse {
