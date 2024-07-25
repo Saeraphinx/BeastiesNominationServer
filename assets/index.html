@@ -2,6 +2,8 @@
 
 <head>
     <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <!--<link rel="icon" type="image/x-icon" href="/cdn/favicon.png">!-->
+
     <style>
         @keyframes bg {
             0% {
@@ -28,6 +30,17 @@
             justify-content: center;
             align-items: center;
             margin: 4vh;
+        }
+
+        a.bio,
+        a:visited.bio,
+        a:active.bio {
+            text-decoration: none;
+            color: rgb(29, 172, 255);
+        }
+
+        a.bio:hover {
+            text-decoration: underline;
         }
 
         div#info,
@@ -191,11 +204,11 @@
         }
 
         div.beatmaps.difficulty {
-	        display: flex;
-	        align-items: center;
-	        width: 28px;
-	        height: 28px;
-	        border-radius: 15px;
+            display: flex;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 15px;
             margin-top: 5px;
             margin-right: 5px;
         }
@@ -240,17 +253,14 @@
     <div id="info">
         <h1>The BeastSaber Mapping Awards</h1>
         <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
-        <p>The BeastSaber Mapping Awards were launched in 2021 to highlight the best of the best of the art (and
-            science) of making custom Beat Saber maps. The first year featured 29 categories, garnered 760 nominated
-            maps, resulting in 96 finalists, with more than 45 medals won.
+        <p>
+            The BeastSaber Mapping Awards, also called "The Beasties," are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1,
+            2023 and November 30, 2024 are eligible for this year's nominations.
             <br><br>
-            Map curation is focused on maps that avoid objectively bad mapping and have a “fun factor” that appeals to a
-            member of our curation team - the “blockbuster movies” of the custom map world. The Beasties go beyond the
-            fun factor to dig deep into mapping theory and practices to highlight the maps that may not have grabbed the
-            spotlight but are well-constructed and have incredible representation, emphasis, and flow to truly capture
-            the feel of the song - the art films of the custom map world.
-            <br><br>
-            The Beasties are a community-driven event, with submissions and voting open to the public.
+            Using the form below, you can submit your favorite maps for consideration in the 2024 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a class="bio" href="#counts">the bottom of this page</a>.
+            <!--<br><br>
+            For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
+            <br><br>!-->
         </p>
     </div>
     <div id="form">
@@ -261,7 +271,8 @@
             <select id="category" name="category" onchange="onChange()"></select><br><br>
 
             <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
-            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5 pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()"><br><br>
+            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
+                pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()"><br><br>
 
             <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name</label><br>
             <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
@@ -400,8 +411,10 @@
             </span>
         </div>
     </div>
+    <footer>
+        <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
+    </footer>
     <script>
-        // #region OnLoad
         window.onload = async function checkSignedIn() {
             const auth = await fetch('/api/auth', {
                 method: 'GET',
@@ -418,7 +431,10 @@
                 document.getElementById('nominationForm').style.display = null;
                 element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
             }
-        }
+        };
+
+        /* eslint-disable @typescript-eslint/no-unused-vars */
+        /* eslint-disable quotes */
 
         const NominationCategory = {
             MapOfTheYear: [`OTY-Map`, "Map of the Year"],
@@ -475,7 +491,7 @@
             "OST 6 | Far Out - Lift Off",
             "OST 6 | DragonForce - Power of the Saber Blade",
             "OST 6 | Camellia - Tempo-Katana",
-        ]
+        ];
 
         // Get the form element
         const selectTag = document.getElementById('category');
@@ -493,7 +509,7 @@
 
         OSTMaps.forEach(OSTMap => {
             const option = document.createElement('option');
-            option.value = OSTMap
+            option.value = OSTMap;
             option.innerHTML = OSTMap;
 
             selectOSTMap.appendChild(option);
@@ -503,8 +519,8 @@
         function onChange() {
             const category = document.getElementById('category').value;
             const nameLabel = document.getElementById('nameLabel');
-            const charecteristic = document.getElementById('charecteristic');
-            const difficulty = document.getElementById('difficulty');
+            //const charecteristic = document.getElementById('charecteristic');
+            //const difficulty = document.getElementById('difficulty');
             document.getElementById("beatmaps-container").innerHTML = "";
             if (category == "Gen-FullSpread") {
                 toggleCharDiff(false, false, false);
@@ -668,7 +684,7 @@
             currMapDiv.appendChild(imageDiv);
             imageDiv.appendChild(coverImg);
 
-            // title    
+            // title
             let titleDiv = document.createElement("div");
             titleDiv.classList.add("beatmaps");
             titleDiv.classList.add("title");
@@ -700,6 +716,7 @@
                 img.width = "20";
                 img.height = "20";
                 img.style = "padding-left: 4px;";
+                img.title = map.characteristic + " " + map.difficulty;
                 diff.appendChild(img);
                 diffColors.appendChild(diff);
             }
@@ -765,9 +782,6 @@
             return returnObj;
         }
     </script>
-    <footer>
-        <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
-    </footer>
 </body>
 
 </html>

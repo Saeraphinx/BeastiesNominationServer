@@ -8,6 +8,7 @@ export class SubmissionRoutes {
     private app: Express;
     private static recentSubmissions: string[] = [];
     private static ip: string[] = [];
+    private static id: string[] = [];
     private static readonly errorHtml = fs.readFileSync(path.resolve(`./assets/error.html`)).toString();
 
     constructor(app: Express) {
@@ -16,7 +17,8 @@ export class SubmissionRoutes {
         setInterval(() => {
             SubmissionRoutes.recentSubmissions = [];
             SubmissionRoutes.ip = [];
-        }, 10000);
+            SubmissionRoutes.id = [];
+        }, 20000);
     }
 
     private async loadRoutes() {
@@ -130,6 +132,11 @@ export class SubmissionRoutes {
 
             if (!req.session.userId) {
                 res.status(401).send(this.getErrorResponseString(`You need to be logged in to submit a nomination.`));
+                return;
+            }
+
+            if (SubmissionRoutes.id.filter(id => id == req.session.userId).length > 5) {
+                res.status(429).send(this.getErrorResponseString(`You've submitted maps too quickly. Please try again later.`));
                 return;
             }
 

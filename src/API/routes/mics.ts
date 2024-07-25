@@ -59,7 +59,11 @@ export class MiscRoutes {
         });
 
         this.app.get(`/cdn/char/legacy.svg`, (req, res) => {
-            res.sendFile(path.resolve(`../../../assets/legacy.svg`));
+            res.sendFile(path.resolve(`assets/legacy.svg`));
+        });
+
+        this.app.get(`/cdn/favicon.png`, (req, res) => {
+            res.sendFile(path.resolve(`assets/beastsaber-logo.png`));
         });
     }
 

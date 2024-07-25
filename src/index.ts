@@ -13,9 +13,9 @@ console.log(`Starting setup...`);
 const app = express();
 const memstore = MemoryStore(session);
 const port = server.port;
-let database: DatabaseManager = new DatabaseManager();
+new DatabaseManager();
 
-app.use(express.json({ limit: 100000 }))
+app.use(express.json({ limit: 100000 }));
 app.use(express.urlencoded({limit : 10000, parameterLimit: 10 }));
 app.use(session({
     secret: server.sessionSecret,
