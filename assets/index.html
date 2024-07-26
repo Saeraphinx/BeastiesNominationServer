@@ -4,6 +4,8 @@
     <title>2024 BeastSaber Mapping Awards Submission Form</title>
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
     <style>
         /* #region General & Bio */
@@ -31,13 +33,27 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 4vh;
+            margin: 4vh 0.3vh 4vh 0.3vh;
             font-size: 17px;
+        }
+
+        div#info,
+        div#form,
+        div#countsContainer {
+            margin: 10px;
+            max-width: 800px;
+            min-width: 250px;
+            width: 80%;
+            padding: 20px;
+            /* border: 1px solid rgb(92, 4, 255); */
+            color: white;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
         }
 
         h1 {
             margin: 0px;
-            font-size: 2.3em;
+            font-size: 2.2em;
             text-align: center;
         }
 
@@ -75,20 +91,6 @@
             font-size: 18px;
         }
 
-        div#info,
-        div#form,
-        div#countsContainer {
-            margin: 10px;
-            max-width: 800px;
-            min-width: 250px;
-            width: 80%;
-            padding: 20px;
-            /* border: 1px solid rgb(92, 4, 255); */
-            color: white;
-            border-radius: 10px;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
         div#info {
             padding: 20px 20px 20px 20px;
             text-align: center;
@@ -113,6 +115,7 @@
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
         }
+
         /* #endregion */
         /* #region Form */
         #username,
@@ -124,6 +127,16 @@
             color: white;
             text-decoration: none;
             font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        h4#timeLeft {
+            margin-top: 0px;
+            margin-bottom: 10px;
+        }
+
+        p#username {
+            margin-top: 0px;
             margin-bottom: 0px;
         }
 
@@ -164,6 +177,7 @@
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
         /* #endregion */
         /* #region Counts */
         div#countsContainer {
@@ -202,6 +216,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             min-width: 150px;
         }
+
         /* #endregion */
         /* #region beatmaps */
         div.beatmaps-container {
@@ -254,9 +269,8 @@
             padding-right: 5px;
         }
 
-        div.beatmaps.title, 
-        div.beatmaps.mapper
-        {
+        div.beatmaps.title,
+        div.beatmaps.mapper {
             flex: 2;
             font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             font-size: 18px;
@@ -284,7 +298,31 @@
             color: #FFF;
             font-size: 15px;
         }
+
         /* #endregion */
+    
+        @media only screen and (max-width: 546px) {
+            p.bio {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2,
+            h3 {
+                font-size: 1.4em;
+            }
+
+            h4 {
+                font-size: 0.8em;
+            }
+
+            p#username, a.username, h4#timeLeft, p.categoryinfo {
+                font-size: 12px;
+            }
+        }
     </style>
 </head>
 
@@ -309,13 +347,16 @@
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
-        <i><h4 id="timeLeft"></h4></i>
+        <i>
+            <h4 id="timeLeft"></h4>
+        </i>
         <!--<h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>!-->
         <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
             <b><label for="category">Category</label></b>
             <select id="category" name="category" onchange="onChange()" required></select>
             <i>
-                <p class="categoryinfo" id="categoryinfo">The best unmodded map of the year. Full stop. It has it all - representation,
+                <p class="categoryinfo" id="categoryinfo">The best unmodded map of the year. Full stop. It has it all -
+                    representation,
                     emphasis, flow - everything coming together for an incredible playing experience to go with the
                     song.
                 </p>
@@ -361,8 +402,9 @@
         <div class="beatmaps-container" id="beatmaps-container">
             <div id="TEMP_PLACEHOLDER"></div>
         </div>
-        <p id="username">Not currently logged in. <br><br><a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png"
-                    width="300px" /></a></p>
+        <p id="username"><a href="/api/auth/beatleader"><img
+                    src="/cdn/loginbltrans.png" width="300px" style="max-width: 300px; min-width: 100px; width: 100%;"
+                    alt="BeatLeader Login Button" /></a><br>Not currently logged in.</p>
     </div>
     <div id="countsContainer">
         <h1>Submission Counts</h1>
@@ -465,7 +507,8 @@
         </span>
     </div>
     <footer>
-        <p class="footer"><a class="footer" href="https://saeraphinx.dev">Created by Saeraphinx</a> • <a class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a></p>
+        <p class="footer"><a class="footer" href="https://saeraphinx.dev">Created by Saeraphinx</a> • <a class="footer"
+                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a></p>
     </footer>
     <script>
         // #region Beginning
@@ -484,6 +527,7 @@
                 const element = document.getElementById('username');
                 document.getElementById('nominationForm').style.display = null;
                 element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
+                element.style.marginTop = "10px";
             }
         };
         function timeRemaining() {
