@@ -237,7 +237,7 @@ export class SubmissionRoutes {
                 return RequestSubmissionStatus.Invalid;
             }
 
-            if (content.name.match(/[a-zA-Z0-9_ ]{1,100}/) == null) {
+            if (content.name.match(/[a-zA-Z:\-_/0-9. ]{1,100}/) == null) {
                 return RequestSubmissionStatus.Invalid;
             }
 

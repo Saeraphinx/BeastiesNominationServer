@@ -254,10 +254,15 @@
         <h1>The BeastSaber Mapping Awards</h1>
         <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
         <p>
-            The BeastSaber Mapping Awards, also called "The Beasties," are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1,
+            The BeastSaber Mapping Awards, also called "The Beasties," are annual awards that seek to celebrate the best
+            of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1,
             2023 and November 30, 2024 are eligible for this year's nominations.
             <br><br>
-            Using the form below, you can submit your favorite maps for consideration in the 2024 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a class="bio" href="#counts">the bottom of this page</a>.
+            Using the form below, you can submit your favorite maps for consideration in the 2024 BeastSaber Mapping
+            Awards. For information on the categories and criteria, please refer to the <a class="bio"
+                href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber Website</a>. Any changes from last
+            year are also listed here. You can also view the current submission counts for each category at <a
+                class="bio" href="#counts">the bottom of this page</a>.
             <!--<br><br>
             For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
             <br><br>!-->
@@ -268,15 +273,14 @@
         <h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>
         <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
             <label for="category">Category</label>
-            <select id="category" name="category" onchange="onChange()"></select><br><br>
+            <select id="category" name="category" onchange="onChange()" required></select><br><br>
 
             <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
             <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
                 pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()"><br><br>
 
-            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name</label><br>
-            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
-                pattern="[a-Z:- ]"><br><br>
+            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name or BeatSaver URL</label><br>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-zA-Z0-9]+|[ _.\-]+" onchange="onMapperInput()"><br><br>
 
             <label class="FORMOSTName" for="OSTname">OST Map</label><br>
             <select class="FORMOSTName" id="OSTname" name="OSTname">
@@ -415,6 +419,7 @@
         <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
     </footer>
     <script>
+        // #region Beginning
         window.onload = async function checkSignedIn() {
             const auth = await fetch('/api/auth', {
                 method: 'GET',
@@ -526,10 +531,10 @@
                 toggleCharDiff(false, false, false);
             } else if (category == "OTY-Mapper" || category == "OTY-RookieMapper") {
                 toggleCharDiff(false, true, false);
-                nameLabel.innerHTML = "Mapper Name";
+                nameLabel.innerHTML = "Mapper Name or BeatSaver URL";
             } else if (category == "OTY-RookieLighter" || category == "OTY-Lighter") {
                 toggleCharDiff(false, true, false);
-                nameLabel.innerHTML = "Lighter Name";
+                nameLabel.innerHTML = "Lighter Name or BeatSaver URL";
             } else if (category == "OTY-Pack") {
                 toggleCharDiff(false, true, false);
                 nameLabel.innerHTML = "Pack Name";
@@ -646,7 +651,6 @@
         setInterval(updateCounts, 60000);
         updateCounts();
 
-
         // #region Beatmaps
         function onBSRInput() {
             const bsrId = document.getElementById('bsrId').value;
@@ -658,6 +662,13 @@
                         response.json().then(data => {
                             createBeatmap(data);
                         });
+                    } else {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "No map found with that BSR key.";
+                        container.appendChild(currMapDiv);
                     }
                 });
             }
@@ -780,6 +791,102 @@
                     break;
             }
             return returnObj;
+        }
+
+        function onMapperInput() {
+            const mapper = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            if (category == "OTY-Pack") {
+                return;
+            }
+            let container = document.getElementById("beatmaps-container");
+            container.innerHTML = "";
+            let sendId = "";
+            let isID = false;
+            let cancel = false;
+            if (mapper.length > 2) {
+                if (mapper.includes("https://")) {
+                    sendId = mapper.replace("https://beatsaver.com/profile/", "");
+                    isID = true;
+                } else if (mapper.match("[a-zA-Z]+")) {
+                    sendId = mapper.replace(" ", "%20");
+                    isID = false;
+                } else {
+                    sendId = mapper;
+                    isID = true;
+                }
+                let req;
+                if (isID) {
+                    req = fetch('https://api.beatsaver.com/users/id/' + sendId);
+                } else {
+                    if (mapper.match(/[^a-zA-Z0-9:_/. \-]+/)) {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "No mapper found with that name.";
+                        container.appendChild(currMapDiv);
+                        return;
+                    } else {
+                        req = fetch('https://api.beatsaver.com/users/name/' + sendId);
+                    }
+                }
+                req.then(response => {
+                    if (response.status == 200) {
+                        response.json().then(data => {
+                            let currMapDiv = document.createElement("div");
+                            currMapDiv.classList.add("beatmaps");
+                            currMapDiv.classList.add("beatmap");
+                            currMapDiv.style = "width: 300px"
+                            //image
+                            let imageDiv = document.createElement("div");
+                            imageDiv.classList.add("beatmaps");
+                            imageDiv.classList.add("image");
+
+                            let coverImg = document.createElement("img");
+                            coverImg.src = data.avatar;
+                            coverImg.alt = data.name;
+                            coverImg.title = data.name;
+                            coverImg.width = "100";
+                            coverImg.height = "100";
+                            coverImg.classList.add("beatmaps");
+                            coverImg.classList.add("cover");
+
+                            currMapDiv.appendChild(imageDiv);
+                            imageDiv.appendChild(coverImg);
+
+                            // title
+                            let titleDiv = document.createElement("div");
+                            titleDiv.classList.add("beatmaps");
+                            titleDiv.classList.add("title");
+                            titleDiv.style = "text-align: center; margin: auto;";
+
+                            let titleLink = document.createElement("a");
+                            titleLink.href = "https://beatsaver.com/profile/" + data.id;
+                            titleLink.innerHTML = data.name;
+                            titleLink.target = "_blank";
+                            titleLink.classList.add("beatmaps");
+                            titleLink.classList.add("title");
+                            titleLink.style = "font-size: 24px;";
+
+                            currMapDiv.appendChild(titleDiv);
+                            titleDiv.appendChild(titleLink);
+
+                            let test = document.getElementById("beatmaps-container");
+                            let placeholder = document.getElementById("TEMP_PLACEHOLDER");
+                            test.insertBefore(currMapDiv, placeholder);
+                            document.getElementById('name').value = "https://beatsaver.com/profile/" + data.id;
+                        });
+                    } else {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "No mapper found with that name.";
+                        container.appendChild(currMapDiv);
+                    }
+                });
+            }
         }
     </script>
 </body>
