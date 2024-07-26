@@ -52,7 +52,7 @@ export class BeatLeaderAuthRoutes {
             if (!this.validStates.includes(state + req.ip)) {
                 return res.status(400).send({ error: `Invalid state.` });
             }
-            this.validStates = this.validStates.filter((s) => s !== state);
+            this.validStates = this.validStates.filter((s) => s !== state + req.ip);
             let token = BeatLeaderAuthHelper.getToken(code);
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
             let user = await BeatLeaderAuthHelper.getUser((await token).access_token);
