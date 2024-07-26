@@ -26,7 +26,7 @@
             background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
             background-size: 1000% 1000%;
             animation: bg 90s ease infinite;
-            font-family: Lato, Arial, sans-serif;
+            font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -254,11 +254,16 @@
             padding-right: 5px;
         }
 
-        div.beatmaps.title {
+        div.beatmaps.title, 
+        div.beatmaps.mapper
+        {
             flex: 2;
-            padding-left: 25px;
             font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             font-size: 18px;
+        }
+
+        div.beatmaps.title {
+            padding-left: 25px;
         }
 
         a.beatmaps.title:link,
@@ -983,7 +988,7 @@
                             // title
                             let titleDiv = document.createElement("div");
                             titleDiv.classList.add("beatmaps");
-                            titleDiv.classList.add("title");
+                            titleDiv.classList.add("mapper");
                             titleDiv.style = "text-align: center; margin: auto;";
 
                             let titleLink = document.createElement("a");
