@@ -62,8 +62,8 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/legacy.svg`));
         });
 
-        this.app.get(`/cdn/favicon.png`, (req, res) => {
-            res.sendFile(path.resolve(`assets/beastsaber-logo.png`));
+        this.app.get(`/favicon.png`, (req, res) => {
+            res.sendFile(path.resolve(`assets/favicon.png`));
         });
     }
 

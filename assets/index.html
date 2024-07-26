@@ -2,9 +2,10 @@
 
 <head>
     <title>2024 BeastSaber Mapping Awards Submission Form</title>
-    <!--<link rel="icon" type="image/x-icon" href="/cdn/favicon.png">!-->
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
 
     <style>
+        /* #region General & Bio */
         @keyframes bg {
             0% {
                 background-position: 0% 24%
@@ -24,12 +25,33 @@
             background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
             background-size: 1000% 1000%;
             animation: bg 90s ease infinite;
-            font-family: Arial, sans-serif;
+            font-family: Lato, Arial, sans-serif;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             margin: 4vh;
+            font-size: 17px;
+        }
+
+        h1 {
+            margin: 0px;
+            font-size: 2.3em;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 2em;
+        }
+
+        h4 {
+            margin-top: 0px;
+            font-size: 1.2em;
+            text-align: center;
         }
 
         a.bio,
@@ -43,109 +65,32 @@
             text-decoration: underline;
         }
 
+        p.bio {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 18px;
+        }
+
         div#info,
         div#form,
         div#countsContainer {
             margin: 10px;
-            max-width: 600px;
+            max-width: 800px;
             min-width: 250px;
             width: 80%;
             padding: 20px;
-            border: 1px solid rgb(92, 4, 255);
+            /* border: 1px solid rgb(92, 4, 255); */
             color: white;
             border-radius: 10px;
-            background-color: black;
+            background-color: rgba(0, 0, 0, 0.7);
         }
 
         div#info {
-            padding: 0px 20px 20px 20px;
+            padding: 20px 20px 20px 20px;
             text-align: center;
-        }
-
-        #nominationForm {
-            display: flex;
-            flex-direction: column;
-            margin: auto;
-            max-width: 350px;
-        }
-
-        input[type="text"],
-        select {
-            margin-bottom: 10px;
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid black;
-        }
-
-        input[type="submit"] {
-            padding: 5px;
-            border-radius: 5px;
-            border: 1px solid black;
-            background-color: #4CAF50;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #45a049;
-        }
-
-        h1 {
-            margin-bottom: 0px;
-        }
-
-        h2,
-        h3 {
-            text-align: center;
-            margin-top: 0px;
-        }
-
-        h4 {
-            margin-top: 0px;
-        }
-
-        #username,
-        a.username,
-        a:visited.username,
-        a:active.username,
-        a:hover.username {
-            text-align: center;
-            color: white;
-            text-decoration: none;
-            font-size: 12px;
-            margin-bottom: 0px;
-        }
-
-        div#countsContainer {
-            padding: 0px 20px 20px 20px;
-            text-align: center;
-        }
-
-        div#counts {
-            display: inline-flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        p.countLabel {
-            margin: 0;
-        }
-
-        p.count {
-            display: inline;
-            font-size: 26px;
-        }
-
-        span {
-            display: inline-block;
-            margin: 10px;
-            margin-bottom: 2px;
-            padding: 10px;
-            padding-bottom: 8px;
-            border-radius: 8px;
-            border: rgb(52, 52, 52) 1px solid;
         }
 
         footer {
@@ -167,8 +112,96 @@
             color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
         }
+        /* #endregion */
+        /* #region Form */
+        #username,
+        a.username,
+        a:visited.username,
+        a:active.username,
+        a:hover.username {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
 
+        .categoryinfo {
+            text-align: center;
+            padding-top: 0px;
+            margin-top: 0px;
+            font-size: 16px;
+        }
 
+        #nominationForm {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            max-width: 400px;
+        }
+
+        input[type="text"],
+        select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            font-size: 18px;
+        }
+
+        input[type="submit"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        /* #endregion */
+        /* #region Counts */
+        div#countsContainer {
+            text-align: center;
+        }
+
+        div#counts {
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        p.countLabel {
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        p.count {
+            display: inline;
+            font-size: 26px;
+        }
+
+        span {
+            display: inline-block;
+            margin: 10px;
+            margin-bottom: 2px;
+            padding: 10px;
+            padding-bottom: 8px;
+            border-radius: 8px;
+            /* border: rgb(0, 0, 0) 3px solid; */
+            background-color: rgba(0, 0, 0, 0.5);
+            min-width: 150px;
+        }
+        /* #endregion */
         /* #region beatmaps */
         div.beatmaps-container {
             align-content: center;
@@ -181,9 +214,9 @@
         }
 
         div.beatmap {
-            background-color: rgb(41, 41, 41);
+            background-color: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
-            width: 400px;
+            width: 500px;
             display: flex;
             padding: 10px;
             margin-top: 15px;
@@ -200,7 +233,7 @@
         div.beatmaps.difficulties {
             display: flex;
             flex-wrap: wrap;
-            margin-top: 5px;
+            margin-top: 0px;
         }
 
         div.beatmaps.difficulty {
@@ -222,9 +255,9 @@
 
         div.beatmaps.title {
             flex: 2;
-            padding-left: 10px;
+            padding-left: 25px;
             font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            font-size: 16px;
+            font-size: 18px;
         }
 
         a.beatmaps.title:link,
@@ -242,10 +275,10 @@
         p.beatmaps.title {
             margin-top: 2px;
             margin-bottom: 2px;
-
             color: #FFF;
-            font-size: 12px;
+            font-size: 15px;
         }
+        /* #endregion */
     </style>
 </head>
 
@@ -253,7 +286,7 @@
     <div id="info">
         <h1>The BeastSaber Mapping Awards</h1>
         <h4>AKA: The Beasties - By Mappers, for Mappers</h4>
-        <p>
+        <p class="bio">
             The BeastSaber Mapping Awards, also called "The Beasties," are annual awards that seek to celebrate the best
             of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1,
             2023 and November 30, 2024 are eligible for this year's nominations.
@@ -270,25 +303,32 @@
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
-        <h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>
+        <i><h4 id="timeLeft"></h4></i>
+        <!--<h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>!-->
         <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
-            <label for="category">Category</label>
+            <b><label for="category">Category</label></b>
             <select id="category" name="category" onchange="onChange()" required></select>
-
-            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label>
+            <i>
+                <p class="categoryinfo" id="categoryinfo">The best unmodded map of the year. Full stop. It has it all - representation,
+                    emphasis, flow - everything coming together for an incredible playing experience to go with the
+                    song.
+                </p>
+            </i>
+            <b><label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
             <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
                 pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()">
 
-            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name or BeatSaver URL</label>
-            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-zA-Z0-9]+|[/: _.\-]+" onchange="onMapperInput()">
+            <b><label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name or BeatSaver URL</label></b>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
+                pattern="[a-zA-Z0-9]+|[/: _.\-]+" onchange="onMapperInput()">
 
-            <label class="FORMOSTName" for="OSTname">OST Map</label>
+            <b><label class="FORMOSTName" for="OSTname">OST Map</label></b>
             <select class="FORMOSTName" id="OSTname" name="OSTname">
                 <option value="" style="display: none;"></option>
             </select>
 
 
-            <label class="FORMchardiff" for="charecteristic">Characteristic</label>
+            <b><label class="FORMchardiff" for="charecteristic">Characteristic</label></b>
             <select class="FORMchardiff" id="charecteristic" name="charecteristic">
                 <option value="Standard">Standard</option>
                 <option value="OneSaber">One Saber</option>
@@ -300,7 +340,7 @@
                 <option value="Other" style="display: none;">All</option>
             </select>
 
-            <label class="FORMchardiff" for="difficulty">Difficulty</label>
+            <b><label class="FORMchardiff" for="difficulty">Difficulty</label></b>
             <select class="FORMchardiff" id="difficulty" name="difficulty">
                 <option value="Easy">Easy</option>
                 <option value="Normal">Normal</option>
@@ -320,10 +360,7 @@
     </div>
     <div id="countsContainer">
         <h1>Submission Counts</h1>
-        <span>
-            <p class="countLabel">Total Submissions</p>
-            <p class="count" id="totalCount">0</p>
-        </span>
+        <p>These numbers refresh every minute.</p>
         <div id="counts">
             <span>
                 <p class="countLabel">OST Map</p>
@@ -389,6 +426,8 @@
                 <p class="countLabel">Gimmick Map</p>
                 <p class="count" id="gimmickCount">0</p>
             </span>
+        </div>
+        <div id="counts">
             <span>
                 <p class="countLabel">Mapper of the Year</p>
                 <p class="count" id="mapperotyCount">0</p>
@@ -414,6 +453,10 @@
                 <p class="count" id="mapotyCount">0</p>
             </span>
         </div>
+        <span style="width: 60%; max-width: 500px;">
+            <p class="countLabel">Total Submissions</p>
+            <p class="count" id="totalCount">0</p>
+        </span>
     </div>
     <footer>
         <p class="footer">Created by <a class="footer" href="https://saeraphinx.dev">Saeraphinx</a></p>
@@ -437,10 +480,15 @@
                 element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
             }
         };
-
-        /* eslint-disable @typescript-eslint/no-unused-vars */
-        /* eslint-disable quotes */
-
+        function timeRemaining() {
+            const timeLeft = new Date("2024-11-30T23:59:59.999Z") - new Date();
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('timeLeft').innerHTML = `Time left to submit: ${days} days, ${hours} ${hours == 1 ? "hour" : "hours"}, ${minutes} ${minutes == 1 ? 'minute' : 'minutes'}.`;
+        }
+        setInterval(timeRemaining, 60000);
+        timeRemaining();
         const NominationCategory = {
             MapOfTheYear: [`OTY-Map`, "Map of the Year"],
             MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
@@ -543,6 +591,80 @@
                 toggleCharDiff(true, true, true);
             } else {
                 toggleCharDiff(true, false, false);
+            }
+            let element = document.getElementById('categoryinfo');
+            switch (category) {
+                case "OTY-Map":
+                    element.innerText = `The best unmodded map of the year. Full stop. It has it all - representation, emphasis, flow - everything coming together for an incredible playing experience to go with the song.`;
+                    break;
+                case "Gen-OST":
+                    element.innerText = `Let's take a moment to shine some light on the great work that our community-turned-official mappers have done and celebrate the best official map made in 2023.`;
+                    break;
+                case "OTY-Pack":
+                    element.innerText = `The map pack that has it all: a tight theme, new high-quality maps, and a great presentation across all difficulties, all wrapped up in a beautiful ".bplist" bow.`;
+                    break;
+                case "Gen-FullSpread":
+                    element.innerText = `This map has something for players at every level and does it with style and masterful mapping. To qualify, the map must have all five _true_ difficulties — Easy, Normal, Hard, Expert, ExpertPlus.`;
+                    break;
+                case "Gen-Alternative":
+                    element.innerText = `This category celebrates the best of non-standard characteristics: Single Saber, No Arrows, and 360/90-Degree maps. (Maps must actually use the alt characteristic and not mods to simulate.)`;
+                    break;
+                //individual mapper awards
+                case "OTY-Mapper":
+                    element.innerText = `A mapper who not only excels in their art but also shares their experience, leads, and mentors as they are able.`;
+                    break;
+                case "OTY-Lighter":
+                    element.innerText = `A lighter, vanilla or chroma, who not only excels in their art but also shares their experience, leads, and mentors as they are able.`;
+                    break;
+                case "OTY-RookieMapper":
+                    element.innerText = `The best up-and-coming mapper whose first map was released during the nomination period. (Previously deleted maps count as first map releases.)`;
+                    break;
+                case "OTY-RookieLighter":
+                    element.innerText = `The best up-and-coming lighter whose first map/lightshow was released during the nomination period. (Previously deleted maps count as first map releases.)`;
+                    break;
+                //style awards
+                case "Style-Dance":
+                    element.innerText = `With a blend of big arm swings, high movement, and a bit lower density, the best map in the "Dance" category gets players of all ages grooving to the beat and sweating up a storm.`;
+                    break;
+                case "Style-Tech":
+                    element.innerText = `With more angles than a dodecahedron, the best map in the "Tech" category bends the concept of parity to its will to create a challenging sight-read that retains great flow.`;
+                    break;
+                case "Style-Fitness":
+                    element.innerText = `Build strength to the beat. The best fitness map forces constant natural movement in all dimensions with walls and bloqs that keep the flow until your legs give out.`;
+                    break;
+                case "Style-Balanced":
+                    element.innerText = `Look in the sky! Is it a tech map? Is it a dance map? Is it a speed map? WE DON'T KNOW! The Best Balanced Style Map is the mutt of the neighborhood - a little of this, a little of that - all combining into one fantastic map.`;
+                    break;
+                case "Style-Acc":
+                    element.innerText = `Chase that sweet high accuracy in a very, very careful dance. The best map in the Accuracy category has excellent rhythmic choice and well-placed emphasis with the fewest amount of notes.`;
+                    break;
+                case "Style-Speed":
+                    element.innerText = `Nothing screams "speed" more than that feeling of lactic acid setting in after tackling thousands of notes at mind-blowing BPMs, and the best map in the "Speed" category delivers an extra helping.`;
+                    break;
+                case "Style-Challenge":
+                    element.innerText = `Ranking Criteria? Curation? Mapping fundamentals? These are but chains to restrict the seemingly endless and wild imagination of challenge mappers. The best map in the "Challenge" category pushes the limits in every way.`;
+                    break;
+                case "Style-Poodle":
+                    element.innerText = `Poodles and Pauls. The best map in the Poodle category has excellent flow and well-placed emphasis with the long hold note swing style. Spirals, Switch-backs, and more!`;
+                    break;
+                case "Style-Gimmick":
+                    element.innerText = `The best "Gimmick" map shows off some of the wacky manipulations that play fast and loose with gameplay and have become community fan favorites. This is the catch all category. Have something that is unique and doesn't fit a category? Nominate it here!`;
+                    break;
+                // ranked
+                case "Ranked-RankedMap":
+                    element.innerText = `Nominate your favorite ranked map diff and our team will sort it into the appropriate category. Nominate BeatLeader or ScoreSaber ranked maps.`;
+                    break;
+                // mods
+                case "Mods-ArtMap":
+                    element.innerText = `Formerly called "Modchart Visuals", these maps use all the power of Noodle Extensions and Chroma to convey the music and/or tell us a story through the creative use of mods and any notemods aren't the main focus of the map.`;
+                    break;
+                case "Mods-Modchart":
+                    element.innerText = `Here? There? Where is the next note coming from?! This category includes maps that feature solid mapping AND alter the gameplay in mind-blowing ways through animation and manipulation of notes and obstacles.`;
+                    break;
+                //lightshow
+                case "Mods-Lightshow":
+                    element.innerText = `The best lightshow is a feast for the eyes and ears, with a focus on the visuals and the music. Lighting nominations only have one "funnel" on the form. The Beasties team will separate maps into the right categories based on their construction.`;
+                    break;
             }
         }
         onChange();
@@ -689,8 +811,8 @@
             let coverImg = document.createElement("img");
             coverImg.src = bsapi.versions[0].coverURL;
             coverImg.alt = bsapi.name;
-            coverImg.width = "100";
-            coverImg.height = "100";
+            coverImg.width = "113";
+            coverImg.height = "113";
             coverImg.classList.add("beatmaps");
             coverImg.classList.add("cover");
 
@@ -893,4 +1015,5 @@
         // #endregion
     </script>
 </body>
+
 </html>
