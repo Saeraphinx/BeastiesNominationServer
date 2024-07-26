@@ -273,22 +273,22 @@
         <h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>
         <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
             <label for="category">Category</label>
-            <select id="category" name="category" onchange="onChange()" required></select><br><br>
+            <select id="category" name="category" onchange="onChange()" required></select>
 
-            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label><br>
+            <label class="FORMbsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label>
             <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
-                pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()"><br><br>
+                pattern="[0123456789abcdefABCDEF]{5}" onchange="onBSRInput()">
 
-            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name or BeatSaver URL</label><br>
-            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-zA-Z0-9]+|[/: _.\-]+" onchange="onMapperInput()"><br><br>
+            <label class="FORMname" id="nameLabel" for="name">Pack/Mapper Name or BeatSaver URL</label>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3 pattern="[a-zA-Z0-9]+|[/: _.\-]+" onchange="onMapperInput()">
 
-            <label class="FORMOSTName" for="OSTname">OST Map</label><br>
+            <label class="FORMOSTName" for="OSTname">OST Map</label>
             <select class="FORMOSTName" id="OSTname" name="OSTname">
                 <option value="" style="display: none;"></option>
             </select>
 
 
-            <label class="FORMchardiff" for="charecteristic">Characteristic</label><br>
+            <label class="FORMchardiff" for="charecteristic">Characteristic</label>
             <select class="FORMchardiff" id="charecteristic" name="charecteristic">
                 <option value="Standard">Standard</option>
                 <option value="OneSaber">One Saber</option>
@@ -300,7 +300,7 @@
                 <option value="Other" style="display: none;">All</option>
             </select>
 
-            <label class="FORMchardiff" for="difficulty">Difficulty</label><br>
+            <label class="FORMchardiff" for="difficulty">Difficulty</label>
             <select class="FORMchardiff" id="difficulty" name="difficulty">
                 <option value="Easy">Easy</option>
                 <option value="Normal">Normal</option>
@@ -521,6 +521,7 @@
         });
         // #endregion
 
+        // #region Form Handling
         function onChange() {
             const category = document.getElementById('category').value;
             const nameLabel = document.getElementById('nameLabel');
@@ -650,8 +651,9 @@
         }
         setInterval(updateCounts, 60000);
         updateCounts();
+        // #endregion
 
-        // #region Beatmaps
+        // #region funky little mapper/beatmap display
         function onBSRInput() {
             const bsrId = document.getElementById('bsrId').value;
             let container = document.getElementById("beatmaps-container");
@@ -888,7 +890,7 @@
                 });
             }
         }
+        // #endregion
     </script>
 </body>
-
 </html>
