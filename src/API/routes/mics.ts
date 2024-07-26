@@ -30,6 +30,10 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/loginbl.png`));
         });
 
+        this.app.get(`/cdn/loginbltrans.png`, (req, res) => {
+            res.sendFile(path.resolve(`assets/loginbltrans220.png`));
+        });
+
         this.app.get(`/cdn/char/standard.svg`, (req, res) => {
             res.sendFile(path.resolve(`assets/standard.svg`));
         });
