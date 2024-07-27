@@ -24,7 +24,7 @@ export class SubmissionRoutes {
     private async loadRoutes() {
         this.app.post(`/api/mod/submitmap`, async (req, res) => {
             SubmissionRoutes.ip.push(req.ip);
-            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
+            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 20) {
                 res.status(429).send({ message: `Rate limited.` });
                 return;
             }
@@ -116,7 +116,7 @@ export class SubmissionRoutes {
 
         this.app.post(`/form/submitmap`, async (req, res) => {
             SubmissionRoutes.ip.push(req.ip);
-            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 5) {
+            if (SubmissionRoutes.ip.filter(ip => ip == req.ip).length > 20) {
                 res.status(429).send(this.getErrorResponseString(`You've been rate limited. Please try again later.`));
                 return;
             }
@@ -242,7 +242,7 @@ export class SubmissionRoutes {
             }
 
             this.recentSubmissions.push(content.name);
-            if (this.recentSubmissions.filter(id => id == content.name).length > 3) {
+            if (this.recentSubmissions.filter(id => id == content.name).length > 10) {
                 return RequestSubmissionStatus.RateLimited;
             }
         } else {
@@ -265,7 +265,7 @@ export class SubmissionRoutes {
             }
 
             this.recentSubmissions.push(content.bsrId);
-            if (this.recentSubmissions.filter(id => id == content.bsrId).length > 3) {
+            if (this.recentSubmissions.filter(id => id == content.bsrId).length > 10) {
                 return RequestSubmissionStatus.RateLimited;
             }
 
