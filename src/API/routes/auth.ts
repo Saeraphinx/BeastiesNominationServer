@@ -59,7 +59,7 @@ export class AuthRoutes {
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
 
             req.session.userId = user.id;
-            req.session.username = user.username;
+            req.session.username = user.name;
             req.session.service = `beatleader`;
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect

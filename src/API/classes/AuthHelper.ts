@@ -81,7 +81,7 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
 
 export interface BeatLeaderIdentify {
     id: string,
-    username: string,
+    name: string,
 }
 
 export interface BeatLeaderMinimalUser {

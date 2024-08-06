@@ -37,6 +37,10 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            service: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             bsrId: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -64,6 +68,7 @@ export class DatabaseManager {
 export class NominationAttributes extends Model<InferAttributes<NominationAttributes>, InferCreationAttributes<NominationAttributes>> {
     public nominationId: number;
     public submitterId: string;
+    public service: `beatleader` | `beatsaver`;
     public bsrId: string;
     public name: string;
     public difficulty: Difficulty;
@@ -130,7 +135,7 @@ export class DatabaseHelper {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, category: string, content: {
+    public static async addNomination(submitterId: string, service:`beatleader`|`beatsaver`, category: string, content: {
         bsrId?: string,
         name?: string,
         difficulty?: Difficulty,
@@ -161,6 +166,7 @@ export class DatabaseHelper {
             if (this.isDiffCharRequired(category)) {
                 await DatabaseHelper.database.nominations.create({
                     submitterId: submitterId,
+                    service: service,
                     category: category,
                     bsrId: content.bsrId,
                     name: content.name,
@@ -170,6 +176,7 @@ export class DatabaseHelper {
             } else {
                 await DatabaseHelper.database.nominations.create({
                     submitterId: submitterId,
+                    service: service,
                     category: category,
                     bsrId: content.bsrId,
                     name: content.name,
