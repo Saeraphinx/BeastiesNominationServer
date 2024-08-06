@@ -245,19 +245,19 @@ export class SubmissionRoutes {
                 }
 
                 if (difficulty && typeof difficulty != `string`) {
-                    res.status(400).send(this.getErrorResponseString(`Invalid difficulty.`));
+                    res.status(400).send({ message: `Invalid difficulty.` });
                     return;
                 }
             }
 
             if (!isName) {
                 if (!bsrId || typeof bsrId != `string`) {
-                    res.status(400).send(this.getErrorResponseString(`Invalid bsrId.`));
+                    res.status(400).send({ message: `Invalid BSR ID.` });
                     return;
                 }
             } else {
                 if (!name || typeof name != `string`) {
-                    res.status(400).send(this.getErrorResponseString(`Invalid name.`));
+                    res.status(400).send({ message: `Invalid name.` });
                     return;
                 }
             }
