@@ -298,6 +298,7 @@ export class SubmissionRoutes {
                     res.status(400).send({ message: `Already voted.` });
                     return;
                 case RequestSubmissionStatus.Success:
+                    console.log(`Map submitted from BeatLeader.`);
                     res.status(200).send({ message: `Map submitted.` });
                     return;
             }
