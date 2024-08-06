@@ -57,30 +57,31 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     }
 
     public static getToken(code:string): Promise<OAuth2Response> {
-        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, auth.beatleader, `${server.url}/api/auth/beatleader/callback`);
+        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, auth.beatleader, this.callbackUrl);
     }
 
-    public static async getUser(token: string): Promise<BeatLeaderMinimalUser | null> {
+    public static async getUser(token: string): Promise<BeatLeaderIdentify | null> {
         const userIdRequest = await fetch(`https://api.beatleader.xyz/oauth2/identity`, super.getRequestData(token));
         const Idjson: BeatLeaderIdentify = await userIdRequest.json() as BeatLeaderIdentify;
 
         if (!Idjson.id) {
             return null;
         } else {
-            const userRequest = await fetch(`https://api.beatleader.xyz/player/${Idjson.id}?stats=false`, super.getRequestData(token));
-            const userJjson: BeatLeaderMinimalUser = await userRequest.json() as BeatLeaderMinimalUser;
-            if (!userJjson.id) {
-                return null;
-            } else {
-                return userJjson;
-            }
+            return Idjson;
+            //const userRequest = await fetch(`https://api.beatleader.xyz/player/${Idjson.id}?stats=false`, super.getRequestData(token));
+            //const userJjson: BeatLeaderMinimalUser = await userRequest.json() as BeatLeaderMinimalUser;
+            //if (!userJjson.id) {
+            //    return null;
+            //} else {
+            //    return userJjson;
+            //}
         }
     }
 }
 
 export interface BeatLeaderIdentify {
     id: string,
-    username: string,
+    name: string,
 }
 
 export interface BeatLeaderMinimalUser {
@@ -103,6 +104,36 @@ export interface BeatLeaderMinimalUser {
         link: string
         playerId: string
     }[]
+}
+
+export class BeatSaverAuthHelper extends OAuth2Helper {
+    private static readonly callbackUrl = `${server.url}/api/auth/beatsaver/callback`;
+    
+    public static getUrl(state:string): string {
+        return `https://beatsaver.com/oauth2/authorize?client_id=${auth.beatsaver.clientId}&response_type=code&scope=identity&redirect_uri=${BeatSaverAuthHelper.callbackUrl}&state=${state}`;
+    }
+
+    public static getToken(code:string): Promise<OAuth2Response> {
+        return super.getToken(`https://api.beatsaver.com/oauth2/token`, code, auth.beatsaver, this.callbackUrl);
+    }
+
+    public static async getUser(token: string): Promise<BeatSaverIdentify | null> {
+        const userIdRequest = await fetch(`https://api.beatsaver.com/oauth2/identity`, super.getRequestData(token));
+        const Idjson: BeatSaverIdentify = await userIdRequest.json() as BeatSaverIdentify;
+
+        if (!Idjson.id) {
+            return null;
+        } else {
+            return Idjson;
+        }
+    }
+}
+
+export interface BeatSaverIdentify {
+    scopes: string[];
+    id: string;
+    name: string;
+    avatar: string;
 }
 
 // eslint-disable-next-line quotes

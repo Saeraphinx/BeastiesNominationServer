@@ -92,7 +92,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            switch (await SubmissionRoutes.sendSubmission(gameId, category, {
+            switch (await SubmissionRoutes.sendSubmission(gameId, `beatleader`, category, {
                 bsrId: bsrId,
                 name: undefined,
                 difficulty: undefined,
@@ -187,7 +187,7 @@ export class SubmissionRoutes {
                     return;
             }
 
-            switch (await SubmissionRoutes.sendSubmission(req.session.userId, category, {
+            switch (await SubmissionRoutes.sendSubmission(req.session.userId, req.session.service, category, {
                 bsrId: bsrId,
                 name: name,
                 difficulty: difficulty as Difficulty,
@@ -282,7 +282,7 @@ export class SubmissionRoutes {
                     return;
             }
 
-            switch (await SubmissionRoutes.sendSubmission(userId, category, {
+            switch (await SubmissionRoutes.sendSubmission(userId, `beatleader`, category, {
                 bsrId: bsrId,
                 name: name,
                 difficulty: difficulty as Difficulty,
@@ -379,13 +379,13 @@ export class SubmissionRoutes {
         return RequestSubmissionStatus.Success;
     }
 
-    private static async sendSubmission(id: string, category: string, content: {
+    private static async sendSubmission(id: string, service: `beatleader`|`beatsaver`, category: string, content: {
         bsrId?: string;
         name?: string;
         difficulty?: Difficulty;
         characteristic?: Characteristic;
     }): Promise<RequestSubmissionStatus> {
-        let status = await DatabaseHelper.addNomination(id, category, content);
+        let status = await DatabaseHelper.addNomination(id, service, category, content);
         switch (status) {
             case NominationStatusResponse.Invalid:
                 return RequestSubmissionStatus.Invalid;
