@@ -3,7 +3,7 @@ import { BeatLeaderAuthHelper } from '../classes/AuthHelper';
 import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
 
-export class BeatLeaderAuthRoutes {
+export class AuthRoutes {
     private app: Express;
     private validStates: string[] = [];
 
@@ -15,7 +15,7 @@ export class BeatLeaderAuthRoutes {
     private async loadRoutes() {
         this.app.get(`/api/auth`, async (req, res) => {
             if (req.session.userId) {
-                return res.status(200).send({ message: `Hello, ${req.session.username}!`, username: req.session.username, userId: req.session.userId});
+                return res.status(200).send({ message: `Hello, ${req.session.username}!`, username: req.session.username, userId: req.session.userId, service: req.session.service });
             } else {
                 return res.status(401).send({ error: `Not logged in.` });
             }
@@ -60,6 +60,7 @@ export class BeatLeaderAuthRoutes {
 
             req.session.userId = user.id;
             req.session.username = user.name;
+            req.session.service = `beatleader`;
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });

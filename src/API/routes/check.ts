@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import { DatabaseHelper, NominationCategory, NominationStatusResponse, validateEnumValue, Difficulty, Characteristic, DifficultyEnum, CharacteristicEnum } from '../../Shared/Database';
-import { auth } from '../../../storage/config.json';
+import { auth, apiKeys } from '../../../storage/config.json';
 import path from 'path';
 import fs from 'fs';
 
@@ -204,6 +204,101 @@ export class SubmissionRoutes {
                     return;
                 case RequestSubmissionStatus.Success:
                     res.status(200).sendFile(path.resolve(`./assets/success.html`));
+                    return;
+            }
+        });
+
+        this.app.get(`/api/beatleader/submitmap`, async (req, res) => {
+            const category = req.body[`category`];
+            if (!category || typeof category != `string`) {
+                res.status(400).send({ message: `Invalid request.` });
+                return;
+            }
+            const bsrId = req.body[`bsrId`];
+            const name = (category == NominationCategory.OST) ? req.body[`OSTname`] : req.body[`name`];
+            const charecteristic = req.body[`charecteristic`];
+            const difficulty = req.body[`difficulty`];
+            const userId = req.body[`userId`];
+            const apiKey = req.get(`Authorization`);
+            if (!apiKey || typeof apiKey != `string`) {
+                res.status(401).send({ message: `Unauthorized.` });
+                return;
+            }
+            
+            if (apiKey != `Bearer ${apiKeys.beatleader}`) {
+                res.status(401).send({ message: `Unauthorized.` });
+                return;
+            }
+
+            if (!userId || typeof userId != `string`) {
+                res.status(400).send({ message: `Missing User ID.` });
+                return;
+            }
+
+            let isName = DatabaseHelper.isNameRequired(category);
+            let isDiffCharRequired = DatabaseHelper.isDiffCharRequired(category);
+
+            if (isDiffCharRequired) {
+                if (charecteristic && typeof charecteristic != `string`) {
+                    res.status(400).send({ message: `Invalid characteristic.` });
+                    return;
+                }
+
+                if (difficulty && typeof difficulty != `string`) {
+                    res.status(400).send(this.getErrorResponseString(`Invalid difficulty.`));
+                    return;
+                }
+            }
+
+            if (!isName) {
+                if (!bsrId || typeof bsrId != `string`) {
+                    res.status(400).send(this.getErrorResponseString(`Invalid bsrId.`));
+                    return;
+                }
+            } else {
+                if (!name || typeof name != `string`) {
+                    res.status(400).send(this.getErrorResponseString(`Invalid name.`));
+                    return;
+                }
+            }
+
+            switch (SubmissionRoutes.validateSubmission(category, {
+                bsrId: bsrId,
+                name: name,
+                difficulty: difficulty,
+                charecteristic: charecteristic
+            })) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `One or more fields is invalid` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.RateLimited:
+                    res.status(429).send({ message: `Rate limited.` });
+                    return;
+                case RequestSubmissionStatus.OldKey:
+                    res.status(400).send({ message: `This key is not eligble for submission.` });
+                    return;
+            }
+
+            switch (await SubmissionRoutes.sendSubmission(userId, category, {
+                bsrId: bsrId,
+                name: name,
+                difficulty: difficulty as Difficulty,
+                characteristic: charecteristic as Characteristic
+            })) {
+                case RequestSubmissionStatus.Invalid:
+                    res.status(400).send({ message: `Invalid request.` });
+                    return;
+                case RequestSubmissionStatus.InvalidCategory:
+                    res.status(400).send({ message: `Invalid category.` });
+                    return;
+                case RequestSubmissionStatus.AlreadyVoted:
+                    res.status(400).send({ message: `Already voted.` });
+                    return;
+                case RequestSubmissionStatus.Success:
+                    res.status(200).send({ message: `Map submitted.` });
                     return;
             }
         });

@@ -526,7 +526,13 @@
                 const data = await auth.json();
                 const element = document.getElementById('username');
                 document.getElementById('nominationForm').style.display = null;
-                element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
+                if (data.service == `beatleader`) {
+                    element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
+                } else if (data.service == `beatsaver`) {
+                    element.innerHTML = `Logged in as <a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
+                } else {
+                    element.innerHTML = `Logged in as ${data.username} • <a class="username" href="api/auth/logout">Log Out</a>`;
+                }   
                 element.style.marginTop = "10px";
             }
         };

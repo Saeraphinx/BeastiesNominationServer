@@ -6,7 +6,7 @@ import { DatabaseManager } from './Shared/Database';
 import { SubmissionRoutes } from './API/routes/check';
 import path from 'path';
 import { server, devmode } from '../storage/config.json';
-import { BeatLeaderAuthRoutes } from './API/routes/auth_beatleader';
+import { AuthRoutes } from './API/routes/auth';
 import { MiscRoutes } from './API/routes/mics';
 
 console.log(`Starting setup...`);
@@ -47,7 +47,7 @@ app.get(`/success`, (req, res) => {
 });
 
 new SubmissionRoutes(app);
-new BeatLeaderAuthRoutes(app);
+new AuthRoutes(app);
 new MiscRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
