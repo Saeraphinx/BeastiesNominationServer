@@ -208,7 +208,7 @@ export class SubmissionRoutes {
             }
         });
 
-        this.app.get(`/api/beatleader/submitmap`, async (req, res) => {
+        this.app.post(`/api/beatleader/submitmap`, async (req, res) => {
             const category = req.body[`category`];
             if (!category || typeof category != `string`) {
                 res.status(400).send({ message: `Invalid request.` });
