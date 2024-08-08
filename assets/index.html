@@ -37,6 +37,24 @@
             font-size: 17px;
         }
 
+        @keyframes red-glow {
+            0% {
+                box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 5px 5px rgb(179, 0, 255);
+            }
+
+            100% {
+                box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0);
+            }
+        }
+
+        .red-glow {
+            animation: red-glow 5s infinite;
+        }
+
         div#info,
         div#form,
         div#countsContainer {
@@ -828,6 +846,16 @@
                     document.getElementById('accCount').innerHTML = data.AccMap;
                     document.getElementById('poodleCount').innerHTML = data.PoodleMap;
                     document.getElementById('gimmickCount').innerHTML = data.GimmickMap;
+
+                    // of my god im so sorry for this
+                    let allElements = document.getElementsByClassName("count");
+                    let lowestElement = allElements[0];
+                    for (let element in allElements) {
+                        if (allElements[element].innerHTML < lowestElement.innerHTML) {
+                            lowestElement = allElements[element];
+                        }
+                    }
+                    lowestElement.parentElement.classList.add("red-glow");
                 });
         }
         setInterval(updateCounts, 60000);
