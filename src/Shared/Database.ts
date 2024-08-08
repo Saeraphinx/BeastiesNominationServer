@@ -145,7 +145,11 @@ export class DatabaseHelper {
         if (this.isNameRequired(category)) {
             existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, name: content.name, category: category } });
         } else {
-            existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
+            if (this.isDiffCharRequired(category)) {
+                existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category, difficulty: content.difficulty, characteristic: content.characteristic } });
+            } else {
+                existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
+            }
         }
 
         if (existingRecords.count > 0) {
