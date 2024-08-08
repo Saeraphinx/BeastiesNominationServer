@@ -346,7 +346,7 @@ export class SubmissionRoutes {
                 return RequestSubmissionStatus.Invalid;
             }
 
-            if (content.bsrId.match(/[0123456789abcdefABCDEF]{5}/) == null) {
+            if (content.bsrId.match(/[0123456789abcdefABCDEFxX]{5}/) == null) {
                 return RequestSubmissionStatus.Invalid;
             }
 
