@@ -350,14 +350,18 @@ export class SubmissionRoutes {
                 return RequestSubmissionStatus.Invalid;
             }
 
-            let bsrIdNoHex = parseInt(content.bsrId, 16);
+            if (content.bsrId.toLowerCase().includes(`x`) && category == NominationCategory.RankedMap) {
+                //continue;
+            } else {
+                let bsrIdNoHex = parseInt(content.bsrId, 16);
 
-            if (isNaN(bsrIdNoHex)) {
-                return RequestSubmissionStatus.Invalid;
-            }
+                if (isNaN(bsrIdNoHex)) {
+                    return RequestSubmissionStatus.Invalid;
+                }
 
-            if (bsrIdNoHex <= 228010 && category != NominationCategory.RankedMap) {
-                return RequestSubmissionStatus.OldKey;
+                if (bsrIdNoHex <= 228010 && category != NominationCategory.RankedMap) {
+                    return RequestSubmissionStatus.OldKey;
+                }
             }
 
             this.recentSubmissions.push(content.bsrId);
