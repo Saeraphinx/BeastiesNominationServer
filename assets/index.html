@@ -851,7 +851,7 @@
                     let allElements = document.getElementsByClassName("count");
                     let lowestElement = allElements[0];
                     for (let element in allElements) {
-                        if (allElements[element].innerHTML < lowestElement.innerHTML) {
+                        if (parseInt(allElements[element].textContent) < parseInt(lowestElement.textContent)) {
                             lowestElement = allElements[element];
                         }
                     }
