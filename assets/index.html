@@ -857,10 +857,10 @@
                             thirdLowestElement = secondLowestElement;
                             secondLowestElement = lowestElement;
                             lowestElement = allElements[element];
-                        } else if (parseInt(secondLowestElement) <= parseInt(lowestElement.textContent)) {
+                        } else if (parseInt(allElements[element].textContent) <= parseInt(secondLowestElement.textContent)) {
                             thirdLowestElement = secondLowestElement;
                             secondLowestElement = allElements[element];
-                        } else if (parseInt(thirdLowestElement) <= parseInt(secondLowestElement.textContent)) {
+                        } else if (parseInt(allElements[element].textContent) <= parseInt(thirdLowestElement.textContent)) {
                             thirdLowestElement = allElements[element];
                         }
                     }
