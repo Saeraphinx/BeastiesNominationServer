@@ -857,6 +857,11 @@
                             thirdLowestElement = secondLowestElement;
                             secondLowestElement = lowestElement;
                             lowestElement = allElements[element];
+                        } else if (parseInt(secondLowestElement) <= parseInt(lowestElement.textContent)) {
+                            thirdLowestElement = secondLowestElement;
+                            secondLowestElement = allElements[element];
+                        } else if (parseInt(thirdLowestElement) <= parseInt(secondLowestElement.textContent)) {
+                            thirdLowestElement = allElements[element];
                         }
                     }
                     lowestElement.parentElement.classList.add("purple-glow");
