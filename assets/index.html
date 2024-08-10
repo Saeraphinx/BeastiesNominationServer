@@ -37,7 +37,7 @@
             font-size: 17px;
         }
 
-        @keyframes red-glow {
+        @keyframes purple-glow {
             0% {
                 box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0);
             }
@@ -51,8 +51,8 @@
             }
         }
 
-        .red-glow {
-            animation: red-glow 5s infinite;
+        .purple-glow {
+            animation: purple-glow 5s infinite;
         }
 
         div#info,
@@ -529,7 +529,7 @@
     </div>
     <footer>
         <p class="footer"><a class="footer" href="https://saeraphinx.dev">Created by Saeraphinx</a> • <a class="footer"
-                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a></p>
+                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
     </footer>
     <script>
         // #region Beginning
@@ -850,12 +850,18 @@
                     // of my god im so sorry for this
                     let allElements = document.getElementsByClassName("count");
                     let lowestElement = allElements[0];
+                    let secondLowestElement = allElements[1];
+                    let thirdLowestElement = allElements[2];
                     for (let element in allElements) {
-                        if (parseInt(allElements[element].textContent) < parseInt(lowestElement.textContent)) {
+                        if (parseInt(allElements[element].textContent) <= parseInt(lowestElement.textContent)) {
+                            thirdLowestElement = secondLowestElement;
+                            secondLowestElement = lowestElement;
                             lowestElement = allElements[element];
                         }
                     }
-                    lowestElement.parentElement.classList.add("red-glow");
+                    lowestElement.parentElement.classList.add("purple-glow");
+                    secondLowestElement.parentElement.classList.add("purple-glow");
+                    thirdLowestElement.parentElement.classList.add("purple-glow");
                 });
         }
         setInterval(updateCounts, 60000);
