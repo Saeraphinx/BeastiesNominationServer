@@ -142,6 +142,6 @@ declare module 'express-session' {
         state: string;
         userId: string;
         username: string;
-        service: `beatleader` | `beatsaver`;
+        service: `beatleader` | `beatsaver` | `judgeId`;
     }
 }

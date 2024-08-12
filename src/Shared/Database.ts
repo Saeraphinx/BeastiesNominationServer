@@ -6,6 +6,9 @@ import { storage } from '../../storage/config.json';
 export class DatabaseManager {
     public sequelize: Sequelize;
     public nominations: ModelStatic<NominationAttributes>;
+    public sortedSubmissions: ModelStatic<SortedSubmission>;
+    public judges: ModelStatic<Judge>;
+    public judgeVotes: ModelStatic<JudgeVote>;
 
     constructor() {
         this.sequelize = new Sequelize(`database`, `user`, `password`, {
@@ -17,7 +20,9 @@ export class DatabaseManager {
 
         console.log(`Loading Database...`);
         this.loadTables();
-        this.sequelize.sync().then(() => {
+        this.sequelize.sync({
+            alter: true,
+        }).then(() => {
             console.log(`Database Loaded.`);
             new DatabaseHelper(this);
         }).catch((error) => {
@@ -27,7 +32,7 @@ export class DatabaseManager {
     }
 
     private loadTables() {
-        this.nominations = this.sequelize.define(`nominations`, {
+        this.nominations = this.sequelize.define<NominationAttributes>(`nominations`, {
             nominationId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -61,21 +66,153 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            filterStatus: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            filtererId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+        });
+
+        this.sortedSubmissions = this.sequelize.define<SortedSubmission>(`sortedSubmissions`, {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            category: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            bsrId: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            difficulty: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            characteristic: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            involvedMappers: {
+                type: DataTypes.STRING,
+                allowNull: true,
+                get() {
+                    // @ts-expect-error 2345
+                    return JSON.parse(this.getDataValue(`involvedMappers`));
+                },
+                set(value: string[]) {
+                    // @ts-expect-error 2345
+                    this.setDataValue(`involvedMappers`, JSON.stringify(value));
+                },
+            },
+        });
+
+        this.judges = this.sequelize.define<Judge>(`judges`, {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            name: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            roles: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                get() {
+                    // @ts-expect-error 2345
+                    return JSON.parse(this.getDataValue(`roles`));
+                },
+                set(value: string[]) {
+                    // @ts-expect-error 2345
+                    this.setDataValue(`roles`, JSON.stringify(value));
+                }
+            },
+            discordId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            avatarUrl: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            beatSaverIds: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                get() {
+                    // @ts-expect-error 2345
+                    return JSON.parse(this.getDataValue(`beatSaverIds`));
+                },
+                set(value: string[]) {
+                    // @ts-expect-error 2345
+                    this.setDataValue(`beatSaverIds`, JSON.stringify(value));
+                },
+            },
+            permittedCategories: {
+                type: DataTypes.STRING,
+                allowNull: false,
+                get() {
+                    // @ts-expect-error 2345
+                    return JSON.parse(this.getDataValue(`permittedCategories`));
+                },
+                set(value: string[]) {
+                    // @ts-expect-error 2345
+                    this.setDataValue(`permittedCategories`, JSON.stringify(value));
+                },
+            },
+        });
+
+        this.judgeVotes = this.sequelize.define<JudgeVote>(`judgeVotes`, {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            judgeId: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+            },
+            submissionId: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+            },
+            score: {
+                type: DataTypes.INTEGER,
+                allowNull: false,
+            },
+            notes: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         });
     }
 }
 
+
 export class NominationAttributes extends Model<InferAttributes<NominationAttributes>, InferCreationAttributes<NominationAttributes>> {
     public nominationId: number;
     public submitterId: string;
-    public service: `beatleader` | `beatsaver`;
+    public service: `beatleader` | `beatsaver` | `judgeId`;
     public bsrId: string;
     public name: string;
     public difficulty: Difficulty;
     public characteristic: Characteristic;
     public category: string;
+    public filterStatus?: FilterStatus;
+    public filtererId: string; // if not null, this nomination was filtered by the user mentioned here
 }
 
+// #region Nominations
 export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus` | `All`;
 export enum DifficultyEnum {
     Easy = `Easy`,
@@ -87,6 +224,8 @@ export enum DifficultyEnum {
     Other = `Other`,
 }
 export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other` | `All`;
+export type FilterStatus = `Accepted` | `Rejected` | `Duplicate` | `RejectedDuplicate`;
+
 export enum CharacteristicEnum {
     Standard = `Standard`,
     OneSaber = `OneSaber`,
@@ -129,13 +268,13 @@ export enum NominationCategory {
 }
 
 export class DatabaseHelper {
-    private static database: DatabaseManager;
+    public static database: DatabaseManager;
 
     constructor(db: DatabaseManager) {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, service:`beatleader`|`beatsaver`, category: string, content: {
+    public static async addNomination(submitterId: string, service:`beatleader`|`beatsaver`|`judgeId`, category: string, content: {
         bsrId?: string,
         name?: string,
         difficulty?: Difficulty,
@@ -255,6 +394,14 @@ export class DatabaseHelper {
     public static isDiffCharRequired(category: string): boolean {
         return category != NominationCategory.PackOfTheYear && category != NominationCategory.MapperOfTheYear && category != NominationCategory.LighterOfTheYear && category != NominationCategory.RookieMapperOfTheYear && category != NominationCategory.RookieLighterOfTheYear && category != NominationCategory.FullSpreadMap;
     }
+
+    public static isNameRequiredSortedSubmission(category: string): boolean {
+        return category == SortedSubmissionsCategory.PackOfTheYear || category == SortedSubmissionsCategory.MapperOfTheYear || category == SortedSubmissionsCategory.LighterOfTheYear || category == SortedSubmissionsCategory.RookieMapperOfTheYear || category == SortedSubmissionsCategory.RookieLighterOfTheYear || category == SortedSubmissionsCategory.OST;
+    }
+
+    public static isDiffCharRequiredSortedSubmission(category: string): boolean {
+        return category != SortedSubmissionsCategory.PackOfTheYear && category != SortedSubmissionsCategory.MapperOfTheYear && category != SortedSubmissionsCategory.LighterOfTheYear && category != SortedSubmissionsCategory.RookieMapperOfTheYear && category != SortedSubmissionsCategory.RookieLighterOfTheYear && category != SortedSubmissionsCategory.FullSpreadMap;
+    }
 }
 
 export type NominationCount = {
@@ -289,6 +436,7 @@ export enum NominationStatusResponse {
     InvalidCategory,
     Invalid
 }
+// #endregion
 
 // yoink thankies bstoday
 export function validateEnumValue(value: string | number, enumType: object): boolean {
@@ -297,3 +445,78 @@ export function validateEnumValue(value: string | number, enumType: object): boo
     }
     return false;
 }
+
+
+//SortedSubmissions
+export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, InferCreationAttributes<SortedSubmission>> {
+    public id:number;
+    public category:SortedSubmissionsCategory;
+    public bsrId?:string;
+    public name?:string;
+    public difficulty?:string;
+    public characteristic?:string;
+    public involvedMappers?:string[];
+}
+
+export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes<Judge>> {
+    public id:number;
+    public name:string;
+    public roles:string[];
+    public discordId:string;
+    public avatarUrl:string;
+    public beatSaverIds:string[];
+    public permittedCategories:SortedSubmissionsCategory[];
+}
+
+export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAttributes<JudgeVote>> {
+    public id:number;
+    public judgeId:number;
+    public submissionId:number;
+    public score:number;
+    public notes?:string;
+}
+
+export enum SortedSubmissionsCategory {
+    OST = `Gen-OST`,
+    AlternativeMap = `Gen-Alternative`, //360,90,one saber, na
+    FullSpreadMap = `Gen-FullSpread`,
+
+    LightshowVanilla = `Lightshow-Vanilla`,
+    LightshowVanillaPlus = `Lightshow-VanillaPlus`,
+    LightshowChroma = `Lightshow-Chroma`,
+    LightshowChromaPlus = `Lightshow-ChromaPlus`,
+
+    Modchart = `Mods-Modchart`,
+    ArtMap = `Mods-ArtMap`,
+
+    RankedMapLower = `Ranked-RankedMapLower`,
+    RankedMapHigher = `Ranked-RankedMapHigher`,
+
+    BalancedMap = `Style-Balanced`,
+    TechMap = `Style-Tech`,
+    SpeedMap = `Style-Speed`,
+    DanceMap = `Style-Dance`,
+    FitnessMap = `Style-Fitness`,
+    ChallengeMap = `Style-Challenge`,
+    AccMap = `Style-Acc`,
+    PoodleMap = `Style-Poodle`,
+    GimmickMap = `Style-Gimmick`,
+
+    PackOfTheYear = `OTY-Pack`,
+    MapOfTheYear = `OTY-Map`,
+    MapperOfTheYear = `OTY-Mapper`,
+    LighterOfTheYear = `OTY-Lighter`,
+    RookieLighterOfTheYear = `OTY-RookieLighter`,
+    RookieMapperOfTheYear = `OTY-RookieMapper`,
+}
+
+/*
+    Beasties Admin will go through the nominations and sort them into the correct categories & clean up data (if applicable) [NominationAttributes -> SortedSubmission]
+
+    Judges will be assigned to categories and will be able to vote on the submissions [SortedSubmission -> JudgeVote]
+
+    Judges need to be able to log in, will be using Discord OAuth2 for this since it's the easiest way to verify users are who they say they are.
+    Judges need to be given a role from Beasties Admin to be able to vote on a category. [Judges.role && Judges.permittedCategories]
+
+    Judges will be required to list all of their BeatSaver IDs so that I know when to give their votes a bye. [Judges.beatSaverIds]
+*/

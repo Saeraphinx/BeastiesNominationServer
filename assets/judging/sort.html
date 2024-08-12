@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <style>
+        /* #region General & Bio */
+        @keyframes bg {
+            0% {
+                background-position: 0% 24%
+            }
+
+            50% {
+                background-position: 100% 77%
+            }
+
+            100% {
+                background-position: 0% 24%
+            }
+        }
+
+        body {
+            background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+            background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
+            background-size: 1000% 1000%;
+            animation: bg 90s ease infinite;
+            font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 17px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 0;
+            padding: 0;
+            color: white;
+        }
+
+        nav {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            background-color: #00000077;
+        }
+
+        a.nav {
+            color: rgb(0, 234, 255);
+            text-decoration: none;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #000000aa;
+        }
+
+        div.header {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #000000aa;
+        }
+
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th {
+            background-color: #000000;
+
+            padding: 8px;
+            color: rgb(255, 255, 255);
+            text-align: center;
+        }
+        td {
+            border: 1px solid #000000;
+            background-color: #000000af;
+            padding: 8px;
+            color: rgb(255, 255, 255);
+            width: 144px;
+            height: 144px;
+            text-align: center;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav>
+        <a class="nav" href="/judging">Back to Judging</a>
+    </nav>
+    <div class="header">
+        <h1>Sort Submissions</h1>
+        <button>Refresh</button>
+    </div>
+    <div class="submissionList">
+        <table id="sortTable">
+            <tr>
+                <th style="border-radius: 10px 0 0 0;">Map/User Image</th>
+                <th>Map Name</th>
+                <th>Mapper</th>
+                <th>Category</th>
+                <th>Difficulty</th>
+                <th style="border-radius: 0 10px 0 0;">Actions</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        function addRow(name, mapper, category, difficulty, imgUrl) {
+            var table = document.getElementById("sortTable");
+            table.innerHTML += "<tr><td><img src=\""+imgUrl+"\" width=128 height=128 style=\"border-radius: 5px;\"></td><td>" + name + "</td><td>" + mapper + "</td><td>" + category + "</td><td>" + difficulty + "</td><td><button>Approve</button> <button>Deny</button></td></tr>";
+        }
+
+        for (var i = 0; i < 10; i++) {
+            addRow("Hayako - Anayls", "Reaxt", "Modchart", "Standard Expert+", "https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg");
+        }
+    </script>
+</body>
