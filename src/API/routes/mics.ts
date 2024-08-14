@@ -26,6 +26,7 @@ export class MiscRoutes {
             res.status(200).send(this.submissionCountCache);
         });
 
+        // #region CDN
         this.app.get(`/cdn/loginbl.png`, (req, res) => {
             res.sendFile(path.resolve(`assets/loginbl.png`));
         });
@@ -72,6 +73,25 @@ export class MiscRoutes {
 
         this.app.get(`/favicon.png`, (req, res) => {
             res.sendFile(path.resolve(`assets/favicon.png`));
+        });
+
+        // #endregion
+    
+        // #region HTML
+        this.app.get(`/`, (req, res) => {
+            res.sendFile(path.resolve(`assets/index.html`));
+        });
+        
+        this.app.get(`/success`, (req, res) => {
+            res.sendFile(path.resolve(`assets/success.html`));
+        });
+
+        this.app.get(`/judging/sort`, (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/sort.html`));
+        });
+
+        this.app.get(`/judging/style.css`, (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/style.css`));
         });
     }
 

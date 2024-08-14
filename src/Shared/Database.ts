@@ -21,7 +21,6 @@ export class DatabaseManager {
         console.log(`Loading Database...`);
         this.loadTables();
         this.sequelize.sync({
-            alter: true,
         }).then(() => {
             console.log(`Database Loaded.`);
             new DatabaseHelper(this);
@@ -180,11 +179,11 @@ export class DatabaseManager {
             },
             judgeId: {
                 type: DataTypes.INTEGER,
-                primaryKey: true,
+                allowNull: false,
             },
             submissionId: {
                 type: DataTypes.INTEGER,
-                primaryKey: true,
+                allowNull: false,
             },
             score: {
                 type: DataTypes.INTEGER,

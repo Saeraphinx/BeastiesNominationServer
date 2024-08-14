@@ -38,14 +38,6 @@ app.get(`/pinkcute`, (req, res) => {
     res.send({ message: `pink cute` });
 });
 
-app.get(`/`, (req, res) => {
-    res.sendFile(path.resolve(`./assets/index.html`));
-});
-
-app.get(`/success`, (req, res) => {
-    res.sendFile(path.resolve(`./assets/success.html`));
-});
-
 new SubmissionRoutes(app);
 new AuthRoutes(app);
 new MiscRoutes(app);
