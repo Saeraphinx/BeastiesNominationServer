@@ -77,9 +77,9 @@ button.tableaction {
     width: 100px;
 }
 
- .red-glow {
+.red-glow {
     box-shadow: 0 0 5px 2px #ff0000;
- }
+}
 
 .green-glow {
     box-shadow: 0 0 5px 2px #00ff00;
@@ -99,7 +99,7 @@ div.beatmap {
     justify-content: center;
     align-items: center;
     margin: 20px;
-    padding: 20px 20px 10px 20px;
+    padding: 10px 20px 10px 20px;
     width: 200px;
     height: 300px;
     border-radius: 5px;
@@ -107,10 +107,29 @@ div.beatmap {
 
 }
 
+div.beatmap img {
+    border-radius: 15px;
+}
+
 div.beatmap p {
     margin: 0;
     font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     font-size: 18px;
+}
+
+div.beatmap p.title {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
+    flex: 1;
+    align-items: top;
+}
+
+div.beatmap p.mapper {
+    border: 5px solid #a24aff;
+    background-color: #a24aff;
+    border-radius: 10px;
 }
 
 /* #endregion */
