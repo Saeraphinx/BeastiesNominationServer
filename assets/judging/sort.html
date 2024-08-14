@@ -40,6 +40,14 @@
         function createBeatmap(bsapi) {
             let beatmap = document.createElement("div");
             beatmap.classList.add("beatmap");
+            let title = document.createElement("p");
+            title.classList.add("title");
+            title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : `` } by ${bsapi.metadata.songAuthorName}`;
+            title.title = title.innerText;
+            if (title.innerText.length > 19) {
+                title.innerText = title.innerText.substring(0, 19) + "...";
+            }
+            beatmap.appendChild(title);
 
             let cover = document.createElement("div");
             let coverImg = document.createElement("img");
@@ -51,11 +59,14 @@
 
             let info = document.createElement("div");
             info.classList.add("info");
-            let title = document.createElement("p");
-            title.innerText = `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}`;
-            info.appendChild(title);
             let mapper = document.createElement("p");
-            mapper.innerText = bsapi.metadata.levelAuthorName;
+            mapper.classList.add("mapper");
+            let mapperimg = document.createElement("img");
+            mapperimg.src = " " + bsapi.uploader.avatar;
+            mapperimg.width = 24;
+            mapperimg.height = 24;
+            mapper.appendChild(mapperimg);
+            mapper.innerHTML += bsapi.uploader.name;
             info.appendChild(mapper);
             beatmap.appendChild(info);
 
