@@ -24,22 +24,35 @@
     <script>
         fetch('https://api.beatsaver.com/maps/id/' + "3bbb0").then(response => response.json()).then(data => {
             console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data));
+            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck3", "ExpertPlus", "Standard", true, true));
         });
 
         fetch('https://api.beatsaver.com/maps/id/' + "34a3d").then(response => response.json()).then(data => {
             console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data));
+            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck 2", "Expert", "Standard", false, true));
         });
 
         fetch('https://api.beatsaver.com/maps/id/' + "6b55").then(response => response.json()).then(data => {
             console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data));
+            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck", "Expert", "Standard", true, true));
         });
 
-        function createBeatmap(bsapi) {
+        // TODO: 
+        // Add Diff & Char + Add Category
+        function createBeatmap(bsapi, category= "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
+            let disabledFlag = false;
+            let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
+
+            if ((showRanked || showMods) && !currDiff) {
+                showRanked = false;
+                showMods = false;
+                disabledFlag = true;
+            }
+            
             let beatmap = document.createElement("div");
             beatmap.classList.add("beatmap");
+
+            //title
             let title = document.createElement("p");
             title.classList.add("title");
             title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : `` } by ${bsapi.metadata.songAuthorName}`;
@@ -49,39 +62,73 @@
             }
             beatmap.appendChild(title);
 
+            //subtext
+            let subtext = document.createElement("p");
+            subtext.classList.add("subtext");
+            subtext.innerText = `!bsr ${bsapi.id}`;
+            beatmap.appendChild(subtext);
+            if (showMods) {
+                subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
+            } else if (showRanked) {
+                subtext.innerText += ` | SS: ${currDiff.stars || `N/A`}★ | BL: ${currDiff.blStars || `N/A`}★`;
+                if (!currDiff.stars && !currDiff.blStars) {
+                    disabledFlag = true;
+                }
+            } else if (validFullSpread) {
+                bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus") ? subtext.innerText += ` | Full Spread` : subtext.innerText += ` | Missing Difficulties`;
+                disabledFlag = true;
+            } else if (disabledFlag) {
+                subtext.innerText += ` | Invalid Difficulty`;
+            } 
+
+            //cover
             let cover = document.createElement("div");
             let coverImg = document.createElement("img");
             coverImg.src = bsapi.versions[0].coverURL;
-            coverImg.width = 192;
-            coverImg.height = 192;
+            coverImg.width = 128;
+            coverImg.height = 128;
             cover.appendChild(coverImg);
             beatmap.appendChild(cover);
 
-            let info = document.createElement("div");
-            info.classList.add("info");
-            let mapper = document.createElement("p");
+            //mappers
+            let mappers = document.createElement("div");
+            mappers.classList.add("mappers");
+            let mapperText = document.createElement("p");
+            mapperText.innerText = "Mapper(s):";
+            mapperText.classList.add("mapperText");
+            mappers.appendChild(mapperText);
+            let mapper = document.createElement("div");
+            let mappername = document.createElement("p");
             mapper.classList.add("mapper");
+            mappername.innerText = bsapi.metadata.levelAuthorName;
             let mapperimg = document.createElement("img");
-            mapperimg.src = " " + bsapi.uploader.avatar;
+            mapperimg.src =  bsapi.uploader.avatar;
             mapperimg.width = 24;
             mapperimg.height = 24;
             mapper.appendChild(mapperimg);
-            mapper.innerHTML += bsapi.uploader.name;
-            info.appendChild(mapper);
-            beatmap.appendChild(info);
+            mapper.appendChild(mappername);
+            mappers.appendChild(mapper);
+            beatmap.appendChild(mappers);
 
+            //buttons
             let buttons = document.createElement("div");
-            
+            buttons.classList.add("actions");
+            let actionsText = document.createElement("p");
+            actionsText.innerText = "Actions:";
+            buttons.appendChild(actionsText);
             let approveButton = document.createElement("button");
             approveButton.innerText = "Approve";
             let rejectButton = document.createElement("button");
             rejectButton.innerText = "Reject";
-            approveButton.classList.add("green-glow");
+            if(disabledFlag) {
+                approveButton.style.display = "none";
+            } else {
+                approveButton.classList.add("green-glow");
+            }
             rejectButton.classList.add("red-glow");
             buttons.appendChild(approveButton);
             buttons.appendChild(rejectButton);
             beatmap.appendChild(buttons);
-
 
             return beatmap;
         }
