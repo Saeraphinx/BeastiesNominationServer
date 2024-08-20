@@ -235,6 +235,13 @@
             min-width: 150px;
         }
 
+        small {
+            font-size: 14px;
+            text-align: center;
+            align-self: center;
+            display: none;
+        }
+
         /* #endregion */
         /* #region beatmaps */
         div.beatmaps-container {
@@ -429,7 +436,7 @@
     </div>
     <div id="countsContainer">
         <h1>Submission Counts</h1>
-        <p>These numbers refresh every minute.</p>
+        <p>The counts below have been updated to show unique maps only.<br>This section updates every minute.</p>
         <div id="counts">
             <span>
                 <p class="countLabel">OST Map</p>
@@ -523,7 +530,7 @@
             </span>
         </div>
         <span style="width: 60%; max-width: 500px;">
-            <p class="countLabel">Total Submissions</p>
+            <p class="countLabel">Unique Submissions</p>
             <p class="count" id="totalCount">0</p>
         </span>
     </div>
@@ -823,29 +830,30 @@
                 }
             }).then(response => response.json())
                 .then(data => {
-                    document.getElementById('totalCount').innerHTML = data.Total;
-                    document.getElementById('mapotyCount').innerHTML = data.MapOfTheYear;
-                    document.getElementById('mapperotyCount').innerHTML = data.MapperOfTheYear;
-                    document.getElementById('lighterotyCount').innerHTML = data.LighterOfTheYear;
-                    document.getElementById('rookiemapperotyCount').innerHTML = data.RookieMapperOfTheYear;
-                    document.getElementById('rookielighterotyCount').innerHTML = data.RookieLighterOfTheYear;
-                    document.getElementById('packotyCount').innerHTML = data.PackOfTheYear;
-                    document.getElementById('ostCount').innerHTML = data.OSTMap;
-                    document.getElementById('altCount').innerHTML = data.AlternativeMap;
-                    document.getElementById('fullspreadCount').innerHTML = data.FullSpreadMap;
-                    document.getElementById('lightshowCount').innerHTML = data.Lightshow;
-                    document.getElementById('modchartCount').innerHTML = data.Modchart;
-                    document.getElementById('artmapCount').innerHTML = data.ArtMap;
-                    document.getElementById('rankedmapCount').innerHTML = data.RankedMap;
-                    document.getElementById('balancedCount').innerHTML = data.BalancedMap;
-                    document.getElementById('techCount').innerHTML = data.TechMap;
-                    document.getElementById('speedCount').innerHTML = data.SpeedMap;
-                    document.getElementById('danceCount').innerHTML = data.DanceMap;
-                    document.getElementById('fitnessCount').innerHTML = data.FitnessMap;
-                    document.getElementById('challengeCount').innerHTML = data.ChallengeMap;
-                    document.getElementById('accCount').innerHTML = data.AccMap;
-                    document.getElementById('poodleCount').innerHTML = data.PoodleMap;
-                    document.getElementById('gimmickCount').innerHTML = data.GimmickMap;
+                    // how bad can i possibly be
+                    document.getElementById('totalCount').innerHTML = `${data[1].Total} <small>(${data[0].Total})</small>`;
+                    document.getElementById('mapotyCount').innerHTML = `${data[1].MapOfTheYear} <small>(${data[0].MapOfTheYear})</small>`;
+                    document.getElementById('mapperotyCount').innerHTML = `${data[1].MapperOfTheYear} <small>(${data[0].MapperOfTheYear})</small>`;
+                    document.getElementById('lighterotyCount').innerHTML = `${data[1].LighterOfTheYear} <small>(${data[0].LighterOfTheYear})</small>`;
+                    document.getElementById('rookiemapperotyCount').innerHTML = `${data[1].RookieMapperOfTheYear} <small>(${data[0].RookieMapperOfTheYear})</small>`;
+                    document.getElementById('rookielighterotyCount').innerHTML = `${data[1].RookieLighterOfTheYear} <small>(${data[0].RookieLighterOfTheYear})</small>`;
+                    document.getElementById('packotyCount').innerHTML = `${data[1].PackOfTheYear} <small>(${data[0].PackOfTheYear})</small>`;
+                    document.getElementById('ostCount').innerHTML = `${data[1].OSTMap} <small>(${data[0].OSTMap})`;
+                    document.getElementById('altCount').innerHTML = `${data[1].AlternativeMap} <small>(${data[0].AlternativeMap})</small>`;
+                    document.getElementById('fullspreadCount').innerHTML = `${data[1].FullSpreadMap} <small>(${data[0].FullSpreadMap})</small>`;
+                    document.getElementById('lightshowCount').innerHTML = `${data[1].Lightshow} <small>(${data[0].Lightshow})</small>`;
+                    document.getElementById('modchartCount').innerHTML = `${data[1].Modchart} <small>(${data[0].Modchart})</small>`;
+                    document.getElementById('artmapCount').innerHTML = `${data[1].ArtMap} <small>(${data[0].ArtMap})</small>`;
+                    document.getElementById('rankedmapCount').innerHTML = `${data[1].RankedMap} <small>(${data[0].RankedMap})</small>`;
+                    document.getElementById('balancedCount').innerHTML = `${data[1].BalancedMap} <small>(${data[0].BalancedMap})</small>`;
+                    document.getElementById('techCount').innerHTML = `${data[1].TechMap} <small>(${data[0].TechMap})</small>`;
+                    document.getElementById('speedCount').innerHTML = `${data[1].SpeedMap} <small>(${data[0].SpeedMap})</small>`;
+                    document.getElementById('danceCount').innerHTML = `${data[1].DanceMap} <small>(${data[0].DanceMap})</small>`;
+                    document.getElementById('fitnessCount').innerHTML = `${data[1].FitnessMap} <small>(${data[0].FitnessMap})</small>`;
+                    document.getElementById('challengeCount').innerHTML = `${data[1].ChallengeMap} <small>(${data[0].ChallengeMap})</small>`;
+                    document.getElementById('accCount').innerHTML = `${data[1].AccMap} <small>(${data[0].AccMap})</small>`;
+                    document.getElementById('poodleCount').innerHTML = `${data[1].PoodleMap} <small>(${data[0].PoodleMap})</small>`;
+                    document.getElementById('gimmickCount').innerHTML = `${data[1].GimmickMap} <small>(${data[0].GimmickMap})</small>`;
 
                     // of my god im so sorry for this
                     let allElements = document.getElementsByClassName("count");

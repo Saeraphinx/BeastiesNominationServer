@@ -192,7 +192,7 @@ export class DatabaseHelper {
         return NominationStatusResponse.Accepted;
     }
 
-    public static async getNominationCount() : Promise<NominationCount> {
+    public static async getNominationCount() : Promise<NominationCount[]> {
         const counts = {
             Total: await DatabaseHelper.database.nominations.count(),
             MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapOfTheYear } }),
@@ -218,7 +218,34 @@ export class DatabaseHelper {
             PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
             GimmickMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.GimmickMap } }),
         };
-        return counts;
+
+        const uniqueCategories = {
+            MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.MapOfTheYear}, distinct: true, col: `bsrId` }),
+            MapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.MapperOfTheYear}, distinct: true, col: `name` }),
+            LighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.LighterOfTheYear}, distinct: true, col: `name` }),
+            RookieMapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RookieMapperOfTheYear}, distinct: true, col: `name` }),
+            RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RookieLighterOfTheYear}, distinct: true, col: `name` }),
+            PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PackOfTheYear}, distinct: true, col: `name` }),
+            OSTMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.OST}, distinct: true, col: `name` }),
+            AlternativeMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.AlternativeMap}, distinct: true, col: `bsrId` }),
+            FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.FullSpreadMap}, distinct: true, col: `bsrId` }),
+            Lightshow: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.Lightshow}, distinct: true, col: `bsrId` }),
+            Modchart: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.Modchart}, distinct: true, col: `bsrId` }),
+            ArtMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ArtMap}, distinct: true, col: `bsrId` }),
+            RankedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RankedMap}, distinct: true, col: `bsrId` }),
+            BalancedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.BalancedMap}, distinct: true, col: `bsrId` }),
+            TechMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.TechMap}, distinct: true, col: `bsrId` }),
+            SpeedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.SpeedMap}, distinct: true, col: `bsrId` }),
+            DanceMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.DanceMap}, distinct: true, col: `bsrId` }),
+            FitnessMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.FitnessMap}, distinct: true, col: `bsrId` }),
+            ChallengeMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ChallengeMap}, distinct: true, col: `bsrId` }),
+            AccMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.AccMap}, distinct: true, col: `bsrId` }),
+            PoodleMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PoodleMap}, distinct: true, col: `bsrId` }),
+            GimmickMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GimmickMap}, distinct: true, col: `bsrId` }),
+            Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
+        };
+        console.log(counts, uniqueCategories);
+        return [counts, uniqueCategories];
     }
 
     public static isNameRequired(category: string): boolean {

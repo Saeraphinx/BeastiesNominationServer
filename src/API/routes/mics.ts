@@ -4,7 +4,7 @@ import path from 'node:path';
 
 export class MiscRoutes {
     private app: Express;
-    private submissionCountCache: NominationCount;
+    private submissionCountCache: NominationCount[];
 
     constructor(app: Express) {
         this.app = app;
