@@ -244,7 +244,7 @@ export class DatabaseHelper {
             GimmickMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GimmickMap}, distinct: true, col: `bsrId` }),
             Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
         };
-        console.log(counts, uniqueCategories);
+        //console.log(counts, uniqueCategories);
         return [counts, uniqueCategories];
     }
 
