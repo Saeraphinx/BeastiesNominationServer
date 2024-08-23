@@ -1,6 +1,6 @@
 import path from "path";
 import { exit } from "process";
-import { DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Sequelize } from "sequelize";
+import { DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Op, Sequelize } from "sequelize";
 import { storage } from '../../storage/config.json';
 
 export class DatabaseManager {
@@ -280,13 +280,17 @@ export class DatabaseHelper {
         characteristic?: Characteristic,
     }): Promise<NominationStatusResponse> {
         let existingRecords;
+        let sortedrecord: NominationAttributes;
         if (this.isNameRequired(category)) {
             existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, name: content.name, category: category } });
+            sortedrecord = await DatabaseHelper.database.nominations.findOne({where: { category: category, name: content.name, filterStatus: {[Op.not]: null}}});
         } else {
             if (this.isDiffCharRequired(category)) {
                 existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category, difficulty: content.difficulty, characteristic: content.characteristic } });
+                sortedrecord = await DatabaseHelper.database.nominations.findOne({where: {bsrId: content.bsrId, category: category, characteristic: content.characteristic, difficulty: content.difficulty, filterStatus: {[Op.not]: null}}});
             } else {
                 existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
+                sortedrecord = await DatabaseHelper.database.nominations.findOne({where: { bsrId: content.bsrId, category: category, filterStatus: {[Op.not]: null} }});
             }
         }
 
@@ -298,11 +302,36 @@ export class DatabaseHelper {
             return NominationStatusResponse.InvalidCategory;
         }
 
+        let sortedRecordInfo: {isSorted:boolean, status?: FilterStatus, nominationId?: number|null, filtererId?:string};
+        sortedRecordInfo = {isSorted: false};
+        switch (sortedrecord.filterStatus) {
+            case `Accepted`:
+            case `Duplicate`:
+                sortedRecordInfo = {
+                    isSorted: true,
+                    status: `Duplicate`,
+                    nominationId: sortedrecord.nominationId,
+                    filtererId: sortedrecord.filtererId
+                };
+                break;
+            case `Rejected`:
+            case `RejectedDuplicate`:
+                sortedRecordInfo = {
+                    isSorted: true,
+                    status: `RejectedDuplicate`,
+                    nominationId: null,
+                    filtererId: sortedrecord.filtererId
+                };
+        }
+
         if (this.isNameRequired(category)) {
             await DatabaseHelper.database.nominations.create({
                 submitterId: submitterId,
                 category: category,
                 name: content.name,
+                filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
+                nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
+                filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
             });
         } else {
             if (this.isDiffCharRequired(category)) {
@@ -314,6 +343,9 @@ export class DatabaseHelper {
                     name: content.name,
                     difficulty: content.difficulty,
                     characteristic: content.characteristic,
+                    filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
+                    nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
                 });
             } else {
                 await DatabaseHelper.database.nominations.create({
@@ -322,6 +354,9 @@ export class DatabaseHelper {
                     category: category,
                     bsrId: content.bsrId,
                     name: content.name,
+                    filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
+                    nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
                 });
             }
         }
