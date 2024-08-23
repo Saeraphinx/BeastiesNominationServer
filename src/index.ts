@@ -8,6 +8,7 @@ import path from 'path';
 import { server, devmode } from '../storage/config.json';
 import { AuthRoutes } from './API/routes/auth';
 import { MiscRoutes } from './API/routes/mics';
+import { SortingRoutes } from './API/routes/sorting';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -41,6 +42,7 @@ app.get(`/pinkcute`, (req, res) => {
 new SubmissionRoutes(app);
 new AuthRoutes(app);
 new MiscRoutes(app);
+new SortingRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 
