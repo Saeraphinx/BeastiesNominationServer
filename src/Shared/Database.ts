@@ -544,6 +544,39 @@ export enum SortedSubmissionsCategory {
     RookieMapperOfTheYear = `OTY-RookieMapper`,
 }
 
+export const SortedSubmissionsCategoryEnglish = {
+    OST: [`Gen-OST`, `OST`],
+    FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
+    AlternativeMap: [`Gen-Alternative`, `Non-Standard`],
+
+    LightshowVanilla: [`Lightshow-Vanilla`, `Lightshow Vanilla`],
+    LightshowVanillaPlus: [`Lightshow-VanillaPlus`, `Lightshow Vanilla+`],
+    LightshowChroma: [`Lightshow-Chroma`, `Lightshow Chroma`],
+    LightshowChromaPlus: [`Lightshow-ChromaPlus`, `Lightshow Chroma+`],
+
+    Modchart: [`Mods-Modchart`, `Modchart`],
+    ArtMap: [`Mods-ArtMap`, `Art Map`],
+
+    RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
+    RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
+
+    BalancedMap: [`Style-Balanced`, `Balanced`],
+    TechMap: [`Style-Tech`, `Tech`],
+    SpeedMap: [`Style-Speed`, `Speed`],
+    DanceMap: [`Style-Dance`, `Dance`],
+    FitnessMap: [`Style-Fitness`, `Fitness`],
+    ChallengeMap: [`Style-Challenge`, `Challenge`],
+    AccMap: [`Style-Acc`, `Acc`],
+    PoodleMap: [`Style-Poodle`, `Poodle`],
+    GimmickMap: [`Style-Gimmick`, `Gimmick`],
+
+    MapOfTheYear: [`OTY-Map`, `Map of the Year`],
+    MapperOfTheYear: [`OTY-Mapper`, `Mapper of the Year`],
+    LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
+    RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
+    RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
+    PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
+}
 /*
     Beasties Admin will go through the nominations and sort them into the correct categories & clean up data (if applicable) [NominationAttributes -> SortedSubmission]
 
