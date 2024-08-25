@@ -15,33 +15,45 @@
         <iframe id="ArcViewer" frameborder="0"></iframe>
     </div>
     <div class="overlay" id="sortmodal" style="display: none;" onclick="closeModal()">
-        <div>
-            <form id="form">
-                <label for="category">Category:</label>
-                <select id="category" name="Category">
+        <div class="form">
+            <span onclick="stopBubble(event)">
+                <form id="form" >
+                    <h2>Accept Submission</h2>
+                    <p>Ensure this data is correct and valid before accepting the submission.</p>
+                    <label for="nomId">Nomination ID</label>
+                    <input type="text" id="nomId" name="nomId" readonly>
+                    <label for="category">Category:</label>
+                    <select id="category" name="Category">
+                    </select>
 
-                </select>
-                <label for="char">Characteristic:</label>
-                <select id="char">
-                    <option value="Standard">Standard</option>
-                    <option value="OneSaber">One Saber</option>
-                    <option value="NoArrows">No Arrows</option>
-                    <option value="360Degree">360 Degree</option>
-                    <option value="90Degree">90 Degree</option>
-                    <option value="Lawless">Lawless</option>
-                    <option value="Lightshow">Lightshow</option>
-                    <option value="Legacy">Legacy</option>
-                </select>
-                <label for="diff">Difficulty:</label>
-                <select id="diff">
-                    <option value="Easy">Easy</option>
-                    <option value="Normal">Normal</option>
-                    <option value="Hard">Hard</option>
-                    <option value="Expert">Expert</option>
-                    <option value="ExpertPlus">Expert+</option>
-                    <option value="Other" style="display: none;">All</option>
-                </select>
-            </form>
+                    <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
+                    <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
+
+                    <label class="name" id="nameLabel" for="name">BeatSaver URL</label></b>
+                    <input class="name" type="text" id="name" name="name" maxlength=100 minlength=3>
+                    <label for="char">Characteristic:</label>
+                    <select id="char">
+                        <option value="Standard">Standard</option>
+                        <option value="OneSaber">One Saber</option>
+                        <option value="NoArrows">No Arrows</option>
+                        <option value="360Degree">360 Degree</option>
+                        <option value="90Degree">90 Degree</option>
+                        <option value="Lawless">Lawless</option>
+                        <option value="Lightshow">Lightshow</option>
+                        <option value="Legacy">Legacy</option>
+                    </select>
+                    <label for="diff">Difficulty:</label>
+                    <select id="diff">
+                        <option value="Easy">Easy</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Expert">Expert</option>
+                        <option value="ExpertPlus">Expert+</option>
+                        <option value="Other" style="display: none;">All</option>
+                    </select>
+                    <input type="submit" value="Submit">
+                </form>
+            </span>
         </div>
     </div>
     <nav>
@@ -96,26 +108,37 @@
         let categorySelect = document.getElementById("category");
         for (let key in categories) {
             let option = document.createElement("option");
-            option.value = key;
+            option.classList.add("categoryOption");
+            option.value = categories[key][0];
             option.innerText = categories[key][1];
             categorySelect.appendChild(option);
         }
-        //#endregion
 
+        fetch('/api/sort/getSubmissions', {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                
+            })
+        }).then(response => response.json()).then(data => {
+            for (let i = 0; i < data.length; i++) {
+                loadSubmission(data[i].nomId, data[i].bsrId, data[i].category, data[i].diff, data[i].char, data[i].showMods, data[i].showRanked, data[i].validFullSpread);
+            }
+        });
+        //#endregion
         //#region beatmaps
-        //loadSubmission("352b3", "fuck3", "ExpertPlus", "Standard", true, true, false);
-        //loadSubmission("34a3d", "fuck 2", "Expert", "Standard", false, true, false);
-        //loadSubmission("6b55", "fuck", "Expert", "Standard", true, true, false);
-        function loadSubmission(bsrId, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
+        function loadSubmission(nomId, bsrId, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
             fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => response.json()).then(data => {
                 //console.log(data);
-                document.getElementById("submissionList").appendChild(createBeatmap(data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
+                document.getElementById("submissionList").appendChild(createBeatmap(nomId, data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
             });
         }
 
         // TODO: 
         // Add Diff & Char + Add Category
-        function createBeatmap(bsapi, category = "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
+        function createBeatmap(nomId, bsapi, category = "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
             let disabledFlag = false;
             let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
 
@@ -200,6 +223,7 @@
                 approveButton.classList.add("green-glow");
             }
             rejectButton.classList.add("red-glow");
+            approveButton.onclick = (e) => openSortModal(nomId, category, selectedChar, selectedDiff, bsapi.id);
             buttons.appendChild(approveButton);
             buttons.appendChild(rejectButton);
             beatmap.appendChild(buttons);
@@ -310,16 +334,83 @@
             overlay.style.display = "none";
         }
 
-        function openSortModal(category, char, diff, bsr, name) {
+        //#endregion
+        //#region submit
+        function openSortModal(nomId, category, char, diff, bsr, name) {
             let overlay = document.getElementById("sortmodal");
             overlay.style.display = "block";
-            
+            let form = document.getElementById("form");
+            filterCategories(category.includes("Lightshow"), category.includes("Ranked")); 
+            form.nomId.value = nomId;
+            form.category.value = category || "";
+            form.char.value = char || "";
+            form.diff.value = diff || "";
+            form.bsrId.value = bsr || "";
+            form.name.value = name || "";
+            form.removeEventListener("submit", handleSubmit);
+            form.addEventListener("submit", handleSubmit);
+        } 
+
+        function handleSubmit(e) {
+            console.log("submit");
+            e.preventDefault();
+            let form = document.getElementById("form");
+            let data = new FormData(form);
+            let category = data.get("category");
+            let bsr = data.get("bsrId");
+            let name = data.get("name");
+            let char = data.get("char");
+            let diff = data.get("diff");
+            fetch(`/api/sort/approveSubmission`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    bsr: bsr,
+                    category: category,
+                    char: char,
+                    diff: diff,
+                    name: name
+                })
+            }).then(response => response.json()).then(data => {
+                closeModal(); 
+            });
+            return false; 
+        }
+
+        function filterCategories(isLighting, isRanked) {
+            let options = document.getElementsByClassName("categoryOption");
+            if (isLighting) {
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].value.includes("Lightshow")) {
+                        options[i].style.display = "block";
+                    } else {
+                        options[i].style.display = "none";
+                    }
+                }
+            } else if (isRanked) {
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].value.includes("Ranked")) {
+                        options[i].style.display = "block";
+                    } else {
+                        options[i].style.display = "none";
+                    }
+                }
+            } else {
+                for (let i = 0; i < options.length; i++) {
+                    options[i].style.display = "block";
+                }
+            } 
         }
 
         function closeModal() {
             let modal = document.getElementById("sortmodal");
-            modal.innerHTML = "";
             modal.style.display = "none";
+        }
+
+        function stopBubble(e) {
+            e.cancelBubble = true;
         }
         //#endregion
     </script>
