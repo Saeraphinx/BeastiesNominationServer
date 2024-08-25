@@ -11,7 +11,7 @@ export class MiscRoutes {
         this.loadRoutes();
         setTimeout(() => {
             this.getCount();
-        }, 5000);
+        }, 20000);
         setInterval(() => {
             this.getCount();
         }, 60000);

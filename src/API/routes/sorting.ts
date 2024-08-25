@@ -10,30 +10,38 @@ export class SortingRoutes {
     }
 
     private async loadRoutes() {
-        this.app.get('/api/sort/submissions', async (req, res) => {
-            const { category, page, pageSize } = req.body;
-            if (!req.session.id && req.session.service !== `judgeId`) {
-                return res.status(401).send({ message: `Not logged in.` });
+        this.app.get(`/api/sort/submissions`, async (req, res) => {
+            const { category, page, pageSize } = req.query;
+            if (!req.session.userId && req.session.service !== `judgeId`) {
+                //return res.status(401).send({ message: `Not logged in.` });
             }
 
-            if (typeof page != `number` || typeof pageSize != `number` || pageSize > 50) {
+            if (!page || !pageSize) {
                 return res.status(400).send({ message: `Invalid Paramenters.` });
             }
 
-            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+            let pageInt = parseInt(page as string);
+            let pageSizeInt = parseInt(pageSize as string);
+
+            if (isNaN(pageInt) || isNaN(pageSizeInt)) {
+                return res.status(400).send({ message: `Invalid Paramenters.` });
+            }
+
+            //const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
             
-            if (!judge.roles.includes(`sort`)) {
-                return res.status(403).send({ message: `You do not have permission to sort this category` });
-            }
+            //if (!judge.roles.includes(`sort`)) {
+            //    return res.status(403).send({ message: `You do not have permission to sort this category` });
+            //}
 
-            if (!category && typeof category !== `string` && validateEnumValue(category, SortedSubmissionsCategory)) {
-                return res.status(400).send({ message: `Category is required` });
-            }
+            //if (!category && typeof category !== `string` && validateEnumValue(category, SortedSubmissionsCategory)) {
+            //    return res.status(400).send({ message: `Category is required` });
+            //}
 
-            let response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: undefined } });
-            let start = pageSize * (page - 1);
+            let response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null } });
+            let start = pageSizeInt * (pageInt - 1);
 
-            return res.send({data: response.slice(start, start + pageSize), page: page, pageSize: pageSize, totalPages: Math.ceil(response.length / pageSize)});
+            return res.send({data: response.slice(start, start + pageSizeInt), page: pageInt, pageSize: pageSizeInt, totalPages: Math.ceil(response.length / pageSizeInt)});
+
         });
 
         this.app.post(`/api/sort/approveSubmission`, async (req, res) => {

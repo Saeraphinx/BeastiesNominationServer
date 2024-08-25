@@ -113,23 +113,21 @@
             option.innerText = categories[key][1];
             categorySelect.appendChild(option);
         }
-
-        fetch('/api/sort/getSubmissions', {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                
-            })
-        }).then(response => response.json()).then(data => {
-            for (let i = 0; i < data.length; i++) {
-                loadSubmission(data[i].nomId, data[i].bsrId, data[i].category, data[i].diff, data[i].char, data[i].showMods, data[i].showRanked, data[i].validFullSpread);
-            }
-        });
         //#endregion
+        function loadSubmissions(page) {
+            fetch('/api/sort/submissions?page=1&pageSize=20').then(response => response.json()).then(res => {
+                const data = res.data;
+                for (let i = 0; i < data.length; i++) {
+                    loadSubmission(data[i].nomId, data[i].bsrId, data[i].name, data[i].category, data[i].diff, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
+                }
+            });
+        }
+        loadSubmissions(1);
         //#region beatmaps
-        function loadSubmission(nomId, bsrId, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
+        function loadSubmission(nomId, bsrId, name, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
+            if (bsrId == null || bsrId.length < 4) {
+                return; //temp fix for invalid bsr keys
+            }
             fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => response.json()).then(data => {
                 //console.log(data);
                 document.getElementById("submissionList").appendChild(createBeatmap(nomId, data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
@@ -156,8 +154,8 @@
             title.classList.add("title");
             title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
             title.title = title.innerText;
-            if (title.innerText.length > 19) {
-                title.innerText = title.innerText.substring(0, 19) + "...";
+            if (title.innerText.length > 17) {
+                title.innerText = title.innerText.substring(0, 17) + "...";
             }
             beatmap.appendChild(title);
 
@@ -223,6 +221,19 @@
                 approveButton.classList.add("green-glow");
             }
             rejectButton.classList.add("red-glow");
+            rejectButton.onclick = (e) => {
+                fetch(`/api/sort/rejectSubmission`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        bsr: nomId
+                    })
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                });
+            }
             approveButton.onclick = (e) => openSortModal(nomId, category, selectedChar, selectedDiff, bsapi.id);
             buttons.appendChild(approveButton);
             buttons.appendChild(rejectButton);
@@ -323,7 +334,7 @@
             e.preventDefault();
             let iframe = document.getElementById("ArcViewer")
             iframe.src = `https://allpoland.github.io/ArcViewer/?id=${bsr}`;
-            let overlay = document.getElementById("overlay");
+            let overlay = document.getElementById("avoverlay");
             overlay.style.display = "block";
         }
 

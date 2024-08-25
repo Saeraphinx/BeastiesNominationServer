@@ -20,9 +20,7 @@ export class DatabaseManager {
 
         console.log(`Loading Database...`);
         this.loadTables();
-        this.sequelize.sync({
-            alter: true
-        }).then(() => {
+        this.sequelize.sync().then(() => {
             console.log(`Database Loaded.`);
             new DatabaseHelper(this);
         }).catch((error) => {
