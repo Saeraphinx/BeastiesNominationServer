@@ -21,6 +21,7 @@ export class DatabaseManager {
         console.log(`Loading Database...`);
         this.loadTables();
         this.sequelize.sync({
+            alter: true
         }).then(() => {
             console.log(`Database Loaded.`);
             new DatabaseHelper(this);
@@ -302,7 +303,7 @@ export class DatabaseHelper {
             return NominationStatusResponse.InvalidCategory;
         }
 
-        let sortedRecordInfo: {isSorted:boolean, status?: FilterStatus, nominationId?: number|null, filtererId?:string};
+        let sortedRecordInfo: {isSorted:boolean, status?: FilterStatus, filtererId?:string};
         sortedRecordInfo = {isSorted: false};
         switch (sortedrecord.filterStatus) {
             case `Accepted`:
@@ -310,7 +311,6 @@ export class DatabaseHelper {
                 sortedRecordInfo = {
                     isSorted: true,
                     status: `Duplicate`,
-                    nominationId: sortedrecord.nominationId,
                     filtererId: sortedrecord.filtererId
                 };
                 break;
@@ -319,7 +319,6 @@ export class DatabaseHelper {
                 sortedRecordInfo = {
                     isSorted: true,
                     status: `RejectedDuplicate`,
-                    nominationId: null,
                     filtererId: sortedrecord.filtererId
                 };
         }
@@ -330,7 +329,6 @@ export class DatabaseHelper {
                 category: category,
                 name: content.name,
                 filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
-                nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
                 filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
             });
         } else {
@@ -344,7 +342,6 @@ export class DatabaseHelper {
                     difficulty: content.difficulty,
                     characteristic: content.characteristic,
                     filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
-                    nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
                     filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
                 });
             } else {
@@ -355,7 +352,6 @@ export class DatabaseHelper {
                     bsrId: content.bsrId,
                     name: content.name,
                     filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : undefined,
-                    nominationId: sortedRecordInfo.isSorted ? sortedRecordInfo.nominationId : undefined,
                     filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
                 });
             }
@@ -417,7 +413,7 @@ export class DatabaseHelper {
             GimmickMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GimmickMap}, distinct: true, col: `bsrId` }),
             Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
         };
-        console.log(counts, uniqueCategories);
+        // console.log(counts, uniqueCategories);
         return [counts, uniqueCategories];
     }
 
