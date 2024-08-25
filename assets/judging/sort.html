@@ -11,35 +11,111 @@
 </head>
 
 <body>
+    <div class="overlay" id="avoverlay" style="display: none;" onclick="closeArcViewer()">
+        <iframe id="ArcViewer" frameborder="0"></iframe>
+    </div>
+    <div class="overlay" id="sortmodal" style="display: none;" onclick="closeModal()">
+        <div>
+            <form id="form">
+                <label for="category">Category:</label>
+                <select id="category" name="Category">
+
+                </select>
+                <label for="char">Characteristic:</label>
+                <select id="char">
+                    <option value="Standard">Standard</option>
+                    <option value="OneSaber">One Saber</option>
+                    <option value="NoArrows">No Arrows</option>
+                    <option value="360Degree">360 Degree</option>
+                    <option value="90Degree">90 Degree</option>
+                    <option value="Lawless">Lawless</option>
+                    <option value="Lightshow">Lightshow</option>
+                    <option value="Legacy">Legacy</option>
+                </select>
+                <label for="diff">Difficulty:</label>
+                <select id="diff">
+                    <option value="Easy">Easy</option>
+                    <option value="Normal">Normal</option>
+                    <option value="Hard">Hard</option>
+                    <option value="Expert">Expert</option>
+                    <option value="ExpertPlus">Expert+</option>
+                    <option value="Other" style="display: none;">All</option>
+                </select>
+            </form>
+        </div>
+    </div>
     <nav>
         <a class="nav" href="/judging">Back to Judging</a>
     </nav>
     <div class="header">
         <h1>Sort Submissions</h1>
-        <button>Refresh</button>
+        <button onclick="openSortModal()"></button>
+        <div class="page">
+            <button class="active">1</button>
+            <button>2</button>
+        </div>
     </div>
     <div class="submissionList" id="submissionList">
     </div>
 
     <script>
-        fetch('https://api.beatsaver.com/maps/id/' + "3bbb0").then(response => response.json()).then(data => {
-            console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck3", "ExpertPlus", "Standard", true, true));
-        });
+        //#region onload
+        const categories = {
+            OST: [`Gen-OST`, `OST`],
+            FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
+            AlternativeMap: [`Gen-Alternative`, `Non-Standard`],
 
-        fetch('https://api.beatsaver.com/maps/id/' + "34a3d").then(response => response.json()).then(data => {
-            console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck 2", "Expert", "Standard", false, true));
-        });
+            LightshowVanilla: [`Lightshow-Vanilla`, `Lightshow Vanilla`],
+            LightshowVanillaPlus: [`Lightshow-VanillaPlus`, `Lightshow Vanilla+`],
+            LightshowChroma: [`Lightshow-Chroma`, `Lightshow Chroma`],
+            LightshowChromaPlus: [`Lightshow-ChromaPlus`, `Lightshow Chroma+`],
 
-        fetch('https://api.beatsaver.com/maps/id/' + "6b55").then(response => response.json()).then(data => {
-            console.log(data);
-            document.getElementById("submissionList").appendChild(createBeatmap(data, "fuck", "Expert", "Standard", true, true));
-        });
+            Modchart: [`Mods-Modchart`, `Modchart`],
+            ArtMap: [`Mods-ArtMap`, `Art Map`],
+
+            RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
+            RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
+
+            BalancedMap: [`Style-Balanced`, `Balanced`],
+            TechMap: [`Style-Tech`, `Tech`],
+            SpeedMap: [`Style-Speed`, `Speed`],
+            DanceMap: [`Style-Dance`, `Dance`],
+            FitnessMap: [`Style-Fitness`, `Fitness`],
+            ChallengeMap: [`Style-Challenge`, `Challenge`],
+            AccMap: [`Style-Acc`, `Acc`],
+            PoodleMap: [`Style-Poodle`, `Poodle`],
+            GimmickMap: [`Style-Gimmick`, `Gimmick`],
+
+            MapOfTheYear: [`OTY-Map`, `Map of the Year`],
+            MapperOfTheYear: [`OTY-Mapper`, `Mapper of the Year`],
+            LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
+            PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
+        };
+        let categorySelect = document.getElementById("category");
+        for (let key in categories) {
+            let option = document.createElement("option");
+            option.value = key;
+            option.innerText = categories[key][1];
+            categorySelect.appendChild(option);
+        }
+        //#endregion
+
+        //#region beatmaps
+        //loadSubmission("352b3", "fuck3", "ExpertPlus", "Standard", true, true, false);
+        //loadSubmission("34a3d", "fuck 2", "Expert", "Standard", false, true, false);
+        //loadSubmission("6b55", "fuck", "Expert", "Standard", true, true, false);
+        function loadSubmission(bsrId, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
+            fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => response.json()).then(data => {
+                //console.log(data);
+                document.getElementById("submissionList").appendChild(createBeatmap(data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
+            });
+        }
 
         // TODO: 
         // Add Diff & Char + Add Category
-        function createBeatmap(bsapi, category= "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
+        function createBeatmap(bsapi, category = "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
             let disabledFlag = false;
             let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
 
@@ -48,14 +124,14 @@
                 showMods = false;
                 disabledFlag = true;
             }
-            
+
             let beatmap = document.createElement("div");
             beatmap.classList.add("beatmap");
 
             //title
             let title = document.createElement("p");
             title.classList.add("title");
-            title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : `` } by ${bsapi.metadata.songAuthorName}`;
+            title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
             title.title = title.innerText;
             if (title.innerText.length > 19) {
                 title.innerText = title.innerText.substring(0, 19) + "...";
@@ -69,6 +145,9 @@
             beatmap.appendChild(subtext);
             if (showMods) {
                 subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
+                if (!currDiff.ne && !currDiff.chroma) {
+                    disabledFlag = true;
+                }
             } else if (showRanked) {
                 subtext.innerText += ` | SS: ${currDiff.stars || `N/A`}★ | BL: ${currDiff.blStars || `N/A`}★`;
                 if (!currDiff.stars && !currDiff.blStars) {
@@ -79,7 +158,7 @@
                 disabledFlag = true;
             } else if (disabledFlag) {
                 subtext.innerText += ` | Invalid Difficulty`;
-            } 
+            }
 
             //cover
             let cover = document.createElement("div");
@@ -91,23 +170,18 @@
             beatmap.appendChild(cover);
 
             //mappers
-            let mappers = document.createElement("div");
-            mappers.classList.add("mappers");
             let mapperText = document.createElement("p");
             mapperText.innerText = "Mapper(s):";
             mapperText.classList.add("mapperText");
-            mappers.appendChild(mapperText);
-            let mapper = document.createElement("div");
-            let mappername = document.createElement("p");
-            mapper.classList.add("mapper");
-            mappername.innerText = bsapi.metadata.levelAuthorName;
-            let mapperimg = document.createElement("img");
-            mapperimg.src =  bsapi.uploader.avatar;
-            mapperimg.width = 24;
-            mapperimg.height = 24;
-            mapper.appendChild(mapperimg);
-            mapper.appendChild(mappername);
-            mappers.appendChild(mapper);
+            beatmap.appendChild(mapperText);
+            let mappers = document.createElement("div");
+            mappers.classList.add("mappers");
+            mappers.appendChild(generateMapperBlurb(bsapi.uploader));
+            if (bsapi.collaborators) {
+                for (let i = 0; i < bsapi.collaborators.length; i++) {
+                    mappers.appendChild(generateMapperBlurb(bsapi.collaborators[i]));
+                }
+            }
             beatmap.appendChild(mappers);
 
             //buttons
@@ -120,7 +194,7 @@
             approveButton.innerText = "Approve";
             let rejectButton = document.createElement("button");
             rejectButton.innerText = "Reject";
-            if(disabledFlag) {
+            if (disabledFlag) {
                 //approveButton.style.display = "none";
             } else {
                 approveButton.classList.add("green-glow");
@@ -129,6 +203,29 @@
             buttons.appendChild(approveButton);
             buttons.appendChild(rejectButton);
             beatmap.appendChild(buttons);
+
+            // buttons
+            let buttonContainer = document.createElement("div");
+            buttonContainer.classList.add("buttonContainer");
+            //let playButton = document.createElement("a");
+            //playButton.innerText = "▶️";
+            //buttonContainer.appendChild(playButton);
+            let viewButton = document.createElement("a");
+            viewButton.innerText = "👁️";
+            viewButton.onclick = (e) => openArcViewer(e, bsapi.id);
+            viewButton.href = `https://allpoland.github.io/ArcViewer/?id=${bsapi.id}`;
+            viewButton.target = "_top";
+            buttonContainer.appendChild(viewButton);
+            let oneclickButton = document.createElement("a");
+            oneclickButton.innerText = "☁";
+            oneclickButton.href = `beatsaver://${bsapi.id}`;
+            buttonContainer.appendChild(oneclickButton);
+            let downloadButton = document.createElement("a");
+            downloadButton.innerText = "⬇️";
+            downloadButton.href = bsapi.versions[0].downloadURL;
+            downloadButton.target = "_blank";
+            buttonContainer.appendChild(downloadButton);
+            beatmap.appendChild(buttonContainer);
 
             return beatmap;
         }
@@ -183,5 +280,47 @@
             }
             return returnObj;
         }
+
+        function generateMapperBlurb(bsapi) {
+            let mapper = document.createElement("div");
+            let mappername = document.createElement("p");
+            mapper.classList.add("mapper");
+            mappername.innerText = bsapi.name;
+            let mapperimg = document.createElement("img");
+            mapperimg.src = bsapi.avatar;
+            mapperimg.width = 24;
+            mapperimg.height = 24;
+            mapper.appendChild(mapperimg);
+            mapper.appendChild(mappername);
+            return mapper;
+        }
+
+        function openArcViewer(e, bsr) {
+            e.preventDefault();
+            let iframe = document.getElementById("ArcViewer")
+            iframe.src = `https://allpoland.github.io/ArcViewer/?id=${bsr}`;
+            let overlay = document.getElementById("overlay");
+            overlay.style.display = "block";
+        }
+
+        function closeArcViewer() {
+            let iframe = document.getElementById("ArcViewer")
+            iframe.src = "";
+            let overlay = document.getElementById("avoverlay");
+            overlay.style.display = "none";
+        }
+
+        function openSortModal(category, char, diff, bsr, name) {
+            let overlay = document.getElementById("sortmodal");
+            overlay.style.display = "block";
+            
+        }
+
+        function closeModal() {
+            let modal = document.getElementById("sortmodal");
+            modal.innerHTML = "";
+            modal.style.display = "none";
+        }
+        //#endregion
     </script>
 </body>
