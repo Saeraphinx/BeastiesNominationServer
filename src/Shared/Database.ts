@@ -127,6 +127,7 @@ export class DatabaseManager {
             roles: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: JSON.stringify([]),
                 get() {
                     // @ts-expect-error 2345
                     return JSON.parse(this.getDataValue(`roles`));
@@ -147,6 +148,7 @@ export class DatabaseManager {
             beatSaverIds: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: JSON.stringify([]),
                 get() {
                     // @ts-expect-error 2345
                     return JSON.parse(this.getDataValue(`beatSaverIds`));
@@ -159,6 +161,7 @@ export class DatabaseManager {
             permittedCategories: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: JSON.stringify([]),
                 get() {
                     // @ts-expect-error 2345
                     return JSON.parse(this.getDataValue(`permittedCategories`));
@@ -428,7 +431,7 @@ export class DatabaseHelper {
     }
 
     public static isDiffCharRequiredSortedSubmission(category: string): boolean {
-        return category != SortedSubmissionsCategory.PackOfTheYear && category != SortedSubmissionsCategory.MapperOfTheYear && category != SortedSubmissionsCategory.LighterOfTheYear && category != SortedSubmissionsCategory.RookieMapperOfTheYear && category != SortedSubmissionsCategory.RookieLighterOfTheYear && category != SortedSubmissionsCategory.FullSpreadMap;
+        return category != SortedSubmissionsCategory.PackOfTheYear && category != SortedSubmissionsCategory.MapperOfTheYear && category != SortedSubmissionsCategory.LighterOfTheYear && category != SortedSubmissionsCategory.RookieMapperOfTheYear && category != SortedSubmissionsCategory.RookieLighterOfTheYear && category != SortedSubmissionsCategory.FullSpreadMap && category != SortedSubmissionsCategory.OST;
     }
 }
 

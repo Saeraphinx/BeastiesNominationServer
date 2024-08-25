@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="style.css" rel="stylesheet">!-->
+    <link href="/judging/style.css" rel="stylesheet">
+
+</head>
+<body>
+    <nav>
+        <a class="nav active" href="/judging">Home</a>
+        <a class="nav" href="/judging/sort">Sort Submissions</a>
+        <a class="nav" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" id="login" href="/api/auth/discord">Login</a>
+    </nav>
+    <div class="header">
+        <h1>2024 BeastSaber Mapping Awards</h1>
+        <p>Judge's Homepage</p>
+    </div>
+    <div class="header">
+        <h2>Instructions & Notices</h2>
+        <p>Use the navigation bar above to navigate to the different judging pages.</p>
+        <p>Remember to log in using the "Login" button in the navigation bar. All pages & endpoints (except this one) are protected behind the judge or sort role. The pages will not work if you do not log in. Please contact Saeraphinx to get access to a category.</p>
+    </div>
+    <script>
+        fetch('/api/auth/judging').then(response => {
+            if (response.status == 200) {
+               let loginButton = document.getElementById('login');
+                loginButton.innerHTML = "Logout";
+                loginButton.href = "/api/auth/logout";
+            } else {
+                //window.location.href = "/judging";
+            }
+        });
+    </script>
+</body>

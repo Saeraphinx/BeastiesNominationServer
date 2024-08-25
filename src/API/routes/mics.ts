@@ -86,14 +86,29 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/success.html`));
         });
 
-        this.app.get(`/judging/sort`, (req, res) => {
+        this.app.get(`/judging/sort`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`sort`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
             res.sendFile(path.resolve(`assets/judging/sort.html`));
         });
 
-        this.app.get(`/judging/style.css`, (req, res) => {
+        this.app.get(`/judging`, (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/index.html`));
+        });
+
+        this.app.get(`/judging/style.css`, async (req, res) => {
             res.sendFile(path.resolve(`assets/judging/style.css`));
         });
     }
 
-   
+    private redirectTo(url: string) {
+        return `<head><meta http-equiv="refresh" content="0; url=${url}" /></head><body><a href="${url}">Click here if you are not redirected...</a></body>`;
+    }
 }

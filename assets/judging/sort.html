@@ -5,7 +5,7 @@
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="style.css" rel="stylesheet">
+    <!--<link href="style.css" rel="stylesheet">!-->
     <link href="/judging/style.css" rel="stylesheet">
 
 </head>
@@ -23,16 +23,16 @@
                     <label for="nomId">Nomination ID</label>
                     <input type="text" id="nomId" name="nomId" readonly>
                     <label for="category">Category:</label>
-                    <select id="category" name="Category">
+                    <select id="category" name="category">
                     </select>
 
                     <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
                     <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
 
-                    <label class="name" id="nameLabel" for="name">BeatSaver URL</label></b>
+                    <label class="name" id="nameLabel" for="name">BeatSaver ID / OST String</label></b>
                     <input class="name" type="text" id="name" name="name" maxlength=100 minlength=3>
                     <label for="char">Characteristic:</label>
-                    <select id="char">
+                    <select name="char" id="char">
                         <option value="Standard">Standard</option>
                         <option value="OneSaber">One Saber</option>
                         <option value="NoArrows">No Arrows</option>
@@ -43,7 +43,7 @@
                         <option value="Legacy">Legacy</option>
                     </select>
                     <label for="diff">Difficulty:</label>
-                    <select id="diff">
+                    <select name="diff" id="diff">
                         <option value="Easy">Easy</option>
                         <option value="Normal">Normal</option>
                         <option value="Hard">Hard</option>
@@ -57,12 +57,18 @@
         </div>
     </div>
     <nav>
-        <a class="nav" href="/judging">Back to Judging</a>
+        <a class="nav" href="/judging">Home</a>
+        <a class="nav active" href="/judging/sort">Sort Submissions</a>
+        <a class="nav" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" href="/api/auth/logout">Logout</a>
     </nav>
     <div class="header">
         <h1>Sort Submissions</h1>
-        <button onclick="openSortModal()"></button>
-        <div class="page">
+        <p>Sort submissions into their respective categories. Mapper & Lighter & Pack categories <b>MUST BE A BEATSAVER USER/PLAYLIST ID.</b> If this is not done, then the submission will be ignored.</p>
+        <button onclick="openSortModal()">Debug Modal</button>
+        <button onclick="loadSubmissions()">Refresh</button>
+        <div id="pages" class="page">
             <button class="active">1</button>
             <button>2</button>
         </div>
@@ -71,7 +77,15 @@
     </div>
 
     <script>
+        let activePage = 1;
         //#region onload
+        fetch('/api/auth/judging').then(response => {
+            if (response.status == 200) {
+                
+            } else {
+                window.location.href = "/judging";
+            }
+        });
         const categories = {
             OST: [`Gen-OST`, `OST`],
             FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
@@ -114,22 +128,54 @@
             categorySelect.appendChild(option);
         }
         //#endregion
-        function loadSubmissions(page) {
-            fetch('/api/sort/submissions?page=1&pageSize=20').then(response => response.json()).then(res => {
+        function loadSubmissions(page = activePage) {
+            activePage = page;
+            fetch(`/api/sort/submissions?page=${page}&pageSize=10`).then(response => response.json()).then(res => {
                 const data = res.data;
+                document.getElementById("submissionList").innerHTML = "";
                 for (let i = 0; i < data.length; i++) {
-                    loadSubmission(data[i].nomId, data[i].bsrId, data[i].name, data[i].category, data[i].diff, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
+                    loadSubmission(data[i].nominationId, data[i].bsrId, data[i].name, data[i].category, data[i].diff, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
+                }
+                let pageDiv = document.getElementById("pages");
+                pageDiv.innerHTML = "";
+                for (let i = 0; i < res.totalPages; i++) {
+                    let button = document.createElement("button");
+                    button.innerText = i + 1;
+                    button.onclick = (e) => {
+                        loadSubmissions(i + 1);
+                    }
+                    if (i + 1 === page) {
+                        button.classList.add("active");
+                    }
+                    pageDiv.appendChild(button);
                 }
             });
         }
         loadSubmissions(1);
+        //loadSubmission("1", null, "https://beatsaver.com/profile/4234633", "OTY-Mapper", null, null, false, false, false);
         //#region beatmaps
+        let cache = [];
         function loadSubmission(nomId, bsrId, name, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
             if (bsrId == null || bsrId.length < 4) {
+                if ((category.includes("Mapper") || category.includes("Lighter")) && name?.includes("https://beatsaver.com/profile/")) {
+                    let nonEmbedElement = document.getElementById("submissionList").appendChild(createName(nomId, name, null, name, null, category));
+                    let id = name.split("https://beatsaver.com/profile/")[1];
+                    fetch(`https://api.beatsaver.com/users/id/${id}`).then(response => response.json()).then(data => {
+                        nonEmbedElement.remove();
+                        document.getElementById("submissionList").appendChild(createName(nomId, data.name, data.stats.firstUpload, name, data.avatar, category));
+                    });
+                    return;
+                }
+                document.getElementById("submissionList").appendChild(createName(nomId, name, null, name, null, category));
                 return; //temp fix for invalid bsr keys
+            }
+            if (cache.find(beatmap => beatmap.id === bsrId)) {
+                document.getElementById("submissionList").appendChild(createBeatmap(nomId, cache.find(beatmap => beatmap.id === bsrId), category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
+                return;
             }
             fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => response.json()).then(data => {
                 //console.log(data);
+                cache.push(data);
                 document.getElementById("submissionList").appendChild(createBeatmap(nomId, data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
             });
         }
@@ -149,13 +195,39 @@
             let beatmap = document.createElement("div");
             beatmap.classList.add("beatmap");
 
+            //diff & char
+            let diffColors = document.createElement("div");
+            diffColors.classList.add("beatmaps");
+            diffColors.classList.add("difficulties");
+            if (!validFullSpread) {
+                let bnsStuff = convertToBNS(selectedChar, selectedDiff);
+                let diff = document.createElement("div");
+                diff.classList.add("beatmaps");
+                diff.classList.add("difficulty");
+                diff.style.backgroundColor = "#" + bnsStuff.color;
+                let img = document.createElement("img");
+                img.src = "/cdn/char/" + bnsStuff.charecteristic + ".svg";
+                img.alt = selectedChar + " " + selectedDiff;
+                img.width = "20";
+                img.height = "20";
+                img.style = "padding-left: 4px;";
+                img.title = selectedChar + " " + selectedDiff;
+                diff.appendChild(img);
+                diffColors.appendChild(diff);
+            }
+            let catText = document.createElement("p");
+            catText.classList.add("category");
+            catText.innerText = category;
+            diffColors.appendChild(catText);
+            beatmap.appendChild(diffColors);
+
             //title
             let title = document.createElement("p");
             title.classList.add("title");
             title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
             title.title = title.innerText;
-            if (title.innerText.length > 17) {
-                title.innerText = title.innerText.substring(0, 17) + "...";
+            if (title.innerText.length > 18) {
+                title.innerText = title.innerText.substring(0, 15) + "...";
             }
             beatmap.appendChild(title);
 
@@ -175,8 +247,12 @@
                     disabledFlag = true;
                 }
             } else if (validFullSpread) {
-                bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus") ? subtext.innerText += ` | Full Spread` : subtext.innerText += ` | Missing Difficulties`;
-                disabledFlag = true;
+                if (bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus")) {
+                    subtext.innerText += ` | Full Spread`;
+                } else {
+                    subtext.innerText += ` | Missing Difficulties`;
+                    disabledFlag = true;
+                }
             } else if (disabledFlag) {
                 subtext.innerText += ` | Invalid Difficulty`;
             }
@@ -228,10 +304,11 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        bsr: nomId
+                        id: nomId
                     })
                 }).then(response => response.json()).then(data => {
                     console.log(data);
+                    loadSubmissions(activePage);
                 });
             }
             approveButton.onclick = (e) => openSortModal(nomId, category, selectedChar, selectedDiff, bsapi.id);
@@ -261,6 +338,78 @@
             downloadButton.target = "_blank";
             buttonContainer.appendChild(downloadButton);
             beatmap.appendChild(buttonContainer);
+
+            return beatmap;
+        }
+
+        function createName(nomId, titleText, subtextText, rawnameText, imageUrl, category = "you fucked up") {
+            let disabledFlag = false;
+            
+            let beatmap = document.createElement("div");
+            beatmap.classList.add("beatmap");
+
+            let catText = document.createElement("p");
+            catText.classList.add("category");
+            catText.innerText = category;
+            beatmap.appendChild(catText);
+
+            //title
+            let title = document.createElement("p");
+            title.classList.add("title");
+            title.innerText = `${titleText}`
+            beatmap.appendChild(title);
+
+            //subtext
+            let subtext = document.createElement("p");
+            subtext.classList.add("subtext");
+            subtext.innerText = `${subtextText || rawnameText}`;
+            beatmap.appendChild(subtext);
+
+            //cover
+            if (imageUrl) {
+                let cover = document.createElement("div");
+                let coverImg = document.createElement("img");
+                coverImg.src = imageUrl;
+                coverImg.width = 128;
+                coverImg.height = 128;
+                cover.appendChild(coverImg);
+                beatmap.appendChild(cover);
+            }
+
+            //buttons
+            let buttons = document.createElement("div");
+            buttons.classList.add("actions");
+            let actionsText = document.createElement("p");
+            actionsText.innerText = "Actions:";
+            buttons.appendChild(actionsText);
+            let approveButton = document.createElement("button");
+            approveButton.innerText = "Approve";
+            let rejectButton = document.createElement("button");
+            rejectButton.innerText = "Reject";
+            if (disabledFlag) {
+                //approveButton.style.display = "none";
+            } else {
+                approveButton.classList.add("green-glow");
+            }
+            rejectButton.classList.add("red-glow");
+            rejectButton.onclick = (e) => {
+                fetch(`/api/sort/rejectSubmission`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: nomId
+                    })
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    loadSubmissions(activePage);
+                });
+            }
+            approveButton.onclick = (e) => openSortModal(nomId, category, char, diff, null, rawnameText);
+            buttons.appendChild(approveButton);
+            buttons.appendChild(rejectButton);
+            beatmap.appendChild(buttons);
 
             return beatmap;
         }
@@ -352,7 +501,7 @@
             overlay.style.display = "block";
             let form = document.getElementById("form");
             filterCategories(category.includes("Lightshow"), category.includes("Ranked")); 
-            form.nomId.value = nomId;
+            form.nomId.value = nomId || "";
             form.category.value = category || "";
             form.char.value = char || "";
             form.diff.value = diff || "";
@@ -367,6 +516,7 @@
             e.preventDefault();
             let form = document.getElementById("form");
             let data = new FormData(form);
+            let nomId = data.get("nomId");
             let category = data.get("category");
             let bsr = data.get("bsrId");
             let name = data.get("name");
@@ -378,14 +528,17 @@
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    bsr: bsr,
+                    nominationId: nomId,
+                    bsrId: bsr,
                     category: category,
-                    char: char,
-                    diff: diff,
-                    name: name
+                    characteristic: char,
+                    difficulty: diff,
+                    name: name.toString().trim()
                 })
             }).then(response => response.json()).then(data => {
-                closeModal(); 
+                console.log(data);
+                closeModal();
+                loadSubmissions(activePage);
             });
             return false; 
         }

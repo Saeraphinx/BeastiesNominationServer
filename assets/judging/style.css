@@ -34,6 +34,13 @@ h1 {
     color: white;
 }
 
+h2 {
+    font-size: 1.5em;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
 .overlay {
     background-color: #000000aa; 
     position: fixed; 
@@ -59,15 +66,20 @@ iframe#ArcViewer {
 
 nav {
     display: flex;
-    width: 100%;
-    justify-content: center;
-    align-items: center;
+    width: auto;
     border-radius: 5px;
     background-color: #00000077;
 }
 
+div.nav.right a {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: #000000aa;
+}
+
 a.nav {
-    color: rgb(0, 234, 255);
+    color: rgb(255, 255, 255);
     text-decoration: none;
     padding: 10px;
     margin: 10px;
@@ -75,15 +87,32 @@ a.nav {
     background-color: #000000aa;
 }
 
+a.nav.active {
+    box-shadow: 0 0 5px 2px #ffffff;
+}
+
+a.nav:hover {
+    transition: box-shadow 0.3s;
+    box-shadow: 0 0 5px 2px #0095ff;
+}
+
 div.header {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: center;
     align-items: center;
     margin: 20px;
     padding: 20px;
     border-radius: 5px;
+    max-width: 800px;
     background-color: #000000aa;
+}
+
+div.header p {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    font-size: 18px;
 }
 
 button {
@@ -267,4 +296,24 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
     background-color: #45a049;
+}
+
+
+div.beatmaps.difficulties {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0px;
+}
+
+div.beatmaps.difficulty {
+    display: flex;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 15px;
+    margin-right: 5px;
+}
+
+p.category {
+    align-content: center;
 }
