@@ -118,8 +118,10 @@ export class SortingRoutes {
             let otherSubmissions;
             if (DatabaseHelper.isDiffCharRequiredSortedSubmission(category)) {
                 otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: bsrId, category: submission.category, difficulty: difficulty, characteristic: characteristic } });
-            } else {
+            } else if (DatabaseHelper.isNameRequiredSortedSubmission(category)) {
                 otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { name: name, category: submission.category } });
+            } else {
+                otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: name, category: submission.category } });
             }
 
             for (let otherSubmission of otherSubmissions) {
@@ -162,7 +164,7 @@ export class SortingRoutes {
                 filtererId: req.session.userId,
             });
 
-            let duplicateSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: submission.bsrId, category: submission.category, difficulty: submission.difficulty } });
+            let duplicateSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: submission.bsrId, category: submission.category, difficulty: submission.difficulty, name: submission.name, characteristic: submission.characteristic } });
 
             for (let duplicateSubmission of duplicateSubmissions) {
                 if (duplicateSubmission.nominationId == submission.nominationId) {
