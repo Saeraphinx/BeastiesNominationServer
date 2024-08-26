@@ -414,6 +414,7 @@ export class DatabaseHelper {
             GimmickMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GimmickMap}, distinct: true, col: `bsrId` }),
             Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
         };
+
         // console.log(counts, uniqueCategories);
         return [counts, uniqueCategories];
     }
@@ -476,7 +477,6 @@ export function validateEnumValue(value: string | number, enumType: object): boo
     }
     return false;
 }
-
 
 //SortedSubmissions
 export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, InferCreationAttributes<SortedSubmission>> {
