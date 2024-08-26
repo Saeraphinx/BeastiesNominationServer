@@ -306,7 +306,7 @@ export class DatabaseHelper {
 
         let sortedRecordInfo: {isSorted:boolean, status?: FilterStatus, filtererId?:string};
         sortedRecordInfo = {isSorted: false};
-        switch (sortedrecord.filterStatus) {
+        switch (sortedrecord?.filterStatus) {
             case `Accepted`:
             case `Duplicate`:
                 sortedRecordInfo = {
@@ -322,6 +322,12 @@ export class DatabaseHelper {
                     status: `RejectedDuplicate`,
                     filtererId: sortedrecord.filtererId
                 };
+                break;
+            default:
+                sortedRecordInfo = {
+                    isSorted: false
+                };
+                break;
         }
 
         if (this.isNameRequired(category)) {
