@@ -11,7 +11,7 @@ export class MiscRoutes {
         this.loadRoutes();
         setTimeout(() => {
             this.getCount();
-        }, 5000);
+        }, 20000);
         setInterval(() => {
             this.getCount();
         }, 60000);
@@ -26,6 +26,7 @@ export class MiscRoutes {
             res.status(200).send(this.submissionCountCache);
         });
 
+        // #region CDN
         this.app.get(`/cdn/loginbl.png`, (req, res) => {
             res.sendFile(path.resolve(`assets/loginbl.png`));
         });
@@ -73,7 +74,41 @@ export class MiscRoutes {
         this.app.get(`/favicon.png`, (req, res) => {
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
+
+        // #endregion
+    
+        // #region HTML
+        this.app.get(`/`, (req, res) => {
+            res.sendFile(path.resolve(`assets/index.html`));
+        });
+        
+        this.app.get(`/success`, (req, res) => {
+            res.sendFile(path.resolve(`assets/success.html`));
+        });
+
+        this.app.get(`/judging/sort`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`sort`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+            res.sendFile(path.resolve(`assets/judging/sort.html`));
+        });
+
+        this.app.get(`/judging`, (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/index.html`));
+        });
+
+        this.app.get(`/judging/style.css`, async (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/style.css`));
+        });
     }
 
-   
+    private redirectTo(url: string) {
+        return `<head><meta http-equiv="refresh" content="0; url=${url}" /></head><body><a href="${url}">Click here if you are not redirected...</a></body>`;
+    }
 }

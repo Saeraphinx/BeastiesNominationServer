@@ -136,12 +136,67 @@ export interface BeatSaverIdentify {
     avatar: string;
 }
 
+export class DiscordAuthHelper extends OAuth2Helper {
+    private static readonly callbackUrl = `${server.url}/api/auth/discord/callback`;
+    
+    public static getUrl(state:string): string {
+        return `https://discord.com/oauth2/authorize?client_id=${auth.discord.clientId}&response_type=code&scope=guilds.members.read+identify&redirect_uri=${DiscordAuthHelper.callbackUrl}&state=${state}`;
+    }
+
+    public static getToken(code:string): Promise<OAuth2Response> {
+        return super.getToken(`https://discord.com/api/v10/oauth2/token`, code, auth.discord, this.callbackUrl);
+    }
+
+    public static async getUser(token: string): Promise<DiscordIdentify | null> {
+        const userIdRequest = await fetch(`https://discord.com/api/v10/users/@me`, super.getRequestData(token));
+        const Idjson: DiscordIdentify = await userIdRequest.json() as DiscordIdentify;
+
+        if (!Idjson.id) {
+            return null;
+        } else {
+            return Idjson;
+        }
+    }
+
+    public static async getGuildMemberData(token: string, guildId: string, userId:string): Promise<DiscordUserGuild | null> {
+        const userIdRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${guildId}/member`, super.getRequestData(token));
+        const Idjson: DiscordUserGuild = await userIdRequest.json() as DiscordUserGuild;
+        if (!Idjson.roles) {
+            return null;
+        } else {
+            return Idjson;
+        }
+    }
+}
+
+export interface DiscordIdentify {
+    id: string;
+    username: string;
+    discriminator: string;
+    avatar: string;
+    global_name?: string;
+}
+
+export interface DiscordUserGuild {
+    user?: any;
+    nick?: string|null;
+    avatar?: string|null;
+    roles: string[];
+    joined_at: Date;
+    premium_since?: Date|null;
+    deaf: boolean;
+    mute: boolean;
+    flags: number;
+    pending?: boolean;
+    permissions?: string;
+}
+
 // eslint-disable-next-line quotes
 declare module 'express-session' {
     export interface Session {
         state: string;
         userId: string;
         username: string;
-        service: `beatleader` | `beatsaver`;
+        service: `beatleader` | `beatsaver` | `judgeId`;
     }
 }

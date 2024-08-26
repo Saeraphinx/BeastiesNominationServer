@@ -383,7 +383,7 @@ export class SubmissionRoutes {
         return RequestSubmissionStatus.Success;
     }
 
-    private static async sendSubmission(id: string, service: `beatleader`|`beatsaver`, category: string, content: {
+    private static async sendSubmission(id: string, service: `beatleader`|`beatsaver`|`judgeId`, category: string, content: {
         bsrId?: string;
         name?: string;
         difficulty?: Difficulty;

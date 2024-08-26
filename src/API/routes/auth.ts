@@ -1,7 +1,8 @@
 import { Express } from 'express';
-import { BeatLeaderAuthHelper, BeatSaverAuthHelper } from '../classes/AuthHelper';
+import { BeatLeaderAuthHelper, BeatSaverAuthHelper, DiscordAuthHelper } from '../classes/AuthHelper';
 import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
+import { DatabaseHelper } from '../../Shared/Database';
 
 export class AuthRoutes {
     private app: Express;
@@ -15,6 +16,14 @@ export class AuthRoutes {
     private async loadRoutes() {
         this.app.get(`/api/auth`, async (req, res) => {
             if (req.session.userId) {
+                return res.status(200).send({ message: `Hello, ${req.session.username}!`, username: req.session.username, userId: req.session.userId, service: req.session.service });
+            } else {
+                return res.status(401).send({ error: `Not logged in.` });
+            }
+        });
+
+        this.app.get(`/api/auth/judging`, async (req, res) => {
+            if (req.session.userId && req.session.service === `judgeId`) {
                 return res.status(200).send({ message: `Hello, ${req.session.username}!`, username: req.session.username, userId: req.session.userId, service: req.session.service });
             } else {
                 return res.status(401).send({ error: `Not logged in.` });
@@ -98,6 +107,59 @@ export class AuthRoutes {
             req.session.service = `beatsaver`;
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
+        });
+
+        this.app.get(`/api/auth/discord`, (req, res) => {
+            let state = HTTPTools.createRandomString(16);
+            //req.session.state = state;
+            //req.session.save();
+            this.validStates.push(state + req.ip);
+            setTimeout(() => {
+                this.validStates = this.validStates.filter((s) => s !== state + req.ip);
+            }, 1000 * 60 * 3);
+            //return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${BeatLeaderAuthHelper.getUrl(state)}" /></head><body><a href="${BeatLeaderAuthHelper.getUrl(state)}">Click here if you are not redirected...</a></body>`);
+            return res.redirect(302, DiscordAuthHelper.getUrl(state));
+        });
+
+        this.app.get(`/api/auth/discord/callback`, async (req, res) => {
+            const code = req.query[`code`].toString();
+            const state = req.query[`state`].toString();
+            //console.log(req.session);
+            //if (state !== req.session.state) {
+            //    return res.status(400).send({ error: `Invalid state.` });
+            //}
+            if (!this.validStates.includes(state + req.ip)) {
+                return res.status(400).send({ error: `Invalid state.` });
+            }
+            this.validStates = this.validStates.filter((s) => s !== state + req.ip);
+            let token = await DiscordAuthHelper.getToken(code);
+            if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
+            let user = await DiscordAuthHelper.getUser(token.access_token);
+            if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { discordId: user.id } });
+
+            if (!judge) {
+                let discordGuildMemberInfo = await DiscordAuthHelper.getGuildMemberData(token.access_token, `452928402203344908`, user.id);
+                if (!discordGuildMemberInfo) {
+                    return res.status(500).send({ error: `Internal server error.` });
+                }
+                if (!discordGuildMemberInfo.roles.includes(`933458558408884244`)) {
+                    return res.status(403).send({ error: `You are not involved with The Beasties.` });
+                }
+
+                judge = await DatabaseHelper.database.judges.create({
+                    discordId: user.id,
+                    name: user.username,
+                    avatarUrl: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`,
+                });
+            }
+
+            req.session.userId = judge.id.toString();
+            req.session.username = judge.name;
+            req.session.service = `judgeId`;
+            req.session.save();
+            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}/judging" /></head><body><a href="${server.url}/judging">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
     }
 }
