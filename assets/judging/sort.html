@@ -255,7 +255,7 @@
             beatmap.appendChild(subtext);
             if (showMods) {
                 subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
-                if (!currDiff.ne && !currDiff.chroma) {
+                if (!currDiff.ne && !currDiff.chroma && !category.includes("Mods-Lightshow")) {
                     disabledFlag = true;
                 }
             } else if (showRanked) {
