@@ -56,12 +56,20 @@
             </span>
         </div>
     </div>
+    <div class="overlay" id="descriptionmodal" style="display: none;" onclick="closeDescModal()">
+        <div class="header" style="margin: auto; margin-top: 50px; background-color: black;">
+            <span onclick="stopBubble(event)">
+                <h2 id="overlay_title">Submission Description</h2>
+                <p id="overlay_desc">Here you can find the description of the submission. This is a placeholder for now.</p>
+            </span>
+        </div>
+    </div>
     <nav>
         <a class="nav" href="/judging">Home</a>
         <a class="nav active" href="/judging/sort">Sort Submissions</a>
         <a class="nav" href="/judging/judge">Judge Submissions</a>
         <a class="nav" href="/api/counts">Counts (API)</a>
-        <a class="nav" href="/api/auth/logout">Logout</a>
+        <a class="nav" id="username" href="/api/auth/logout">Logout</a>
     </nav>
     <div class="header">
         <h1>Sort Submissions</h1>
@@ -81,7 +89,11 @@
         //#region onload
         fetch('/api/auth/judging').then(response => {
             if (response.status == 200) {
-                
+                response.json().then(data => {
+                    if (data.username) {
+                        document.getElementById('username').innerText = `Logout (${data.username})`;
+                    }
+                });
             } else {
                 window.location.href = "/judging";
             }
@@ -319,11 +331,12 @@
             // buttons
             let buttonContainer = document.createElement("div");
             buttonContainer.classList.add("buttonContainer");
-            //let playButton = document.createElement("a");
-            //playButton.innerText = "▶️";
-            //buttonContainer.appendChild(playButton);
+            let infoButton = document.createElement("a");
+            infoButton.innerText = "🛈"
+            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, bsapi.description);
+            buttonContainer.appendChild(infoButton);
             let viewButton = document.createElement("a");
-            viewButton.innerText = "👁️";
+            viewButton.innerText = "▶";
             viewButton.onclick = (e) => openArcViewer(e, bsapi.id);
             viewButton.href = `https://allpoland.github.io/ArcViewer/?id=${bsapi.id}`;
             viewButton.target = "_top";
@@ -333,7 +346,7 @@
             oneclickButton.href = `beatsaver://${bsapi.id}`;
             buttonContainer.appendChild(oneclickButton);
             let downloadButton = document.createElement("a");
-            downloadButton.innerText = "⬇️";
+            downloadButton.innerText = "⬇";
             downloadButton.href = bsapi.versions[0].downloadURL;
             downloadButton.target = "_blank";
             buttonContainer.appendChild(downloadButton);
@@ -494,6 +507,20 @@
             overlay.style.display = "none";
         }
 
+        function openDescModal(e, title, desc) {
+            e.preventDefault();
+            let titleElement = document.getElementById("overlay_title");
+            titleElement.innerText = title;
+            let descElement = document.getElementById("overlay_desc");
+            descElement.innerText = desc;
+            let overlay = document.getElementById("descriptionmodal");
+            overlay.style.display = "block";
+        }
+
+        function closeDescModal() {
+            let overlay = document.getElementById("descriptionmodal");
+            overlay.style.display = "none";
+        }
         //#endregion
         //#region submit
         function openSortModal(nomId, category, char, diff, bsr, name) {

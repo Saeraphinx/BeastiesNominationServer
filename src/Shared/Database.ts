@@ -579,7 +579,7 @@ export const SortedSubmissionsCategoryEnglish = {
     RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
     RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
     PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
-}
+};
 /*
     Beasties Admin will go through the nominations and sort them into the correct categories & clean up data (if applicable) [NominationAttributes -> SortedSubmission]
 
