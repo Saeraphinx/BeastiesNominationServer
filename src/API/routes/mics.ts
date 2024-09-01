@@ -22,12 +22,6 @@ export class MiscRoutes {
         this.submissionCountCache = await DatabaseHelper.getNominationCount();
     }
 
-    private setCache(req: any, res: any, next: NextFunction) {
-        // Cache for 1 hour
-        res.setHeader(`Cache-Control`, this.cacheControl);
-        next();
-    }
-
     private async loadRoutes() {
         this.app.get(`/api/counts`, async (req, res) => {
             res.setHeader(`Cache-Control`, `public, max-age=60, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400`);
@@ -35,62 +29,76 @@ export class MiscRoutes {
         });
 
         // #region CDN
-        this.app.get(`/cdn/loginbl.png`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/loginbl.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbl.png`));
         });
 
-        this.app.get(`/cdn/loginbltrans.png`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/loginbltrans.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbltrans220.png`));
         });
 
-        this.app.get(`/cdn/loginbs.png`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/loginbs.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbs.png`));
         });
 
-        this.app.get(`/cdn/char/standard.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/standard.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/standard.svg`));
         });
 
-        this.app.get(`/cdn/char/one-saber.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/one-saber.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/one-saber.svg`));
         });
 
-        this.app.get(`/cdn/char/no-arrows.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/no-arrows.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/no-arrows.svg`));
         });
 
-        this.app.get(`/cdn/char/lightshow.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/lightshow.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/lightshow.svg`));
         });
 
-        this.app.get(`/cdn/char/360-degree.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/360-degree.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/360-degree.svg`));
         });
 
-        this.app.get(`/cdn/char/90-degree.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/90-degree.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/90-degree.svg`));
         });
 
-        this.app.get(`/cdn/char/lawless.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/lawless.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/lawless.svg`));
         });
 
-        this.app.get(`/cdn/char/legacy.svg`, this.setCache, (req, res) => {
+        this.app.get(`/cdn/char/legacy.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/legacy.svg`));
         });
 
-        this.app.get(`/favicon.png`, this.setCache, (req, res) => {
+        this.app.get(`/favicon.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
 
         // #endregion
     
         // #region HTML
-        this.app.get(`/`, this.setCache, (req, res) => {
+        this.app.get(`/`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/index.html`));
         });
         
-        this.app.get(`/success`, this.setCache, (req, res) => {
+        this.app.get(`/success`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/success.html`));
         });
 
@@ -107,11 +115,13 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/judging/sort.html`));
         });
 
-        this.app.get(`/judging`, this.setCache, (req, res) => {
+        this.app.get(`/judging`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/index.html`));
         });
 
-        this.app.get(`/judging/style.css`, this.setCache, async (req, res) => {
+        this.app.get(`/judging/style.css`, async (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/style.css`));
         });
     }
