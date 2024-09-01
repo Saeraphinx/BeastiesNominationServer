@@ -73,7 +73,12 @@
     </nav>
     <div class="header">
         <h1>Sort Submissions</h1>
-        <p>Sort submissions into their respective categories. Mapper & Lighter & Pack categories <b>MUST BE A BEATSAVER USER/PLAYLIST ID.</b> If this is not done, then the submission will be ignored.</p>
+        <p>Sort submissions into their respective categories.<br>There are only 10 cards per page. If I do any more, I start to get ratelimited by BeatSaver and I don't want that lmao. Your internal ID is associated with every sorted map, and as soon as you Accept/Reject a submission, all duplicated are marked with the same verdict & will no longer show up in the sorting panel.<br><br>
+        This pops up a modal that allows you to edit any of the information regarding the submission before sorting it. 
+        Do not put anything in the BeatSaver ID / OST String when sorting a map with a bsr key. 
+        IF THE CHARECTERISTIC/DIFFICULTY IS BLANK, LEAVE IT BLANK. This will be the case FullSpread, OST, and the Mapper/Lighter categories. Any duplicate submissions will be discarded as soon as you hit Submit on the modal.
+        RANKED & LIGHTING CATEGORIES: When accepting a submission from these categories, the category dropdown will be limited to the sub categories for those categories. You will need to select them yourself.<br><br>
+        <b>In the instance the submission has a mapper PFP & name, all you need to do is cut out the URL from the BeatSaver ID / OST String, leaving the mapper's profile ID. (For example, https://beatsaver.com/profile/4234633 would become 4234633) If that text box has a name in it, you will need to find that mapper/pack playlist's BeatSaver ID and paste it in there.</b> Please try your best to not allow duplicates to slip through. It's not the end of the world if it does happen, just let me know.</p>
         <!--<button onclick="openSortModal()">Debug Modal</button>!-->
         <button onclick="loadSubmissions()">Refresh</button>
         <div id="pages" class="page">
