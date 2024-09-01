@@ -85,6 +85,7 @@ a.nav {
     margin: 10px;
     border-radius: 5px;
     background-color: #000000aa;
+    transition: box-shadow 0.3s;
 }
 
 a.nav.active {
@@ -123,6 +124,7 @@ button {
     color: white;
     border: none;
     cursor: pointer;
+    transition: box-shadow 0.3s;
 }
 
 div.page button {
@@ -162,7 +164,8 @@ div.buttonContainer a {
     transition: box-shadow 0.3s;
 }
 
-div.buttonContainer a:hover {
+a:hover, button:hover {
+    transition: box-shadow 0.3s;
     box-shadow: 0 0 5px 2px #0095ff;
 }
 
