@@ -18,38 +18,12 @@
         <div class="form">
             <span onclick="stopBubble(event)">
                 <form id="form" >
-                    <h2>Accept Submission</h2>
-                    <p>Ensure this data is correct and valid before accepting the submission. If N/A, please leave blank.</p>
-                    <label for="nomId">Nomination ID</label>
-                    <input type="text" id="nomId" name="nomId" readonly>
+                    <h2>Re-assign Submission</h2>
+                    <p>For recategorization only.</p>
+                    <label for="judId">SortedSubmission ID</label>
+                    <input type="text" id="judId" name="judId" readonly>
                     <label for="category">Category:</label>
                     <select id="category" name="category">
-                    </select>
-
-                    <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
-                    <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
-
-                    <label class="name" id="nameLabel" for="name">BeatSaver ID / OST String</label></b>
-                    <input class="name" type="text" id="name" name="name" maxlength=100 minlength=3>
-                    <label for="char">Characteristic:</label>
-                    <select name="char" id="char">
-                        <option value="Standard">Standard</option>
-                        <option value="OneSaber">One Saber</option>
-                        <option value="NoArrows">No Arrows</option>
-                        <option value="360Degree">360 Degree</option>
-                        <option value="90Degree">90 Degree</option>
-                        <option value="Lawless">Lawless</option>
-                        <option value="Lightshow">Lightshow</option>
-                        <option value="Legacy">Legacy</option>
-                    </select>
-                    <label for="diff">Difficulty:</label>
-                    <select name="diff" id="diff">
-                        <option value="Easy">Easy</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Hard">Hard</option>
-                        <option value="Expert">Expert</option>
-                        <option value="ExpertPlus">Expert+</option>
-                        <option value="Other" style="display: none;">All</option>
                     </select>
                     <input type="submit" value="Submit">
                 </form>
@@ -72,13 +46,16 @@
         <a class="nav" id="username" href="/api/auth/logout">Logout</a>
     </nav>
     <div class="header">
-        <h1>Judge Submissions</h1>
+        <h1>Judge Submissions - {{CATEGORY_FREN_NAME}}</h1>
         <p>There are only 10 cards per page. If I do any more, I start to get ratelimited by BeatSaver and I don't want that lmao. Your internal ID is associated with every judge vote.<br><br>
+            Vote Definitions:<br>
+            Yes: The map is the best it can be and should be in the final 5.<br>
+            No: I don't think this map should be in the final 5.<br>
+            Involved: You are involved with this map. This is autovoted for some people. Please note that this does not hurt the map's chances of being in the final 5.<br>
+            Votes will not be shared with other judges. Notes will not be shared with anyone.<br>At the end of voting, all votes will be combined and averaged by the number of judges that voted on that map.<br><br>If you have any questions or issues, please contact Saeraphinx in the BeastSaber Discord.</p>
+        </p>
         <!--<button onclick="openSortModal()">Debug Modal</button>!-->
         <button onclick="loadSubmissions()">Refresh</button>
-        <select id="submissionCategories">
-            <option value="All">All</option>
-        </select>
         <div id="pages" class="page">
             <button class="active">1</button>
             <button>2</button>
@@ -101,56 +78,7 @@
                 window.location.href = "/judging";
             }
         });
-        const categories = {
-            OST: [`Gen-OST`, `OST`],
-            FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
-            AlternativeMap: [`Gen-Alternative`, `Non-Standard`],
 
-            LightshowVanilla: [`Lightshow-Vanilla`, `Lightshow Vanilla`],
-            LightshowVanillaPlus: [`Lightshow-VanillaPlus`, `Lightshow Vanilla+`],
-            LightshowChroma: [`Lightshow-Chroma`, `Lightshow Chroma`],
-            LightshowChromaPlus: [`Lightshow-ChromaPlus`, `Lightshow Chroma+`],
-
-            Modchart: [`Mods-Modchart`, `Modchart`],
-            ArtMap: [`Mods-ArtMap`, `Art Map`],
-
-            RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
-            RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
-
-            BalancedMap: [`Style-Balanced`, `Balanced`],
-            TechMap: [`Style-Tech`, `Tech`],
-            SpeedMap: [`Style-Speed`, `Speed`],
-            DanceMap: [`Style-Dance`, `Dance`],
-            FitnessMap: [`Style-Fitness`, `Fitness`],
-            ChallengeMap: [`Style-Challenge`, `Challenge`],
-            AccMap: [`Style-Acc`, `Acc`],
-            PoodleMap: [`Style-Poodle`, `Poodle`],
-            GimmickMap: [`Style-Gimmick`, `Gimmick`],
-
-            MapOfTheYear: [`OTY-Map`, `Map of the Year`],
-            MapperOfTheYear: [`OTY-Mapper`, `Mapper of the Year`],
-            LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
-            RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
-            RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
-            PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
-        };
-
-        let categorySelect = document.getElementById("category");
-        for (let key in categories) {
-            let option = document.createElement("option");
-            option.classList.add("categoryOption");
-            option.value = categories[key][0];
-            option.innerText = categories[key][1];
-            categorySelect.appendChild(option);
-        }
-        let submissionCategorySelect = document.getElementById("submissionCategories");
-        for (let key2 in submissionCategories) {
-            let option = document.createElement("option");
-            //option.classList.add("categoryOption");
-            option.value = submissionCategories[key2][0];
-            option.innerText = submissionCategories[key2][1];
-            submissionCategorySelect.appendChild(option);
-        }
         //#endregion
         function loadSubmissions(page = activePage) {
             activePage = page;
@@ -536,22 +464,17 @@
         }
         //#endregion
         //#region submit
-        function openSortModal(nomId, category, char, diff, bsr, name) {
+        function openSortModal(sortsubId, category) {
             let overlay = document.getElementById("sortmodal");
             overlay.style.display = "block";
-            let form = document.getElementById("form");
-            filterCategories(category.includes("Lightshow"), category.includes("Ranked")); 
-            form.nomId.value = nomId || "";
+            let form = document.getElementById("form"); 
+            form.sortsubId.value = sortsubId || "";
             form.category.value = category || "";
-            form.char.value = char || "";
-            form.diff.value = diff || "";
-            form.bsrId.value = bsr || "";
-            form.name.value = name || "";
             form.removeEventListener("submit", handleSubmit);
             form.addEventListener("submit", handleSubmit);
         } 
 
-        function handleSubmit(e) {
+        function handleReclassifySubmit(e) {
             console.log("submit");
             e.preventDefault();
             let form = document.getElementById("form");
@@ -581,31 +504,6 @@
                 loadSubmissions(activePage);
             });
             return false; 
-        }
-
-        function filterCategories(isLighting, isRanked) {
-            let options = document.getElementsByClassName("categoryOption");
-            if (isLighting) {
-                for (let i = 0; i < options.length; i++) {
-                    if (options[i].value.includes("Lightshow")) {
-                        options[i].style.display = "block";
-                    } else {
-                        options[i].style.display = "none";
-                    }
-                }
-            } else if (isRanked) {
-                for (let i = 0; i < options.length; i++) {
-                    if (options[i].value.includes("Ranked")) {
-                        options[i].style.display = "block";
-                    } else {
-                        options[i].style.display = "none";
-                    }
-                }
-            } else {
-                for (let i = 0; i < options.length; i++) {
-                    options[i].style.display = "block";
-                }
-            } 
         }
 
         function closeModal() {
