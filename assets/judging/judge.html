@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="style.css" rel="stylesheet">!-->
+    <link href="/judging/style.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="overlay" id="avoverlay" style="display: none;" onclick="closeArcViewer()">
+        <iframe id="ArcViewer" frameborder="0"></iframe>
+    </div>
+    <div class="overlay" id="sortmodal" style="display: none;" onclick="closeModal()">
+        <div class="form">
+            <span onclick="stopBubble(event)">
+                <form id="form" >
+                    <h2>Accept Submission</h2>
+                    <p>Ensure this data is correct and valid before accepting the submission. If N/A, please leave blank.</p>
+                    <label for="nomId">Nomination ID</label>
+                    <input type="text" id="nomId" name="nomId" readonly>
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                    </select>
+
+                    <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
+                    <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
+
+                    <label class="name" id="nameLabel" for="name">BeatSaver ID / OST String</label></b>
+                    <input class="name" type="text" id="name" name="name" maxlength=100 minlength=3>
+                    <label for="char">Characteristic:</label>
+                    <select name="char" id="char">
+                        <option value="Standard">Standard</option>
+                        <option value="OneSaber">One Saber</option>
+                        <option value="NoArrows">No Arrows</option>
+                        <option value="360Degree">360 Degree</option>
+                        <option value="90Degree">90 Degree</option>
+                        <option value="Lawless">Lawless</option>
+                        <option value="Lightshow">Lightshow</option>
+                        <option value="Legacy">Legacy</option>
+                    </select>
+                    <label for="diff">Difficulty:</label>
+                    <select name="diff" id="diff">
+                        <option value="Easy">Easy</option>
+                        <option value="Normal">Normal</option>
+                        <option value="Hard">Hard</option>
+                        <option value="Expert">Expert</option>
+                        <option value="ExpertPlus">Expert+</option>
+                        <option value="Other" style="display: none;">All</option>
+                    </select>
+                    <input type="submit" value="Submit">
+                </form>
+            </span>
+        </div>
+    </div>
+    <div class="overlay" id="descriptionmodal" style="display: none;" onclick="closeDescModal()">
+        <div class="header" style="margin: auto; margin-top: 50px; background-color: black;">
+            <span onclick="stopBubble(event)">
+                <h2 id="overlay_title">Submission Description</h2>
+                <p id="overlay_desc">Here you can find the description of the submission. This is a placeholder for now.</p>
+            </span>
+        </div>
+    </div>
+    <nav>
+        <a class="nav" href="/judging">Home</a>
+        <a class="nav" href="/judging/sort">Sort Submissions</a>
+        <a class="nav active" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" id="username" href="/api/auth/logout">Logout</a>
+    </nav>
+    <div class="header">
+        <h1>Judge Submissions</h1>
+        <p>There are only 10 cards per page. If I do any more, I start to get ratelimited by BeatSaver and I don't want that lmao. Your internal ID is associated with every judge vote.<br><br>
+        <!--<button onclick="openSortModal()">Debug Modal</button>!-->
+        <button onclick="loadSubmissions()">Refresh</button>
+        <select id="submissionCategories">
+            <option value="All">All</option>
+        </select>
+        <div id="pages" class="page">
+            <button class="active">1</button>
+            <button>2</button>
+        </div>
+    </div>
+    <div class="submissionList" id="submissionList">
+    </div>
+
+    <script>
+        let activePage = 1;
+        //#region onload
+        fetch('/api/auth/judging').then(response => {
+            if (response.status == 200) {
+                response.json().then(data => {
+                    if (data.username) {
+                        document.getElementById('username').innerText = `Logout (${data.username})`;
+                    }
+                });
+            } else {
+                window.location.href = "/judging";
+            }
+        });
+        const categories = {
+            OST: [`Gen-OST`, `OST`],
+            FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
+            AlternativeMap: [`Gen-Alternative`, `Non-Standard`],
+
+            LightshowVanilla: [`Lightshow-Vanilla`, `Lightshow Vanilla`],
+            LightshowVanillaPlus: [`Lightshow-VanillaPlus`, `Lightshow Vanilla+`],
+            LightshowChroma: [`Lightshow-Chroma`, `Lightshow Chroma`],
+            LightshowChromaPlus: [`Lightshow-ChromaPlus`, `Lightshow Chroma+`],
+
+            Modchart: [`Mods-Modchart`, `Modchart`],
+            ArtMap: [`Mods-ArtMap`, `Art Map`],
+
+            RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
+            RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
+
+            BalancedMap: [`Style-Balanced`, `Balanced`],
+            TechMap: [`Style-Tech`, `Tech`],
+            SpeedMap: [`Style-Speed`, `Speed`],
+            DanceMap: [`Style-Dance`, `Dance`],
+            FitnessMap: [`Style-Fitness`, `Fitness`],
+            ChallengeMap: [`Style-Challenge`, `Challenge`],
+            AccMap: [`Style-Acc`, `Acc`],
+            PoodleMap: [`Style-Poodle`, `Poodle`],
+            GimmickMap: [`Style-Gimmick`, `Gimmick`],
+
+            MapOfTheYear: [`OTY-Map`, `Map of the Year`],
+            MapperOfTheYear: [`OTY-Mapper`, `Mapper of the Year`],
+            LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
+            PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
+        };
+
+        let categorySelect = document.getElementById("category");
+        for (let key in categories) {
+            let option = document.createElement("option");
+            option.classList.add("categoryOption");
+            option.value = categories[key][0];
+            option.innerText = categories[key][1];
+            categorySelect.appendChild(option);
+        }
+        let submissionCategorySelect = document.getElementById("submissionCategories");
+        for (let key2 in submissionCategories) {
+            let option = document.createElement("option");
+            //option.classList.add("categoryOption");
+            option.value = submissionCategories[key2][0];
+            option.innerText = submissionCategories[key2][1];
+            submissionCategorySelect.appendChild(option);
+        }
+        //#endregion
+        function loadSubmissions(page = activePage) {
+            activePage = page;
+            let category = document.getElementById("submissionCategories").value;
+            fetch(`/api/sort/submissions?page=${page}&pageSize=10&category=${category}`).then(response => response.json()).then(res => {
+                const data = res.data;
+                document.getElementById("submissionList").innerHTML = "";
+                for (let i = 0; i < data.length; i++) {
+                    loadSubmission(data[i].nominationId, data[i].bsrId, data[i].name, data[i].category, data[i].diff, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
+                }
+                let pageDiv = document.getElementById("pages");
+                pageDiv.innerHTML = "";
+                for (let i = 0; i < res.totalPages; i++) {
+                    let button = document.createElement("button");
+                    button.innerText = i + 1;
+                    button.onclick = (e) => {
+                        loadSubmissions(i + 1);
+                    }
+                    if (i + 1 === page) {
+                        button.classList.add("active");
+                    }
+                    pageDiv.appendChild(button);
+                }
+            });
+        }
+        loadSubmissions(1);
+        //loadSubmission("1", null, "https://beatsaver.com/profile/4234633", "OTY-Mapper", null, null, false, false, false);
+        //#region beatmaps
+        let cache = [];
+        function loadSubmission(nomId, bsrId, name, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
+            if (bsrId == null || bsrId.length < 4) {
+                if ((category.includes("Mapper") || category.includes("Lighter")) && name?.includes("https://beatsaver.com/profile/")) {
+                    let nonEmbedElement = document.getElementById("submissionList").appendChild(createName(nomId, name, null, name, null, category));
+                    let id = name.split("https://beatsaver.com/profile/")[1];
+                    fetch(`https://api.beatsaver.com/users/id/${id}`).then(response => response.json()).then(data => {
+                        nonEmbedElement.remove();
+                        document.getElementById("submissionList").appendChild(createName(nomId, data.name, data.stats.firstUpload, name, data.avatar, category));
+                    });
+                    return;
+                }
+                document.getElementById("submissionList").appendChild(createName(nomId, name, null, name, null, category));
+                return; //temp fix for invalid bsr keys
+            }
+            if (cache.find(beatmap => beatmap.id === bsrId)) {
+                document.getElementById("submissionList").appendChild(createBeatmap(nomId, cache.find(beatmap => beatmap.id === bsrId), category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
+                return;
+            }
+            fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => response.json()).then(data => {
+                //console.log(data);
+                cache.push(data);
+                document.getElementById("submissionList").appendChild(createBeatmap(nomId, data, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread));
+            });
+        }
+
+        // TODO: 
+        // Add Diff & Char + Add Category
+        function createBeatmap(nomId, bsapi, category = "you fucked up", selectedDiff = "ExpertPlus", selectedChar = "Standard", showMods = false, showRanked = false, validFullSpread = false) {
+            let disabledFlag = false;
+            let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
+
+            if ((showRanked || showMods) && !currDiff) {
+                showRanked = false;
+                showMods = false;
+                disabledFlag = true;
+            }
+
+            let beatmap = document.createElement("div");
+            beatmap.classList.add("beatmap");
+
+            //diff & char
+            let diffColors = document.createElement("div");
+            diffColors.classList.add("beatmaps");
+            diffColors.classList.add("difficulties");
+            if (!validFullSpread) {
+                let bnsStuff = convertToBNS(selectedChar, selectedDiff);
+                let diff = document.createElement("div");
+                diff.classList.add("beatmaps");
+                diff.classList.add("difficulty");
+                diff.style.backgroundColor = "#" + bnsStuff.color;
+                let img = document.createElement("img");
+                img.src = "/cdn/char/" + bnsStuff.charecteristic + ".svg";
+                img.alt = selectedChar + " " + selectedDiff;
+                img.width = "20";
+                img.height = "20";
+                img.style = "padding-left: 4px;";
+                img.title = selectedChar + " " + selectedDiff;
+                diff.appendChild(img);
+                diffColors.appendChild(diff);
+            }
+            let catText = document.createElement("p");
+            catText.classList.add("category");
+            catText.innerText = category;
+            diffColors.appendChild(catText);
+            beatmap.appendChild(diffColors);
+
+            //title
+            let title = document.createElement("p");
+            title.classList.add("title");
+            title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
+            title.title = title.innerText;
+            if (title.innerText.length > 18) {
+                title.innerText = title.innerText.substring(0, 15) + "...";
+            }
+            beatmap.appendChild(title);
+
+            //subtext
+            let subtext = document.createElement("p");
+            subtext.classList.add("subtext");
+            subtext.innerText = `!bsr ${bsapi.id}`;
+            beatmap.appendChild(subtext);
+            if (showMods) {
+                subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
+                if (!currDiff.ne && !currDiff.chroma && !category.includes("Mods-Lightshow")) {
+                    disabledFlag = true;
+                }
+            } else if (showRanked) {
+                subtext.innerText += ` | SS: ${currDiff.stars || `N/A`}★ | BL: ${currDiff.blStars || `N/A`}★`;
+                if (!currDiff.stars && !currDiff.blStars) {
+                    disabledFlag = true;
+                }
+            } else if (validFullSpread) {
+                if (bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus")) {
+                    subtext.innerText += ` | Full Spread`;
+                } else {
+                    subtext.innerText += ` | Missing Difficulties`;
+                    disabledFlag = true;
+                }
+            } else if (disabledFlag) {
+                subtext.innerText += ` | Invalid Difficulty`;
+            }
+
+            //cover
+            let cover = document.createElement("div");
+            let coverImg = document.createElement("img");
+            coverImg.src = bsapi.versions[0].coverURL;
+            coverImg.width = 128;
+            coverImg.height = 128;
+            cover.appendChild(coverImg);
+            beatmap.appendChild(cover);
+
+            //mappers
+            let mapperText = document.createElement("p");
+            mapperText.innerText = "Mapper(s):";
+            mapperText.classList.add("mapperText");
+            beatmap.appendChild(mapperText);
+            let mappers = document.createElement("div");
+            mappers.classList.add("mappers");
+            mappers.appendChild(generateMapperBlurb(bsapi.uploader));
+            if (bsapi.collaborators) {
+                for (let i = 0; i < bsapi.collaborators.length; i++) {
+                    mappers.appendChild(generateMapperBlurb(bsapi.collaborators[i]));
+                }
+            }
+            beatmap.appendChild(mappers);
+
+            //buttons
+            let buttons = document.createElement("div");
+            buttons.classList.add("actions");
+            let actionsText = document.createElement("p");
+            actionsText.innerText = "Actions:";
+            buttons.appendChild(actionsText);
+            let approveButton = document.createElement("button");
+            approveButton.innerText = "Approve";
+            let rejectButton = document.createElement("button");
+            rejectButton.innerText = "Reject";
+            if (disabledFlag) {
+                //approveButton.style.display = "none";
+            } else {
+                approveButton.classList.add("green-glow");
+            }
+            rejectButton.classList.add("red-glow");
+            rejectButton.onclick = (e) => {
+                fetch(`/api/sort/rejectSubmission`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: nomId
+                    })
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    loadSubmissions(activePage);
+                });
+            }
+            approveButton.onclick = (e) => openSortModal(nomId, category, selectedChar, selectedDiff, bsapi.id);
+            buttons.appendChild(approveButton);
+            buttons.appendChild(rejectButton);
+            beatmap.appendChild(buttons);
+
+            // buttons
+            let buttonContainer = document.createElement("div");
+            buttonContainer.classList.add("buttonContainer");
+            let infoButton = document.createElement("a");
+            infoButton.innerText = "🛈"
+            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, bsapi.description);
+            buttonContainer.appendChild(infoButton);
+            let viewButton = document.createElement("a");
+            viewButton.innerText = "▶";
+            viewButton.onclick = (e) => openArcViewer(e, bsapi.id);
+            viewButton.href = `https://allpoland.github.io/ArcViewer/?id=${bsapi.id}`;
+            viewButton.target = "_top";
+            buttonContainer.appendChild(viewButton);
+            let oneclickButton = document.createElement("a");
+            oneclickButton.innerText = "☁";
+            oneclickButton.href = `beatsaver://${bsapi.id}`;
+            buttonContainer.appendChild(oneclickButton);
+            let downloadButton = document.createElement("a");
+            downloadButton.innerText = "⬇";
+            downloadButton.href = bsapi.versions[0].downloadURL;
+            downloadButton.target = "_blank";
+            buttonContainer.appendChild(downloadButton);
+            beatmap.appendChild(buttonContainer);
+
+            return beatmap;
+        }
+
+        function createName(nomId, titleText, subtextText, rawnameText, imageUrl, category = "you fucked up") {
+            let disabledFlag = false;
+            
+            let beatmap = document.createElement("div");
+            beatmap.classList.add("beatmap");
+
+            let catText = document.createElement("p");
+            catText.classList.add("category");
+            catText.innerText = category;
+            beatmap.appendChild(catText);
+
+            //title
+            let title = document.createElement("p");
+            title.classList.add("title");
+            title.innerText = `${titleText}`
+            beatmap.appendChild(title);
+
+            //subtext
+            let subtext = document.createElement("p");
+            subtext.classList.add("subtext");
+            subtext.innerText = `${subtextText || rawnameText}`;
+            beatmap.appendChild(subtext);
+
+            //cover
+            if (imageUrl) {
+                let cover = document.createElement("div");
+                let coverImg = document.createElement("img");
+                coverImg.src = imageUrl;
+                coverImg.width = 128;
+                coverImg.height = 128;
+                cover.appendChild(coverImg);
+                beatmap.appendChild(cover);
+            }
+
+            //buttons
+            let buttons = document.createElement("div");
+            buttons.classList.add("actions");
+            let actionsText = document.createElement("p");
+            actionsText.innerText = "Actions:";
+            buttons.appendChild(actionsText);
+            let approveButton = document.createElement("button");
+            approveButton.innerText = "Approve";
+            let rejectButton = document.createElement("button");
+            rejectButton.innerText = "Reject";
+            if (disabledFlag) {
+                //approveButton.style.display = "none";
+            } else {
+                approveButton.classList.add("green-glow");
+            }
+            rejectButton.classList.add("red-glow");
+            rejectButton.onclick = (e) => {
+                fetch(`/api/sort/rejectSubmission`, {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        id: nomId
+                    })
+                }).then(response => response.json()).then(data => {
+                    console.log(data);
+                    loadSubmissions(activePage);
+                });
+            }
+            approveButton.onclick = (e) => openSortModal(nomId, category, char, diff, null, rawnameText);
+            buttons.appendChild(approveButton);
+            buttons.appendChild(rejectButton);
+            beatmap.appendChild(buttons);
+
+            return beatmap;
+        }
+
+        function convertToBNS(charecteristic, difficulty) {
+            let returnObj = {
+                charecteristic: "",
+                color: "000"
+            };
+            switch (charecteristic) {
+                case "Standard":
+                    returnObj.charecteristic = "standard";
+                    break;
+                case "OneSaber":
+                    returnObj.charecteristic = "one-saber";
+                    break;
+                case "NoArrows":
+                    returnObj.charecteristic = "no-arrows";
+                    break;
+                case "360Degree":
+                    returnObj.charecteristic = "360-degree";
+                    break;
+                case "90Degree":
+                    returnObj.charecteristic = "90-degree";
+                    break;
+                case "Lawless":
+                    returnObj.charecteristic = "lawless";
+                    break;
+                case "Lightshow":
+                    returnObj.charecteristic = "lightshow";
+                    break;
+                case "Legacy":
+                    returnObj.charecteristic = "legacy";
+                    break;
+            }
+            switch (difficulty) {
+                case "Easy":
+                    returnObj.color = "008055";
+                    break;
+                case "Normal":
+                    returnObj.color = "1268a1";
+                    break;
+                case "Hard":
+                    returnObj.color = "bd5500";
+                    break;
+                case "Expert":
+                    returnObj.color = "b52a1c";
+                    break;
+                case "ExpertPlus":
+                    returnObj.color = "7646af";
+                    break;
+            }
+            return returnObj;
+        }
+
+        function generateMapperBlurb(bsapi) {
+            let mapper = document.createElement("div");
+            let mappername = document.createElement("p");
+            mapper.classList.add("mapper");
+            mappername.innerText = bsapi.name;
+            let mapperimg = document.createElement("img");
+            mapperimg.src = bsapi.avatar;
+            mapperimg.width = 24;
+            mapperimg.height = 24;
+            mapper.appendChild(mapperimg);
+            mapper.appendChild(mappername);
+            return mapper;
+        }
+
+        function openArcViewer(e, bsr) {
+            e.preventDefault();
+            let iframe = document.getElementById("ArcViewer")
+            iframe.src = `https://allpoland.github.io/ArcViewer/?id=${bsr}`;
+            let overlay = document.getElementById("avoverlay");
+            overlay.style.display = "block";
+        }
+
+        function closeArcViewer() {
+            let iframe = document.getElementById("ArcViewer")
+            iframe.src = "";
+            let overlay = document.getElementById("avoverlay");
+            overlay.style.display = "none";
+        }
+
+        function openDescModal(e, title, desc) {
+            e.preventDefault();
+            let titleElement = document.getElementById("overlay_title");
+            titleElement.innerText = title;
+            let descElement = document.getElementById("overlay_desc");
+            descElement.innerText = desc;
+            let overlay = document.getElementById("descriptionmodal");
+            overlay.style.display = "block";
+        }
+
+        function closeDescModal() {
+            let overlay = document.getElementById("descriptionmodal");
+            overlay.style.display = "none";
+        }
+        //#endregion
+        //#region submit
+        function openSortModal(nomId, category, char, diff, bsr, name) {
+            let overlay = document.getElementById("sortmodal");
+            overlay.style.display = "block";
+            let form = document.getElementById("form");
+            filterCategories(category.includes("Lightshow"), category.includes("Ranked")); 
+            form.nomId.value = nomId || "";
+            form.category.value = category || "";
+            form.char.value = char || "";
+            form.diff.value = diff || "";
+            form.bsrId.value = bsr || "";
+            form.name.value = name || "";
+            form.removeEventListener("submit", handleSubmit);
+            form.addEventListener("submit", handleSubmit);
+        } 
+
+        function handleSubmit(e) {
+            console.log("submit");
+            e.preventDefault();
+            let form = document.getElementById("form");
+            let data = new FormData(form);
+            let nomId = data.get("nomId");
+            let category = data.get("category");
+            let bsr = data.get("bsrId");
+            let name = data.get("name");
+            let char = data.get("char");
+            let diff = data.get("diff");
+            fetch(`/api/sort/approveSubmission`, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    nominationId: nomId,
+                    bsrId: bsr,
+                    category: category,
+                    characteristic: char,
+                    difficulty: diff,
+                    name: name.toString().trim()
+                })
+            }).then(response => response.json()).then(data => {
+                console.log(data);
+                closeModal();
+                loadSubmissions(activePage);
+            });
+            return false; 
+        }
+
+        function filterCategories(isLighting, isRanked) {
+            let options = document.getElementsByClassName("categoryOption");
+            if (isLighting) {
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].value.includes("Lightshow")) {
+                        options[i].style.display = "block";
+                    } else {
+                        options[i].style.display = "none";
+                    }
+                }
+            } else if (isRanked) {
+                for (let i = 0; i < options.length; i++) {
+                    if (options[i].value.includes("Ranked")) {
+                        options[i].style.display = "block";
+                    } else {
+                        options[i].style.display = "none";
+                    }
+                }
+            } else {
+                for (let i = 0; i < options.length; i++) {
+                    options[i].style.display = "block";
+                }
+            } 
+        }
+
+        function closeModal() {
+            let modal = document.getElementById("sortmodal");
+            modal.style.display = "none";
+        }
+
+        function stopBubble(e) {
+            e.cancelBubble = true;
+        }
+        //#endregion
+    </script>
+</body>
