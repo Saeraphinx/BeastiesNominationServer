@@ -1,5 +1,6 @@
 import { Express } from 'express';
-import { DatabaseHelper, DatabaseManager, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, DatabaseManager, NominationAttributes, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { Model } from 'sequelize';
 
 export class SortingRoutes {
     private app: Express;
@@ -37,7 +38,12 @@ export class SortingRoutes {
             //    return res.status(400).send({ message: `Category is required` });
             //}
 
-            let response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null } });
+            let response: NominationAttributes[];
+            if (category) {
+                response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null, category: category.toString() } });
+            } else {
+                response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null } });
+            }
             let start = pageSizeInt * (pageInt - 1);
 
             console.log(`Sending submissions ${start} to ${start + pageSizeInt} of ${response.length}`);
