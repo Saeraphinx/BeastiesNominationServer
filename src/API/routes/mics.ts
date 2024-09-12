@@ -1,10 +1,11 @@
-import { Express } from 'express';
+import { Express, NextFunction, RequestHandler } from 'express';
 import { DatabaseHelper, NominationCount } from '../../Shared/Database';
 import path from 'node:path';
 
 export class MiscRoutes {
     private app: Express;
     private submissionCountCache: NominationCount[];
+    private readonly cacheControl: string = `public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=86400`;
 
     constructor(app: Express) {
         this.app = app;
@@ -23,55 +24,68 @@ export class MiscRoutes {
 
     private async loadRoutes() {
         this.app.get(`/api/counts`, async (req, res) => {
+            res.setHeader(`Cache-Control`, `public, max-age=60, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400`);
             res.status(200).send(this.submissionCountCache);
         });
 
         // #region CDN
         this.app.get(`/cdn/loginbl.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbl.png`));
         });
 
         this.app.get(`/cdn/loginbltrans.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbltrans220.png`));
         });
 
         this.app.get(`/cdn/loginbs.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/loginbs.png`));
         });
 
         this.app.get(`/cdn/char/standard.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/standard.svg`));
         });
 
         this.app.get(`/cdn/char/one-saber.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/one-saber.svg`));
         });
 
         this.app.get(`/cdn/char/no-arrows.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/no-arrows.svg`));
         });
 
         this.app.get(`/cdn/char/lightshow.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/lightshow.svg`));
         });
 
         this.app.get(`/cdn/char/360-degree.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/360-degree.svg`));
         });
 
         this.app.get(`/cdn/char/90-degree.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/90-degree.svg`));
         });
 
         this.app.get(`/cdn/char/lawless.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/lawless.svg`));
         });
 
         this.app.get(`/cdn/char/legacy.svg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/legacy.svg`));
         });
 
         this.app.get(`/favicon.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
 
@@ -79,10 +93,12 @@ export class MiscRoutes {
     
         // #region HTML
         this.app.get(`/`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/index.html`));
         });
         
         this.app.get(`/success`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/success.html`));
         });
 
@@ -100,10 +116,12 @@ export class MiscRoutes {
         });
 
         this.app.get(`/judging`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/index.html`));
         });
 
         this.app.get(`/judging/style.css`, async (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/style.css`));
         });
     }
