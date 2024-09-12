@@ -39,7 +39,7 @@ export class SortingRoutes {
             //}
 
             let response: NominationAttributes[];
-            if (category) {
+            if (category && category !== `All`) {
                 response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null, category: category.toString() } });
             } else {
                 response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null } });

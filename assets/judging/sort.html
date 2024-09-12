@@ -139,6 +139,31 @@
             RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
             PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
         };
+
+        const submissionCategories = {
+            MapOfTheYear: [`OTY-Map`, "Map of the Year"],
+            MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
+            LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, "Rookie Lighter of the Year"],
+            PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
+            OST: [`Gen-OST`, `OST`],
+            FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
+            AlternativeMap: [`Gen-Alternative`, "Non-Standard"],
+            RankedMap: [`Ranked-RankedMap`, "Ranked Map"],
+            Lightshow: [`Mods-Lightshow`, "Lightshow"],
+            Modchart: [`Mods-Modchart`, "Modchart"],
+            ArtMap: [`Mods-ArtMap`, "Art Map"],
+            BalancedMap: [`Style-Balanced`, "Balanced"],
+            TechMap: [`Style-Tech`, "Tech"],
+            SpeedMap: [`Style-Speed`, "Speed"],
+            DanceMap: [`Style-Dance`, "Dance"],
+            FitnessMap: [`Style-Fitness`, "Fitness"],
+            ChallengeMap: [`Style-Challenge`, "Challenge"],
+            AccMap: [`Style-Acc`, "Acc"],
+            PoodleMap: [`Style-Poodle`, "Poodle"],
+            GimmickMap: [`Style-Gimmick`, "Gimmick"],
+        };
         let categorySelect = document.getElementById("category");
         for (let key in categories) {
             let option = document.createElement("option");
@@ -147,10 +172,19 @@
             option.innerText = categories[key][1];
             categorySelect.appendChild(option);
         }
+        let submissionCategorySelect = document.getElementById("submissionCategories");
+        for (let key in submissionCategories) {
+            let option = document.createElement("option");
+            //option.classList.add("categoryOption");
+            option.value = categories[key][0];
+            option.innerText = categories[key][1];
+            submissionCategorySelect.appendChild(option);
+        }
         //#endregion
         function loadSubmissions(page = activePage) {
             activePage = page;
-            fetch(`/api/sort/submissions?page=${page}&pageSize=10`).then(response => response.json()).then(res => {
+            let category = document.getElementById("submissionCategories").value;
+            fetch(`/api/sort/submissions?page=${page}&pageSize=10&category=${category}`).then(response => response.json()).then(res => {
                 const data = res.data;
                 document.getElementById("submissionList").innerHTML = "";
                 for (let i = 0; i < data.length; i++) {
