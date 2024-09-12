@@ -173,11 +173,11 @@
             categorySelect.appendChild(option);
         }
         let submissionCategorySelect = document.getElementById("submissionCategories");
-        for (let key in submissionCategories) {
+        for (let key2 in submissionCategories) {
             let option = document.createElement("option");
             //option.classList.add("categoryOption");
-            option.value = categories[key][0];
-            option.innerText = categories[key][1];
+            option.value = categories[key2][0];
+            option.innerText = categories[key2][1];
             submissionCategorySelect.appendChild(option);
         }
         //#endregion
