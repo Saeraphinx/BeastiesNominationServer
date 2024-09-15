@@ -1,6 +1,7 @@
 import { Express, NextFunction, RequestHandler } from 'express';
-import { DatabaseHelper, NominationCount } from '../../Shared/Database';
+import { DatabaseHelper, NominationCount, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import path from 'node:path';
+import fs from 'node:fs';
 
 export class MiscRoutes {
     private app: Express;
@@ -113,6 +114,63 @@ export class MiscRoutes {
                 return res.status(403).send(this.redirectTo(`/judging`));
             }
             res.sendFile(path.resolve(`assets/judging/sort.html`));
+        });
+
+        this.app.get(`/judging/judge`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge?.roles?.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            res.sendFile(path.resolve(`assets/judging/judge.html`));
+        });
+
+        this.app.get(`/judging/judge/voteScript.js`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge?.roles?.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            res.sendFile(path.resolve(`assets/judging/voteScript.js`));
+        });
+
+        this.app.get(`/judging/judge/:category`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+            
+            const { category } = req.params;
+
+            if (!category || typeof category !== `string`) {
+                return res.status(400).send(this.redirectTo(`/judging`));
+            }
+
+            if (!validateEnumValue(category, SortedSubmissionsCategory) || !judge.permittedCategories.includes(category as SortedSubmissionsCategory)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            let response = fs.readFileSync(path.resolve(`assets/judging/judgeMapTemplate.html`), `utf8`);
+
+            response = response.replace(`{{CATEGORY_FREN_NAME}}`, category);
+            response = response.replace(`{{CATEGORY_PROG_NAME}}`, category);
+
+            res.send(response);
         });
 
         this.app.get(`/judging`, (req, res) => {

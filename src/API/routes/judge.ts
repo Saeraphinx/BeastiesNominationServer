@@ -74,7 +74,7 @@ export class JudgeingRoutes {
                 return res.status(400).send({ message: `Invalid Parameters.` });
             }
 
-            let voteNumber = parseInt(vote);
+            let voteNumber = parseFloat(vote);
 
             if (isNaN(voteNumber) || (voteNumber !== 1 && voteNumber != 0 && voteNumber != 0.5)) {
                 return res.status(400).send({ message: `Invalid Parameters.` });

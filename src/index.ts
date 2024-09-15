@@ -9,6 +9,7 @@ import { server, devmode } from '../storage/config.json';
 import { AuthRoutes } from './API/routes/auth';
 import { MiscRoutes } from './API/routes/mics';
 import { SortingRoutes } from './API/routes/sorting';
+import { JudgeingRoutes } from './API/routes/judge';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -43,6 +44,7 @@ new SubmissionRoutes(app);
 new AuthRoutes(app);
 new MiscRoutes(app);
 new SortingRoutes(app);
+new JudgeingRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 

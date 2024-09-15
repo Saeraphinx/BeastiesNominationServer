@@ -170,11 +170,23 @@ a:hover, button:hover {
 }
 
 .red-glow {
-    box-shadow: 0 0 5px 2px #ff0000;
+    box-shadow: 0 0 3px 2px #ff0000;
 }
 
 .green-glow {
-    box-shadow: 0 0 5px 2px #00ff00;
+    box-shadow: 0 0 3px 2px #00ff00;
+}
+
+.red-glow-big {
+    box-shadow: 0 0 15px 10px #ff0000;
+}
+
+.yellow-glow-big {
+    box-shadow: 0 0 15px 10px #ffff00;
+}
+
+.green-glow-big {
+    box-shadow: 0 0 15px 10px #00ff00;
 }
 
 div.submissionList {
@@ -182,6 +194,17 @@ div.submissionList {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+}
+
+textarea {
+    margin-bottom: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid black;
+    font-size: 14px;
+    background-color: #000000aa;
+    color: white;
+    resize: vertical;
 }
 
 /* #region beatmaps */
@@ -194,7 +217,7 @@ div.beatmap {
     padding: 10px 20px 10px 20px;
     width: 200px;
     min-height: 250px;
-    border-radius: 5px;
+    border-radius: 15px;
     background-color: #000000aa;
 
 }
