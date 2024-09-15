@@ -52,8 +52,11 @@ export class AuthRoutes {
         });
 
         this.app.get(`/api/auth/beatleader/callback`, async (req, res) => {
-            const code = req.query[`code`].toString();
-            const state = req.query[`state`].toString();
+            const code = req.query[`code`];
+            const state = req.query[`state`];
+            if (!code || !state) {
+                return res.status(400).send({ error: `Invalid parameters.` });
+            }
             //console.log(req.session);
             //if (state !== req.session.state) {
             //    return res.status(400).send({ error: `Invalid state.` });
@@ -62,7 +65,7 @@ export class AuthRoutes {
                 return res.status(400).send({ error: `Invalid state.` });
             }
             this.validStates = this.validStates.filter((s) => s !== state + req.ip);
-            let token = BeatLeaderAuthHelper.getToken(code);
+            let token = BeatLeaderAuthHelper.getToken(code.toString());
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
             let user = await BeatLeaderAuthHelper.getUser((await token).access_token);
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
@@ -87,8 +90,11 @@ export class AuthRoutes {
         });
 
         this.app.get(`/api/auth/beatsaver/callback`, async (req, res) => {
-            const code = req.query[`code`].toString();
-            const state = req.query[`state`].toString();
+            const code = req.query[`code`];
+            const state = req.query[`state`];
+            if (!code || !state) {
+                return res.status(400).send({ error: `Invalid parameters.` });
+            }
             //console.log(req.session);
             //if (state !== req.session.state) {
             //    return res.status(400).send({ error: `Invalid state.` });
@@ -97,7 +103,7 @@ export class AuthRoutes {
                 return res.status(400).send({ error: `Invalid state.` });
             }
             this.validStates = this.validStates.filter((s) => s !== state + req.ip);
-            let token = BeatSaverAuthHelper.getToken(code);
+            let token = BeatSaverAuthHelper.getToken(code.toString());
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
             let user = await BeatSaverAuthHelper.getUser((await token).access_token);
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
@@ -122,8 +128,11 @@ export class AuthRoutes {
         });
 
         this.app.get(`/api/auth/discord/callback`, async (req, res) => {
-            const code = req.query[`code`].toString();
-            const state = req.query[`state`].toString();
+            const code = req.query[`code`];
+            const state = req.query[`state`];
+            if (!code || !state) {
+                return res.status(400).send({ error: `Invalid parameters.` });
+            }
             //console.log(req.session);
             //if (state !== req.session.state) {
             //    return res.status(400).send({ error: `Invalid state.` });
@@ -132,7 +141,7 @@ export class AuthRoutes {
                 return res.status(400).send({ error: `Invalid state.` });
             }
             this.validStates = this.validStates.filter((s) => s !== state + req.ip);
-            let token = await DiscordAuthHelper.getToken(code);
+            let token = await DiscordAuthHelper.getToken(code.toString());
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
             let user = await DiscordAuthHelper.getUser(token.access_token);
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
