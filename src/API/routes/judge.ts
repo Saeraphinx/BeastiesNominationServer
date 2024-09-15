@@ -146,19 +146,18 @@ export class JudgeingRoutes {
     
         this.app.get(`/api/judge/playlist`, async (req, res) => {
             const { category } = req.query;
-            let result = await this.processJudge(req, res, category);
-
-            if (result === false) {
-                return;
+            if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
+                res.status(400).send({ error: `Invalid Parameters.` });
+                return false;
             }
 
-            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: result.category } });
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
             const playlist: { playlistTitle: string, playlistAuthor: string, playlistDescription:string, image:string, syncURL: string, songs: {key:string, hash:string, difficulties?:{characteristic:string, name:string}[]}[] } = {
-                playlistTitle: `${result.category} - 2024 Beasties`,
+                playlistTitle: `${category} - 2024 Beasties`,
                 playlistAuthor: `BeastiesNominationServer`,
                 playlistDescription: ``,
                 image: `${server.url}/cdn/beastsaber.jpg`,
-                syncURL: `${server.url}/api/judge/playlist?category=${result.category}`,
+                syncURL: `${server.url}/api/judge/playlist?category=${category}`,
                 songs: []
             };
 
