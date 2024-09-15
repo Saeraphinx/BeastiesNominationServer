@@ -1,6 +1,7 @@
 import { Express } from 'express';
-import { DatabaseHelper, Judge, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, Judge, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
 import { HTTPTools } from '../classes/HTTPTools';
+import { server } from '../../../storage/config.json';
 
 export class JudgeingRoutes {
     private app: Express;
@@ -20,6 +21,20 @@ export class JudgeingRoutes {
             }
 
             return res.status(200).send({ message: `Allowed to judge ${result.category}` });
+        });
+
+        this.app.get(`/api/judge/getCategories`, async (req, res) => {
+            if (!req.session.userId && req.session.service !== `judgeId`) {
+                return res.status(401).send({ message: `Not logged in.` });
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`judge`)) {
+                return res.status(403).send({ message: `You do not have permission to judge.` });
+            }
+
+            return res.status(200).send({ username: req.session.username, categories: judge.permittedCategories, allCategories: SortedSubmissionsCategoryEnglish });
         });
 
         this.app.get(`/api/judge/getSubmissions`, async (req, res) => {
@@ -104,6 +119,73 @@ export class JudgeingRoutes {
                 return res.status(200).send({ message: `Vote Submitted.` });
             }
         });
+
+        this.app.get(`/api/beatsaver/playlist/:id`, async (req, res) => {
+            const { id } = req.params;
+            let result = await this.processJudge(req, res, SortedSubmissionsCategory.PackOfTheYear);
+
+            if (result === false) {
+                return;
+            }
+
+            let idInt = parseInt(id);
+
+            if (isNaN(idInt)) {
+                return res.status(400).send({ message: `Invalid Parameters.` });
+            }
+
+            fetch(`https://api.beatsaver.com/playlists/id/${id}`).then(async (response) => {
+                if (response.status !== 200) {
+                    return res.status(400).send({ message: `Invalid Playlist ID` });
+                }
+
+                let json = await response.json() as any;
+                return res.status(200).send(json);
+            });
+        });
+    
+        this.app.get(`/api/judge/playlist`, async (req, res) => {
+            const { category } = req.query;
+            let result = await this.processJudge(req, res, category);
+
+            if (result === false) {
+                return;
+            }
+
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: result.category } });
+            const playlist: { playlistTitle: string, playlistAuthor: string, playlistDescription:string, image:string, syncURL: string, songs: {key:string, hash:string, difficulties?:{characteristic:string, name:string}[]}[] } = {
+                playlistTitle: `${result.category} - 2024 Beasties`,
+                playlistAuthor: `BeastiesNominationServer`,
+                playlistDescription: ``,
+                image: `${server.url}/cdn/beastsaber.jpg`,
+                syncURL: `${server.url}/api/judge/playlist?category=${result.category}`,
+                songs: []
+            };
+
+            for (let submission in submissions) {
+                const curRes = submissions[submission];
+                if (curRes.bsrId === null) {
+                    continue;
+                } else {
+                    if (!curRes.hash || !isEmptyOrSpaces(curRes.hash)) {
+                        await fetch(`https://api.beatsaver.com/maps/id/${curRes.bsrId}`).then(async (response) => {
+                            if (response.status !== 200) {
+                                return res.status(500).send({ message: `Invalid BSR ID` });
+                            }
+                            let json = await response.json() as any;
+                            curRes.hash = json.versions[0].hash;
+                            curRes.save();
+                        });
+                    }
+                }
+                if (curRes.characteristic && curRes.difficulty && !isEmptyOrSpaces(curRes.characteristic) && !isEmptyOrSpaces(curRes.characteristic)) {
+                    playlist.songs.push({ key: curRes.bsrId, hash: curRes.hash, difficulties: [{ characteristic: curRes.characteristic, name: curRes.difficulty }] });
+                } else {
+                    playlist.songs.push({ key: curRes.bsrId, hash: curRes.hash });
+                }
+            }
+            return res.type(`bplist`).send(playlist);
+        });
     }
 
     private async processJudge(req:any, res: any, category: any): Promise<false | { status: boolean, judge: Judge, category: string }> {
@@ -138,4 +220,8 @@ export class JudgeingRoutes {
 
         return { status: true, judge, category };
     }
+}
+// i thought js had this but ig its only C#
+function isEmptyOrSpaces(str:string) {
+    return str === null || str.match(/^ *$/) !== null;
 }

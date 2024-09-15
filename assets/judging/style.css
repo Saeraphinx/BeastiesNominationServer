@@ -14,7 +14,7 @@
 }
 
 body {
-    background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+    /*background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);*/
     background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
     background-size: 1000% 1000%;
     animation: bg 90s ease infinite;
@@ -25,6 +25,20 @@ body {
     align-items: center;
     color: white;
     font-size: 17px;
+}
+
+div.bg {
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+    width: 200vw;
+    height: 200vh;
+    position: fixed;
+    z-index: -1;
+    filter: blur(6px);
+    opacity: 1;
 }
 
 h1 {
@@ -71,6 +85,14 @@ nav {
     background-color: #00000077;
 }
 
+div.categories {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+}
+
 div.nav.right a {
     padding: 10px;
     margin: 10px;
@@ -78,13 +100,24 @@ div.nav.right a {
     background-color: #000000aa;
 }
 
-a.nav {
+a.nav, a.category {
     color: rgb(255, 255, 255);
     text-decoration: none;
     padding: 10px;
     margin: 10px;
     border-radius: 5px;
     background-color: #000000aa;
+    transition: box-shadow 0.3s;
+}
+
+select.background {
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    background-color: #000000aa;
+    color: white;
+    border: none;
+    cursor: pointer;
     transition: box-shadow 0.3s;
 }
 
@@ -164,13 +197,17 @@ div.buttonContainer a {
     transition: box-shadow 0.3s;
 }
 
-a:hover, button:hover {
+a:hover:not(.mapper, .title), button:hover, .nav.active {
     transition: box-shadow 0.3s;
     box-shadow: 0 0 5px 2px #0095ff;
 }
 
 .red-glow {
     box-shadow: 0 0 3px 2px #ff0000;
+}
+
+.yellow-glow {
+    box-shadow: 0 0 3px 2px #ffff00;
 }
 
 .green-glow {
@@ -231,12 +268,19 @@ div.beatmap p {
     font-size: 18px;
 }
 
-div.beatmap p.title {
+div.beatmap p.title, div.beatmap a.title {
     margin-top: 5px;
     margin-bottom: 0;
     font-size: 20px;
     font-weight: bold;
     flex: 1;
+    color: white;
+    text-decoration: none;
+}
+
+div.beatmap p.title:hover, div.beatmap a.title:hover {
+    color: #0095ff;
+    box-shadow: none;
 }
 
 div.beatmap p.subtext {
@@ -266,10 +310,23 @@ div.mapper {
     flex-wrap: wrap;
 }
  
-div.mapper p {
+div.mapper p, div.mappers a {
     padding-left: 5px; 
     padding-right: 5px;
     font-size: 16px;
+    color: white;
+    text-decoration: none;
+}
+
+div.mappers a:hover {
+    color: white;
+    text-decoration: none;
+}
+
+div.mapper:hover {
+    background-color: rgb(0, 98, 255);
+    color: white;
+    text-decoration: none;
 }
 
 div.actions {

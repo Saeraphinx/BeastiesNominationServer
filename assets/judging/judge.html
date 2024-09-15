@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="style.css" rel="stylesheet">!-->
+    <link href="/judging/style.css" rel="stylesheet">
+
+</head>
+<body style="background-color: black;">
+    <nav>
+        <a class="nav active" href="/judging">Home</a>
+        <a class="nav" href="/judging/sort">Sort Submissions</a>
+        <a class="nav" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" id="login" href="/api/auth/discord">Login</a>
+    </nav>
+    <div class="header">
+        <h1>2024 BeastSaber Mapping Awards</h1>
+    </div>
+    <div class="header">
+        <h2>Judges Panel</h2>
+        <p>Select the category you'd like to judge.</p>
+    </div>
+    <div class="header">
+        <h2>Categories</h2>
+        <div id="categories" class="categories"></div>
+    </div>
+    <script>
+        fetch('/api/judge/getCategories').then(response => {
+            if (response.status == 200) {
+               let loginButton = document.getElementById('login');
+                loginButton.innerHTML = "Logout";
+                loginButton.href = "/api/auth/logout";
+                response.json().then(data => {
+                    if (data.username) {
+                        loginButton.innerText = `Logout (${data.username})`;
+                    }
+
+                    let categories = data.categories;
+                    let categoriesDiv = document.getElementById('categories');
+                    let allCategories = Object.values(data.allCategories);
+                    categories.forEach(category => {
+                        let categoryA = document.createElement('a');
+                        categoryA.classList.add('category');
+                        categoryA.href = `/judging/judge/${category}`;
+                        categoryA.innerText = allCategories.find(c => c[0] == category)[1];
+                        categoriesDiv.appendChild(categoryA);
+                    });
+                });
+            } else {
+                window.location.href = "/judging";
+            }
+        });
+    </script>
+    <script src="/judging/background.js"></script>
+</body>

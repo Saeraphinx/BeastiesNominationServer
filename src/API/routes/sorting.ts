@@ -87,6 +87,7 @@ export class SortingRoutes {
             }
 
             let involvedMappers:any[] = [];
+            let hash = null;
             if (!DatabaseHelper.isNameRequiredSortedSubmission(category)) {
                 fetch(`https://api.beatsaver.com/maps/id/${bsrId}`).then(async (response) => {
                     if (response.status !== 200) {
@@ -94,6 +95,7 @@ export class SortingRoutes {
                     }
 
                     let json = await response.json() as any;
+                    hash = json.versions[0].hash;
                     involvedMappers.push(json.uploader.id);
                     if (json.collaborators) {
                         json.collaborators.forEach((collab:any) => {
@@ -109,6 +111,7 @@ export class SortingRoutes {
                 difficulty: difficulty,
                 characteristic: characteristic,
                 category: category,
+                hash: hash,
                 involvedMappers: (involvedMappers as string[]),
             });
 

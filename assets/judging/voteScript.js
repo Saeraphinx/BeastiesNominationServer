@@ -1,5 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 let activePage = 1;
 let cache = [];
+let username = ``;
 const global_category = document.querySelector(`meta[name="category-prog-name"]`).getAttribute(`content`);
 //#region onload
 fetch(`/api/auth/judging`).then(response => {
@@ -7,6 +9,7 @@ fetch(`/api/auth/judging`).then(response => {
         response.json().then(data => {
             if (data.username) {
                 document.getElementById(`username`).innerText = `Logout (${data.username})`;
+                username = data.username;
             }
         });
     } else {
@@ -57,7 +60,7 @@ function loadSubmission(submissionId, bsrId, name, category, selectedDiff, selec
         } else if (category.includes(`Pack`)) {
             let nonEmbedElement = document.getElementById(`submissionList`).appendChild(createName(submissionId, name, null, name, null, category, voteScore, notes));
             let id = name;
-            fetch(`https://api.beatsaver.com/playlists/id/${id}`).then(response => response.json()).then(data => {
+            fetch(`/api/beatsaver/playlist/${id}`).then(response => response.json()).then(data => {
                 let pData = data.playlist;
                 nonEmbedElement.remove();
                 document.getElementById(`submissionList`).appendChild(createName(submissionId, pData.name, pData.songsChangedAt, name, pData.playlistImage, category, voteScore, notes));
@@ -82,7 +85,7 @@ function loadSubmission(submissionId, bsrId, name, category, selectedDiff, selec
     });
 }
 
-// TODO: 
+// TODO:
 // Add Diff & Char + Add Category
 function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = `ExpertPlus`, selectedChar = `Standard`, showMods = false, showRanked = false, validFullSpread = false, voteScore = -1, notes = ``) {
     let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
@@ -119,11 +122,17 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     //title
     let title = document.createElement(`p`);
     title.classList.add(`title`);
-    title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
-    title.title = title.innerText;
-    if (title.innerText.length > 18) {
-        title.innerText = title.innerText.substring(0, 15) + `...`;
+    let aTitle = document.createElement(`a`);
+    aTitle.classList.add(`title`);
+    aTitle.href = `https://beatsaver.com/maps/${bsapi.id}`;
+    aTitle.target = `_blank`;
+    aTitle.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
+    title.title = aTitle.innerText;
+    aTitle.title = aTitle.innerText;
+    if (aTitle.innerText.length > 18) {
+        aTitle.innerText = aTitle.innerText.substring(0, 15) + `...`;
     }
+    title.appendChild(aTitle);
     beatmap.appendChild(title);
 
     //subtext
@@ -176,8 +185,9 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     involvedButton.innerText = `Involved`;
     let approveButton = document.createElement(`button`);
     approveButton.innerText = `Yes`;
-    approveButton.classList.add(`green-glow`);
-    rejectButton.classList.add(`red-glow`);
+    voteScore == 1 || voteScore == -1 ? approveButton.classList.add(`green-glow`) : null;
+    voteScore == 0.5 || voteScore == -1 ? involvedButton.classList.add(`yellow-glow`) : null;
+    voteScore == 0 || voteScore == -1 ? rejectButton.classList.add(`red-glow`) : null;
     let noteTextArea = document.createElement(`textarea`); //pretend this bit is lower
     noteTextArea.placeholder = `Notes`;
     noteTextArea.classList.add(`notes`);
@@ -195,12 +205,18 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     switch (voteScore) {
         case 0:
             beatmap.classList.add(`red-glow-big`);
+            username == `undeceiver` ? rejectButton.style.backgroundColor = `#f00` : null;
+            username == `undeceiver` ? rejectButton.style.color = `#000` : null;
             break;
         case 0.5:
             beatmap.classList.add(`yellow-glow-big`);
+            username == `undeceiver` ? involvedButton.style.backgroundColor = `#fF0` : null;
+            username == `undeceiver` ? involvedButton.style.color = `#000` : null;
             break;
         case 1:
             beatmap.classList.add(`green-glow-big`);
+            username == `undeceiver` ? approveButton.style.backgroundColor = `#0F0` : null;
+            username == `undeceiver` ? approveButton.style.color = `#000` : null;
             break;
         default:
             break;
@@ -240,20 +256,28 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
 }
 
 function createName(nomId, titleText, subtextText, rawnameText, imageUrl, category = `you fucked up`, voteScore = -1, notes = ``) {
-    let disabledFlag = false;
-            
     let beatmap = document.createElement(`div`);
     beatmap.classList.add(`beatmap`);
 
-    let catText = document.createElement(`p`);
-    catText.classList.add(`category`);
-    catText.innerText = category;
-    beatmap.appendChild(catText);
+    //let catText = document.createElement(`p`);
+    //catText.classList.add(`category`);
+    //catText.innerText = category;
+    //beatmap.appendChild(catText);
 
     //title
     let title = document.createElement(`p`);
     title.classList.add(`title`);
-    title.innerText = `${titleText}`
+    let aTitle = document.createElement(`a`);
+    aTitle.classList.add(`title`);
+    aTitle.href = category.includes(`Pack`) ? `https://beatsaver.com/playlists/${rawnameText}` : `https://beatsaver.com/profile/${rawnameText}`;
+    aTitle.target = `_blank`;
+    aTitle.innerText = titleText;
+    title.title = aTitle.innerText;
+    aTitle.title = aTitle.innerText;
+    if (aTitle.innerText.length > 18) {
+        aTitle.innerText = aTitle.innerText.substring(0, 15) + `...`;
+    }
+    title.appendChild(aTitle);
     beatmap.appendChild(title);
 
     //subtext
@@ -276,37 +300,53 @@ function createName(nomId, titleText, subtextText, rawnameText, imageUrl, catego
     //buttons
     let buttons = document.createElement(`div`);
     buttons.classList.add(`actions`);
-    let actionsText = document.createElement(`p`);
-    actionsText.innerText = `Actions:`;
-    buttons.appendChild(actionsText);
-    let approveButton = document.createElement(`button`);
-    approveButton.innerText = `Approve`;
     let rejectButton = document.createElement(`button`);
-    rejectButton.innerText = `Reject`;
-    if (disabledFlag) {
-        //approveButton.style.display = "none";
-    } else {
-        approveButton.classList.add(`green-glow`);
-    }
-    rejectButton.classList.add(`red-glow`);
+    rejectButton.innerText = `No`;
+    let involvedButton = document.createElement(`button`);
+    involvedButton.innerText = `Involved`;
+    let approveButton = document.createElement(`button`);
+    approveButton.innerText = `Yes`;
+    voteScore == 1 || voteScore == -1 ? approveButton.classList.add(`green-glow`) : null;
+    voteScore == 0.5 || voteScore == -1 ? involvedButton.classList.add(`yellow-glow`) : null;
+    voteScore == 0 || voteScore == -1 ? rejectButton.classList.add(`red-glow`) : null;
+    let noteTextArea = document.createElement(`textarea`); //pretend this bit is lower
+    noteTextArea.placeholder = `Notes`;
+    noteTextArea.classList.add(`notes`);
+    noteTextArea.value = notes ? notes : ``;
     rejectButton.onclick = (e) => {
-        fetch(`/api/sort/rejectSubmission`, {
-            method: `POST`,
-            headers: {
-                'Content-Type': `application/json`
-            },
-            body: JSON.stringify({
-                id: nomId
-            })
-        }).then(response => response.json()).then(data => {
-            console.log(data);
-            loadSubmissions(activePage);
-        });
+        sendVote(nomId, 0, noteTextArea.value);
+    };
+    approveButton.onclick = (e) => {
+        sendVote(nomId, 1, noteTextArea.value);
+    };
+    involvedButton.onclick = (e) => {
+        sendVote(nomId, 0.5, noteTextArea.value);
+    };
+
+    switch (voteScore) {
+        case 0:
+            beatmap.classList.add(`red-glow-big`);
+            username == `undeceiver` ? rejectButton.style.backgroundColor = `#f00` : null;
+            username == `undeceiver` ? rejectButton.style.color = `#000` : null;
+            break;
+        case 0.5:
+            beatmap.classList.add(`yellow-glow-big`);
+            username == `undeceiver` ? involvedButton.style.backgroundColor = `#fF0` : null;
+            username == `undeceiver` ? involvedButton.style.color = `#000` : null;
+            break;
+        case 1:
+            beatmap.classList.add(`green-glow-big`);
+            username == `undeceiver` ? approveButton.style.backgroundColor = `#0F0` : null;
+            username == `undeceiver` ? approveButton.style.color = `#000` : null;
+            break;
+        default:
+            break;
     }
-    approveButton.onclick = (e) => openSortModal(nomId, category, char, diff, null, rawnameText);
-    buttons.appendChild(approveButton);
     buttons.appendChild(rejectButton);
+    buttons.appendChild(involvedButton);
+    buttons.appendChild(approveButton);
     beatmap.appendChild(buttons);
+    beatmap.appendChild(noteTextArea);
 
     return beatmap;
 }
@@ -363,9 +403,13 @@ function convertToBNS(charecteristic, difficulty) {
 }
 
 function generateMapperBlurb(bsapi) {
+    let mapperLink = document.createElement(`a`);
+    mapperLink.href = `https://beatsaver.com/profile/${bsapi.id}`;
+    mapperLink.target = `_blank`;
     let mapper = document.createElement(`div`);
     let mappername = document.createElement(`p`);
     mapper.classList.add(`mapper`);
+    mapperLink.classList.add(`mapper`);
     mappername.innerText = bsapi.name;
     let mapperimg = document.createElement(`img`);
     mapperimg.src = bsapi.avatar;
@@ -373,7 +417,8 @@ function generateMapperBlurb(bsapi) {
     mapperimg.height = 24;
     mapper.appendChild(mapperimg);
     mapper.appendChild(mappername);
-    return mapper;
+    mapperLink.appendChild(mapper);
+    return mapperLink;
 }
 
 function openArcViewer(e, bsr) {
@@ -396,7 +441,13 @@ function openDescModal(e, title, desc) {
     let titleElement = document.getElementById(`overlay_title`);
     titleElement.innerText = title;
     let descElement = document.getElementById(`overlay_desc`);
-    descElement.innerText = desc;
+    let links = desc.matchAll(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gim);
+    let output = desc.replaceAll(`\n`, `<br>`);
+    Array.from(links).forEach(link => {
+        output = output.replace(link[0], `<a href="${link[0]}" target="_blank">${link[0]}</a>`);
+    });
+    descElement.innerHTML = output;
+    console.log(output);
     let overlay = document.getElementById(`descriptionmodal`);
     overlay.style.display = `block`;
 }
@@ -404,6 +455,14 @@ function openDescModal(e, title, desc) {
 function closeDescModal() {
     let overlay = document.getElementById(`descriptionmodal`);
     overlay.style.display = `none`;
+}
+
+function downloadPlaylist(e) {
+    e.preventDefault();
+    let a = document.createElement(`a`);
+    a.href = `/api/judge/playlist?category=${global_category}`;
+    a.download = global_category + `.bplist`;
+    a.click();
 }
 //#endregion
 //#region submit

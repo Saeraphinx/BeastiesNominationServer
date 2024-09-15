@@ -1,5 +1,5 @@
 import { Express, NextFunction, RequestHandler } from 'express';
-import { DatabaseHelper, NominationCount, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, NominationCount, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
 import path from 'node:path';
 import fs from 'node:fs';
 
@@ -90,6 +90,30 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
 
+        this.app.get(`/cdn/beastsaber.jpg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/beastsaber.jpg`));
+        });
+
+        this.app.get(`/cdn/Forest.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Forest.png`));
+        });
+
+        this.app.get(`/cdn/Lily.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Lily's Outlook.png`));
+        });
+
+        this.app.get(`/cdn/MadelineAndTheo.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Madeline And Theo.png`));
+        });
+
+        this.app.get(`/cdn/XI.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/XI's Shadow.png`));
+        });
         // #endregion
     
         // #region HTML
@@ -167,8 +191,9 @@ export class MiscRoutes {
 
             let response = fs.readFileSync(path.resolve(`assets/judging/judgeMapTemplate.html`), `utf8`);
 
-            response = response.replace(`{{CATEGORY_FREN_NAME}}`, category);
-            response = response.replace(`{{CATEGORY_PROG_NAME}}`, category);
+            let allCategories = Object.values(SortedSubmissionsCategoryEnglish);
+            response = response.replaceAll(`{{CATEGORY_FREN_NAME}}`, allCategories.find(c => c[0] == category)[1]); //fuck it wii ball
+            response = response.replaceAll(`{{CATEGORY_PROG_NAME}}`, category);
 
             res.send(response);
         });
@@ -181,6 +206,10 @@ export class MiscRoutes {
         this.app.get(`/judging/style.css`, async (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/style.css`));
+        });
+
+        this.app.get(`/judging/background.js`, async (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/background.js`));
         });
     }
 

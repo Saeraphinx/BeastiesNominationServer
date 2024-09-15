@@ -12,7 +12,7 @@
 
 </head>
 
-<body>
+<body style="background-color: black;">
     <div class="overlay" id="avoverlay" style="display: none;" onclick="closeArcViewer()">
         <iframe id="ArcViewer" frameborder="0"></iframe>
     </div>
@@ -57,14 +57,16 @@
             Votes will not be shared with other judges. Notes will not be shared with anyone.<br>At the end of voting, all votes will be combined and averaged by the number of judges that voted on that map.<br><br>If you have any questions or issues, please contact Saeraphinx in the BeastSaber Discord.</p>
         </p>
         <!--<button onclick="openSortModal()">Debug Modal</button>!-->
+        <div>
         <button onclick="loadSubmissions()">Refresh</button>
+        <button onclick="downloadPlaylist(event)">Download Playlist</button>
+        </div>
         <div id="pages" class="page">
             <button class="active">1</button>
-            <button>2</button>
         </div>
     </div>
     <div class="submissionList" id="submissionList">
     </div>
-
     <script src="/judging/judge/voteScript.js"></script>
+    <script src="/judging/background.js"></script>
 </body>
