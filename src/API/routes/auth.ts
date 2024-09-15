@@ -35,7 +35,7 @@ export class AuthRoutes {
                 if (err) {
                     return res.status(500).send({ error: `Internal server error.` });
                 }
-                return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`);
+                return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`);
             });
         });
 
@@ -74,7 +74,7 @@ export class AuthRoutes {
             req.session.username = user.name;
             req.session.service = `beatleader`;
             req.session.save();
-            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
+            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
 
         this.app.get(`/api/auth/beatsaver`, (req, res) => {
@@ -112,7 +112,7 @@ export class AuthRoutes {
             req.session.username = user.name;
             req.session.service = `beatsaver`;
             req.session.save();
-            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body><a href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
+            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
 
         this.app.get(`/api/auth/discord`, (req, res) => {
@@ -168,7 +168,7 @@ export class AuthRoutes {
             req.session.username = judge.name;
             req.session.service = `judgeId`;
             req.session.save();
-            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}/judging" /></head><body><a href="${server.url}/judging">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
+            return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}/judging" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}/judging">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
     }
 }
