@@ -565,8 +565,8 @@ export const SortedSubmissionsCategoryEnglish = {
     Modchart: [`Mods-Modchart`, `Modchart`],
     ArtMap: [`Mods-ArtMap`, `Art Map`],
 
-    RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
-    RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
+    RankedMapLower: [`Ranked-RankedMapLower`, `Ranked Lower Star`],
+    RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked Higher Star`],
 
     BalancedMap: [`Style-Balanced`, `Balanced`],
     TechMap: [`Style-Tech`, `Tech`],
