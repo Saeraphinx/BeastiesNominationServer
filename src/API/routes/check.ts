@@ -129,6 +129,9 @@ export class SubmissionRoutes {
             const name = (category == NominationCategory.OST) ? req.body[`OSTname`] : req.body[`name`];
             const charecteristic = req.body[`charecteristic`];
             const difficulty = req.body[`difficulty`];
+            const language = req.body[`language`];
+
+            let languageInt = parseInt(language);
 
             if (!req.session.userId) {
                 res.status(401).send(this.getErrorResponseString(`You need to be logged in to submit a nomination.`));
