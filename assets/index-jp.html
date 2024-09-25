@@ -535,6 +535,11 @@
     <script>
         // #region Beginning
         window.onload = async function checkSignedIn() {
+            const loadedLang = localStorage.getItem(`language`);
+            if (loadedLang === `en`) {
+                window.location.href = `/`;
+            } 
+
             const auth = await fetch('/api/auth', {
                 method: 'GET',
                 headers: {
