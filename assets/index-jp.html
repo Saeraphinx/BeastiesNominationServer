@@ -348,6 +348,28 @@
                 font-size: 12px;
             }
         }
+
+        a.lang {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 10px;
+            background-color: #00000070;
+            padding: 7px;
+            margin-top: 10px;
+            margin-bottom: 0;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        a.lang.active {
+            box-shadow: 0 0 2px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        a.lang:hover {
+            box-shadow: 0 0 2px 2px rgba(0, 157, 255, 0.5);
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -363,6 +385,7 @@
             For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
             <br><br>!-->
         </p>
+        <a class="lang" onclick="setLanguage(`en`)">English</a><a class="lang active" onclick="setLanguage(`jp`)">日本語</a>
     </div>
     <div id="form">
         <h2>2024年譜面推薦フォーム</h2>
@@ -650,6 +673,15 @@
 
             selectOSTMap.appendChild(option);
         });
+
+        function setLanguage(lang) {
+            localStorage.setItem(`language`, lang);
+            if (lang === `en`) {
+                window.location.href = `/`;
+            } else {
+                window.location.href = `/jp`;
+            }
+        }
         // #endregion
 
         // #region Form Handling
