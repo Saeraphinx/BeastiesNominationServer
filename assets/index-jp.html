@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 ビーストセイバー・マッピング・アワード推薦フォーム</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <style>
+        /* #region General & Bio */
+        @keyframes bg {
+            0% {
+                background-position: 0% 24%
+            }
+
+            50% {
+                background-position: 100% 77%
+            }
+
+            100% {
+                background-position: 0% 24%
+            }
+        }
+
+        body {
+            background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+            background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
+            background-size: 1000% 1000%;
+            animation: bg 90s ease infinite;
+            font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 4vh 0.3vh 4vh 0.3vh;
+            font-size: 17px;
+        }
+
+        @keyframes purple-glow {
+            0% {
+                box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0);
+            }
+
+            50% {
+                box-shadow: 0 0 5px 5px rgb(179, 0, 255);
+            }
+
+            100% {
+                box-shadow: 0 0 5px 5px rgba(255, 0, 0, 0);
+            }
+        }
+
+        .purple-glow {
+            animation: purple-glow 5s infinite;
+        }
+
+        div#info,
+        div#form,
+        div#countsContainer {
+            margin: 10px;
+            max-width: 800px;
+            min-width: 250px;
+            width: 80%;
+            padding: 20px;
+            /* border: 1px solid rgb(92, 4, 255); */
+            color: white;
+            border-radius: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        h1 {
+            margin: 0px;
+            font-size: 2.2em;
+            text-align: center;
+        }
+
+        h2,
+        h3 {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            font-size: 2em;
+        }
+
+        h4 {
+            margin-top: 0px;
+            font-size: 1.2em;
+            text-align: center;
+        }
+
+        a.bio,
+        a:visited.bio,
+        a:active.bio {
+            text-decoration: none;
+            color: rgb(29, 172, 255);
+        }
+
+        a.bio:hover {
+            text-decoration: underline;
+        }
+
+        p.bio {
+            text-align: center;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            padding-left: 20px;
+            padding-right: 20px;
+            font-size: 18px;
+        }
+
+        div#info {
+            padding: 20px 20px 20px 20px;
+            text-align: center;
+        }
+
+        footer {
+            font-family: Arial, sans-serif;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 5px;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        a.footer,
+        a:visited.footer,
+        a:active.footer,
+        a:hover.footer {
+            color: rgba(255, 255, 255, 0.5);
+            text-decoration: none;
+        }
+
+        /* #endregion */
+        /* #region Form */
+        #username,
+        a.username,
+        a:visited.username,
+        a:active.username,
+        a:hover.username {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 0px;
+        }
+
+        h4#timeLeft {
+            margin-top: 0px;
+            margin-bottom: 10px;
+        }
+
+        p#username {
+            margin-top: 0px;
+            margin-bottom: 0px;
+        }
+
+        .categoryinfo {
+            text-align: center;
+            padding-top: 0px;
+            margin-top: 0px;
+            font-size: 16px;
+        }
+
+        #nominationForm {
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+            max-width: 400px;
+        }
+
+        input[type="text"],
+        select {
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            font-size: 18px;
+        }
+
+        input[type="submit"] {
+            padding: 5px;
+            border-radius: 5px;
+            border: 1px solid black;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* #endregion */
+        /* #region Counts */
+        div#countsContainer {
+            text-align: center;
+        }
+
+        div#counts {
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        p.countLabel {
+            margin: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        p.count {
+            display: inline;
+            font-size: 26px;
+        }
+
+        span {
+            display: inline-block;
+            margin: 10px;
+            margin-bottom: 2px;
+            padding: 10px;
+            padding-bottom: 8px;
+            border-radius: 8px;
+            /* border: rgb(0, 0, 0) 3px solid; */
+            background-color: rgba(0, 0, 0, 0.5);
+            min-width: 150px;
+        }
+
+        small {
+            font-size: 14px;
+            text-align: center;
+            align-self: center;
+            display: none;
+        }
+
+        /* #endregion */
+        /* #region beatmaps */
+        div.beatmaps-container {
+            align-content: center;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 0px;
+            margin-left: 50px;
+            margin-right: 50px;
+        }
+
+        div.beatmap {
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            width: 500px;
+            display: flex;
+            padding: 10px;
+            margin-top: 15px;
+            margin-left: 15px;
+            margin-right: 15px;
+            margin-bottom: 0px;
+        }
+
+        img.beatmaps.cover {
+            border-radius: 10px;
+            color: #000;
+        }
+
+        div.beatmaps.difficulties {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 0px;
+        }
+
+        div.beatmaps.difficulty {
+            display: flex;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 15px;
+            margin-top: 5px;
+            margin-right: 5px;
+        }
+
+        div.beatmaps.image {
+            /* flex: 1; */
+            width: 100px;
+            height: 100px;
+            padding-right: 5px;
+        }
+
+        div.beatmaps.title,
+        div.beatmaps.mapper {
+            flex: 2;
+            font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            font-size: 18px;
+        }
+
+        div.beatmaps.title {
+            padding-left: 25px;
+        }
+
+        a.beatmaps.title:link,
+        a.beatmaps.title:visited {
+            color: rgb(0, 207, 138);
+            text-decoration: none;
+        }
+
+        a.beatmaps.title:hover,
+        a.beatmaps.title:active {
+            color: rgb(0, 159, 118);
+            text-decoration: underline;
+        }
+
+        p.beatmaps.title {
+            margin-top: 2px;
+            margin-bottom: 2px;
+            color: #FFF;
+            font-size: 15px;
+        }
+
+        /* #endregion */
+    
+        @media only screen and (max-width: 546px) {
+            p.bio {
+                font-size: 14px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2,
+            h3 {
+                font-size: 1.4em;
+            }
+
+            h4 {
+                font-size: 0.8em;
+            }
+
+            p#username, a.username, h4#timeLeft, p.categoryinfo {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="info">
+        <h1>ビーストセイバー・マッピング・アワード</h1>
+        <h4>略して The Beasties - マッパーによる、マッパーのための賞</h4>
+        <p class="bio">
+            "ビーストセイバー・マッピング・アワード、通称 The Beastiesとは毎年開催されているマッピング賞であり、Beat Saber譜面にある幅広いカテゴリーの中から最高品質の物を祝うイベントです。今年の推薦の対象は2023年12月1日0:00 UTC（世界標準時間）から、2024年11月30日23:59 UTC（日本時間では12月1日午前8:59まで）にリリースされた譜面です。
+            <br><br>
+            下記のフォームから自分の一番好きな対象譜面を2024年ビーストセイバー・マッピング・アワードに推薦することができます。各カテゴリーや基準につきましては<a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber公式サイト</a>をご確認ください。昨年からの変更点もここからご確認いただけます。また、 <a class="bio" href="#counts">このページの一番下</a>では各カテゴリーの現在の推薦数も確認することもできます。".
+            <!--<br><br>
+            For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
+            <br><br>!-->
+        </p>
+    </div>
+    <div id="form">
+        <h2>2024年譜面推薦フォーム</h2>
+        <i>
+            <h4 id="timeLeft"></h4>
+        </i>
+        <!--<h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>!-->
+        <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
+            <b><label for="category">カテゴリー（部門）</label></b>
+            <select id="category" name="category" onchange="onChange()" required></select>
+            <i>
+                <p class="categoryinfo" id="categoryinfo">The best unmodded map of the year. Full stop. It has it all -
+                    representation,
+                    emphasis, flow - everything coming together for an incredible playing experience to go with the
+                    song.
+                </p>
+            </i>
+            <b><label class="FORMbsr" for="bsrId">BSRキー(例： "3de68", "3bbb0", "39624")</label></b>
+            <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
+                pattern="[0123456789abcdefABCDEFxX]{5}" onchange="onBSRInput()">
+
+            <b><label class="FORMname" id="nameLabel" for="name">パック/マッパー名/BeatSaverのURLリンク</label></b>
+            <input class="FORMname" type="text" id="name" name="name" maxlength=100 minlength=3
+                pattern="[a-zA-Z0-9]+|[/: _.\-]+" onchange="onMapperInput()">
+
+            <b><label class="FORMOSTName" for="OSTname">OST 譜面</label></b>
+            <select class="FORMOSTName" id="OSTname" name="OSTname">
+                <option value="" style="display: none;"></option>
+            </select>
+
+
+            <b><label class="FORMchardiff" for="charecteristic">特性（Characteristic）</label></b>
+            <select class="FORMchardiff" id="charecteristic" name="charecteristic">
+                <option value="Standard">スタンダード</option>
+                <option value="OneSaber">ワンセイバー</option>
+                <option value="NoArrows">ノーアロー</option>
+                <option value="360Degree">360度</option>
+                <option value="90Degree">90度</option>
+                <option value="Lawless">ローレス</option>
+                <option value="Lightshow">ライトショー</option>
+                <option value="Other" style="display: none;">全て</option>
+            </select>
+
+            <b><label class="FORMchardiff" for="difficulty">難易度</label></b>
+            <select class="FORMchardiff" id="difficulty" name="difficulty">
+                <option value="Easy">Easy</option>
+                <option value="Normal">Normal</option>
+                <option value="Hard">Hard</option>
+                <option value="Expert">Expert</option>
+                <option value="ExpertPlus">Expert+</option>
+                <option value="Other" style="display: none;">全て</option>
+            </select>
+
+            <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
+        </form>
+        <div class="beatmaps-container" id="beatmaps-container">
+            <div id="TEMP_PLACEHOLDER"></div>
+        </div>
+        <p id="username"><a href="/api/auth/beatleader"><img
+                    src="/cdn/loginbltrans.png" width="300px" style="max-width: 300px; min-width: 100px; width: 100%;"
+                    alt="BeatLeader Login Button" /></a>
+                    <a href="/api/auth/beatsaver"><img
+                        src="/cdn/loginbs.png" width="300px" style="max-width: 300px; min-width: 100px; width: 100%;"
+                        alt="BeatLeader Login Button" /></a><br>Not currently logged in.</p>
+    </div>
+    <div id="countsContainer">
+        <h1>推薦数</h1>
+        <p>下記の推薦数は固有の譜面を表しており、推薦数は毎分更新されます。</p>
+        <div id="counts">
+            <span>
+                <p class="countLabel">OST Map</p>
+                <p class="count" id="ostCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Non-Standard Map</p>
+                <p class="count" id="altCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Full Spread Map</p>
+                <p class="count" id="fullspreadCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Lightshow</p>
+                <p class="count" id="lightshowCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Modchart</p>
+                <p class="count" id="modchartCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Art Map</p>
+                <p class="count" id="artmapCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Ranked Map</p>
+                <p class="count" id="rankedmapCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Balanced Map</p>
+                <p class="count" id="balancedCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Tech Map</p>
+                <p class="count" id="techCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Speed Map</p>
+                <p class="count" id="speedCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Dance Map</p>
+                <p class="count" id="danceCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Fitness Map</p>
+                <p class="count" id="fitnessCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Challenge Map</p>
+                <p class="count" id="challengeCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Acc Map</p>
+                <p class="count" id="accCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Poodle Map</p>
+                <p class="count" id="poodleCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Gimmick Map</p>
+                <p class="count" id="gimmickCount">0</p>
+            </span>
+        </div>
+        <div id="counts">
+            <span>
+                <p class="countLabel">Mapper of the Year</p>
+                <p class="count" id="mapperotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Lighter of the Year</p>
+                <p class="count" id="lighterotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Rookie Mapper of the Year</p>
+                <p class="count" id="rookiemapperotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Rookie Lighter of the Year</p>
+                <p class="count" id="rookielighterotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Pack of the Year</p>
+                <p class="count" id="packotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Map of the Year</p>
+                <p class="count" id="mapotyCount">0</p>
+            </span>
+        </div>
+        <span style="width: 60%; max-width: 500px;">
+            <p class="countLabel">Unique Submissions</p>
+            <p class="count" id="totalCount">0</p>
+        </span>
+    </div>
+    <footer>
+        <p class="footer"><a class="footer" href="https://saeraphinx.dev">作者： Saeraphinx</a> • <a class="footer"
+                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
+    </footer>
+    <script>
+        // #region Beginning
+        window.onload = async function checkSignedIn() {
+            const auth = await fetch('/api/auth', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (auth.status !== 200) {
+                //commit this line out when working on the page
+                //window.location.href = '/api/auth/beatleader';
+            } else {
+                const data = await auth.json();
+                const element = document.getElementById('username');
+                document.getElementById('nominationForm').style.display = null;
+                if (data.service == `beatleader`) {
+                    element.innerHTML = `<a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
+                } else if (data.service == `beatsaver`) {
+                    element.innerHTML = `<a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username} としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
+                } else {
+                    element.innerHTML = `Logged in as ${data.username} としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
+                }   
+                element.style.marginTop = "10px";
+            }
+        };
+        function timeRemaining() {
+            const timeLeft = new Date("Thu, 12 Dec 2024 05:00:00 GMT") - new Date();
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('timeLeft').innerHTML = `推薦終了まで： ${days} days, ${hours} ${hours == 1 ? "hour" : "hours"}, ${minutes} ${minutes == 1 ? 'minute' : 'minutes'}.`;
+        }
+        setInterval(timeRemaining, 60000);
+        timeRemaining();
+        const NominationCategory = {
+            MapOfTheYear: [`OTY-Map`, "マップ・オブ・ザ・イヤー(Map of the Year)"],
+            MapperOfTheYear: [`OTY-Mapper`, "マッパー・オブ・ザ・イヤー(Mapper of the Year)"],
+            LighterOfTheYear: [`OTY-Lighter`, "ライター・オブ・ザ・イヤー(Lighter of the Year)"],
+            RookieMapperOfTheYear: [`OTY-RookieMapper`, "ルーキー・マッパー・オブ・ザ・イヤー(Rookie Mapper of the Year)"],
+            RookieLighterOfTheYear: [`OTY-RookieLighter`, "ルーキー・ライター・オブ・ザ・イヤー(Rookie Lighter of the Year)"],
+            PackOfTheYear: [`OTY-Pack`, "パック・オブ・ザ・イヤー(Pack of the Year)"],
+            OST: [`Gen-OST`, `OST`],
+            FullSpreadMap: [`Gen-FullSpread`, "フルスプレッドマップ(Full Spread)"],
+            AlternativeMap: [`Gen-Alternative`, "ノンスタンダードマップ(Non-Standard)"],
+            RankedMap: [`Ranked-RankedMap`, "ランクマップ(Ranked)"],
+            Lightshow: [`Mods-Lightshow`, "ライティング（Lightshow)"],
+            Modchart: [`Mods-Modchart`, "モッドチャート(Modchart)"],
+            ArtMap: [`Mods-ArtMap`, "アートマップ(Artmap)"],
+            BalancedMap: [`Style-Balanced`, "バランスマップ(Balanced)"],
+            TechMap: [`Style-Tech`, "テック(Tech)"],
+            SpeedMap: [`Style-Speed`, "スピード(Speed)"],
+            DanceMap: [`Style-Dance`, "ダンス(Dance)"],
+            FitnessMap: [`Style-Fitness`, "フィットネス(Fitness)"],
+            ChallengeMap: [`Style-Challenge`, "チャレンジ(Challenge)"],
+            AccMap: [`Style-Acc`, "精度(Acc)"],
+            PoodleMap: [`Style-Poodle`, "プードル(Poodle)"],
+            GimmickMap: [`Style-Gimmick`, "ギミック(Gimmick)"],
+        };
+
+        const OSTMaps = [
+            "Shock Drops | Eminem - Houdini",
+            "OST 7 | F.O.O.L - Damage",
+            "OST 7 | Camellia - Lustre",
+            "OST 7 | Teminite x Boom Kitty - The Master",
+            "OST 7 | Lindsey Stirling - Untamed",
+            "OST 7 | Nitro Fun - World Wide Web",
+            "Hip Hop Mixtape | 2Pac - All Eyez On Me (featuring Big Syke)",
+            "Hip Hop Mixtape | Nicki Minaj - Anaconda",
+            "Hip Hop Mixtape | Snoop Dogg - Gin and Juice",
+            "Hip Hop Mixtape | Eminem - Godzilla (feat. Juice WRLD)",
+            "Hip Hop Mixtape | Outkast - Hey Ya!",
+            "Hip Hop Mixtape | The Notorious B.I.G. - Hypnotize",
+            "Hip Hop Mixtape | Dr Dre - Nuthin’ But A “G” Thang",
+            "Hip Hop Mixtape | Grandmaster Flash & The Furious Five - The Message",
+            "Hip Hop Mixtape | Pop Smoke - The Woo (feat. 50 Cent, Roddy Ricch)",
+            "Daft Punk Pack | Daft Punk - Around The World",
+            "Daft Punk Pack | Daft Punk - Around The World / Harder Better Faster Stronger (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Da Funk / Daftendirekt (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Get Lucky (feat. Pharrell Williams and Nile Rodgers)",
+            "Daft Punk Pack | Daft Punk - Harder, Better, Faster, Stronger",
+            "Daft Punk Pack | Daft Punk - Lose Yourself to Dance (feat. Pharrell Williams)",
+            "Daft Punk Pack | Daft Punk - One More Time",
+            "Daft Punk Pack | Daft Punk - Technologic",
+            "Daft Punk Pack | Daft Punk - The Prime Time of Your Life (Live 2007)",
+            "Daft Punk Pack | Daft Punk - Veridis Quo",
+            "OST 6 | Boom Kitty - Cathedral",
+            "OST 6 | Lindsey Stirling - Heavy Weight",
+            "OST 6 | Far Out - Lift Off",
+            "OST 6 | DragonForce - Power of the Saber Blade",
+            "OST 6 | Camellia - Tempo-Katana",
+        ];
+
+        // Get the form element
+        const selectTag = document.getElementById('category');
+
+        // Generate the category options
+        for (const category in NominationCategory) {
+            const option = document.createElement('option');
+            option.value = NominationCategory[category][0];
+            option.innerHTML = NominationCategory[category][1];
+
+            selectTag.appendChild(option);
+        }
+
+        const selectOSTMap = document.getElementById('OSTname');
+
+        OSTMaps.forEach(OSTMap => {
+            const option = document.createElement('option');
+            option.value = OSTMap;
+            option.innerHTML = OSTMap;
+
+            selectOSTMap.appendChild(option);
+        });
+        // #endregion
+
+        // #region Form Handling
+        function onChange() {
+            const category = document.getElementById('category').value;
+            const nameLabel = document.getElementById('nameLabel');
+            //const charecteristic = document.getElementById('charecteristic');
+            //const difficulty = document.getElementById('difficulty');
+            document.getElementById("beatmaps-container").innerHTML = "";
+            if (category == "Gen-FullSpread") {
+                toggleCharDiff(false, false, false);
+            } else if (category == "OTY-Mapper" || category == "OTY-RookieMapper") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Mapper Name or BeatSaver URL";
+            } else if (category == "OTY-RookieLighter" || category == "OTY-Lighter") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Lighter Name or BeatSaver URL";
+            } else if (category == "OTY-Pack") {
+                toggleCharDiff(false, true, false);
+                nameLabel.innerHTML = "Pack Name";
+            } else if (category == "Gen-OST") {
+                toggleCharDiff(true, true, true);
+            } else {
+                toggleCharDiff(true, false, false);
+            }
+            let element = document.getElementById('categoryinfo');
+            switch (category) {
+                case "OTY-Map":
+                    element.innerText = `今年最高の譜面。表現、強調、フロー、すべてが揃っており、曲に合わせた素晴らしいプレイ体験を実現します。※Noodle extensionsによりノーツを操作している譜面は対象外`;
+                    break;
+                case "Gen-OST":
+                    element.innerText = `最高の公式譜面。コミュニティとして公式マッパーの作品も見て、今年最高の公式譜面も祝いましょう。`;
+                    break;
+                case "OTY-Pack":
+                    element.innerText = `しっかりとしたテーマがあり、高品質な譜面、あらゆる難易度での素晴らしい表現、全てが揃ったマップPack。推薦対象期間内にプレイリストが作成されたPackが対象。`;
+                    break;
+                case "Gen-FullSpread":
+                    element.innerText = `フルスプレッドとはEasy、Normal、Hard、Expert、Expert+の5難易度全て用意された譜面のこと。各難易度はあらゆるレベルのプレーヤーが楽しめる内容であり、全てが高い技術でマッピングされていなくてはなりません。`;
+                    break;
+                case "Gen-Alternative":
+                    element.innerText = `このカテゴリーは、Standard難易度ではない譜面を表彰します。つまりワンセイバー、ノーアロー（全部ドットノーツの譜面）、360/90度譜面が対象です。`;
+                    break;
+                //individual mapper awards
+                case "OTY-Mapper":
+                    element.innerText = `マッパーの頂点。マッピング技術に優れているだけでなく、時には経験・知識を共有し、コミュニティを先導するようなマッパー。`;
+                    break;
+                case "OTY-Lighter":
+                    element.innerText = `ライターの頂点。バニラやChromaのライティング技術に優れているだけでなく、時には経験・知識を共有し、コミュニティを先導するようなライター。`;
+                    break;
+                case "OTY-RookieMapper":
+                    element.innerText = `最も将来有望な新人マッパー。初譜面のリリースが推薦対象期間内であるマッパーが対象。（現在は削除されていても、対象期間より前に最初の譜面をリリースしている場合はルーキーにはなりませんのでご注意ください。）`;
+                    break;
+                case "OTY-RookieLighter":
+                    element.innerText = `最も将来有望な新人ライター。初譜面（あるいは初めてのライティング）のリリースが推薦対象期間内であるマッパーが対象。（現在は削除されていても、対象期間より前に最初の譜面をリリースしている場合はルーキーにはなりませんのでご注意ください。）`;
+                    break;
+                //style awards
+                case "Style-Dance":
+                    element.innerText = `大きな腕の振りや激しい動き、そしてやや少なめのノーツ密度によって作られ、あらゆる年齢層のプレーヤーがリズムに乗って踊り、汗をかける譜面。`;
+                    break;
+                case "Style-Tech":
+                    element.innerText = `ノーツ角度を多彩に操作し、プレーヤーの手の向きを自由に曲げて、優れたフローを維持しながら挑戦的なノーツ配置を体験させてくれる譜面。`;
+                    break;
+                case "Style-Fitness":
+                    element.innerText = `いわゆるFitbeat。壁避けやしゃがみ壁、ノーツ配置によってプレーヤーの足腰に悲鳴をあげさせ、リズムに乗りながら自然な動きで絶え間ない運動をさせてくれる譜面。`;
+                    break;
+                case "Style-Balanced":
+                    element.innerText = `この譜面はテック？ダンス？スピード？バランスマップはどのジャンルにも当てはまらず、しかしどのジャンルの要素も少しずつ持ち合わせていて、全てが素晴らしいバランスで1つの譜面として完成されている譜面です。`;
+                    break;
+                case "Style-Acc":
+                    element.innerText = `ノーツ密度が低く高い精度を出せる譜面ということだけでなく、リズムの取り方が優れていて、少ないノーツで適切な強調を行い、譜面としても高品質であることが求められる。`;
+                    break;
+                case "Style-Speed":
+                    element.innerText = `疲れ果てるほどの速いBPM、たくさんのノーツ、その魅力が最大限に発揮されている譜面。`;
+                    break;
+                case "Style-Challenge":
+                    element.innerText = `ランク基準？キュレーション基準？マッピングのセオリー？この部門ではそれらの制限を取り払い、素晴らしい創造力で限界に挑戦する譜面が評価されます。`;
+                    break;
+                case "Style-Poodle":
+                    element.innerText = `プードル、及びポールが対象。優れたフローを備えており、長くホールドさせるノーツで適切な強調・表現を行っている譜面。スパイラル、スイッチバック、その他多様なプードルパターンも対象です。`;
+                    break;
+                case "Style-Gimmick":
+                    element.innerText = `「ギミック」とは、特殊なプレー方法で突破させるノーツ配置であったり、壁やボムの斬新な使い方だったり、それらを一つ（時には複数）のコンセプトとして作られた譜面のことを指します。ギミックは包括的なカテゴリーであり、「ユニークで斬新な譜面だが、ここまでのどのジャンルにも当てはまらない！」という譜面をここに推薦することができます。`;
+                    break;
+                // ranked
+                case "Ranked-RankedMap":
+                    element.innerText = `ScoreSaber、BeatLeaderのランク譜面が対象です。推薦フォームは「Ranked Map」１つにまとめられているので星の数を気にせず自由に推薦してください。集まった譜面は運営が「星10以下」「星10超」の2つの部門に振り分けます。`;
+                    break;
+                // mods
+                case "Mods-ArtMap":
+                    element.innerText = `Noodle ExtensionsとChromaのパワーをすべて活用して音楽を表現したり、ストーリーを伝えたりする譜面。`;
+                    break;
+                case "Mods-Modchart":
+                    element.innerText = `ノーツが動く！跳ねる！消える！この部門では、しっかりとしたマッピングを前提とし、Noodle Extensionsを使用してノーツや壁・ボム、時にはプレーヤーを操作し、ゲームプレイを驚くほど変化させるModchart譜面が対象です。`;
+                    break;
+                //lightshow
+                case "Mods-Lightshow":
+                    element.innerText = `最高のライトショーは目と耳へのご褒美。この部門ではユーザーが各部門の細かな違いを気にすることなく自由に「素晴らしいライティング」を推薦しやすくするため、集計後に運営が適切な部門に振り分けます。`;
+                    break;
+            }
+        }
+        onChange();
+
+        function toggleCharDiff(showDiffChar, showName, showOSTName) {
+            const charecteristic = document.getElementById('charecteristic');
+            const difficulty = document.getElementById('difficulty');
+            const bsrId = document.getElementById('bsrId');
+            const name = document.getElementById('name');
+            const OSTname = document.getElementById('OSTname');
+            let formCharDiff = document.getElementsByClassName('FORMchardiff');
+            if (showDiffChar) {
+                for (let i = 0; i < formCharDiff.length; i++) {
+                    formCharDiff[i].style.display = 'block';
+                }
+                charecteristic.disabled = false;
+                charecteristic.value = "Standard";
+                difficulty.disabled = false;
+                difficulty.value = "ExpertPlus";
+            } else {
+                for (let i = 0; i < formCharDiff.length; i++) {
+                    formCharDiff[i].style.display = 'none';
+                }
+                charecteristic.value = "Other";
+                charecteristic.disabled = true;
+                difficulty.value = "Other";
+                difficulty.disabled = true;
+            }
+
+            let formName = document.getElementsByClassName('FORMname');
+            let formBSR = document.getElementsByClassName('FORMbsr');
+            if (showName) {
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'block';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'none';
+                }
+                bsrId.value = "";
+                name.value = "";
+            } else {
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'none';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'block';
+                }
+                bsrId.value = "";
+                name.value = "";
+            }
+
+            let formOSTName = document.getElementsByClassName('FORMOSTName');
+
+            if (showOSTName) {
+                for (let i = 0; i < formOSTName.length; i++) {
+                    formOSTName[i].style.display = 'block';
+                }
+                for (let i = 0; i < formBSR.length; i++) {
+                    formBSR[i].style.display = 'none';
+                }
+                for (let i = 0; i < formName.length; i++) {
+                    formName[i].style.display = 'none';
+                }
+                bsrId.value = "";
+                name.value = "";
+            } else {
+                for (let i = 0; i < formOSTName.length; i++) {
+                    formOSTName[i].style.display = 'none';
+                }
+                OSTname.value = "";
+            }
+        }
+
+        function updateCounts() {
+            fetch('/api/counts', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            }).then(response => response.json())
+                .then(data => {
+                    // how bad can i possibly be
+                    document.getElementById('totalCount').innerHTML = `${data[1].Total} <small>(${data[0].Total})</small>`;
+                    document.getElementById('mapotyCount').innerHTML = `${data[1].MapOfTheYear} <small>(${data[0].MapOfTheYear})</small>`;
+                    document.getElementById('mapperotyCount').innerHTML = `${data[1].MapperOfTheYear} <small>(${data[0].MapperOfTheYear})</small>`;
+                    document.getElementById('lighterotyCount').innerHTML = `${data[1].LighterOfTheYear} <small>(${data[0].LighterOfTheYear})</small>`;
+                    document.getElementById('rookiemapperotyCount').innerHTML = `${data[1].RookieMapperOfTheYear} <small>(${data[0].RookieMapperOfTheYear})</small>`;
+                    document.getElementById('rookielighterotyCount').innerHTML = `${data[1].RookieLighterOfTheYear} <small>(${data[0].RookieLighterOfTheYear})</small>`;
+                    document.getElementById('packotyCount').innerHTML = `${data[1].PackOfTheYear} <small>(${data[0].PackOfTheYear})</small>`;
+                    document.getElementById('ostCount').innerHTML = `${data[1].OSTMap} <small>(${data[0].OSTMap})`;
+                    document.getElementById('altCount').innerHTML = `${data[1].AlternativeMap} <small>(${data[0].AlternativeMap})</small>`;
+                    document.getElementById('fullspreadCount').innerHTML = `${data[1].FullSpreadMap} <small>(${data[0].FullSpreadMap})</small>`;
+                    document.getElementById('lightshowCount').innerHTML = `${data[1].Lightshow} <small>(${data[0].Lightshow})</small>`;
+                    document.getElementById('modchartCount').innerHTML = `${data[1].Modchart} <small>(${data[0].Modchart})</small>`;
+                    document.getElementById('artmapCount').innerHTML = `${data[1].ArtMap} <small>(${data[0].ArtMap})</small>`;
+                    document.getElementById('rankedmapCount').innerHTML = `${data[1].RankedMap} <small>(${data[0].RankedMap})</small>`;
+                    document.getElementById('balancedCount').innerHTML = `${data[1].BalancedMap} <small>(${data[0].BalancedMap})</small>`;
+                    document.getElementById('techCount').innerHTML = `${data[1].TechMap} <small>(${data[0].TechMap})</small>`;
+                    document.getElementById('speedCount').innerHTML = `${data[1].SpeedMap} <small>(${data[0].SpeedMap})</small>`;
+                    document.getElementById('danceCount').innerHTML = `${data[1].DanceMap} <small>(${data[0].DanceMap})</small>`;
+                    document.getElementById('fitnessCount').innerHTML = `${data[1].FitnessMap} <small>(${data[0].FitnessMap})</small>`;
+                    document.getElementById('challengeCount').innerHTML = `${data[1].ChallengeMap} <small>(${data[0].ChallengeMap})</small>`;
+                    document.getElementById('accCount').innerHTML = `${data[1].AccMap} <small>(${data[0].AccMap})</small>`;
+                    document.getElementById('poodleCount').innerHTML = `${data[1].PoodleMap} <small>(${data[0].PoodleMap})</small>`;
+                    document.getElementById('gimmickCount').innerHTML = `${data[1].GimmickMap} <small>(${data[0].GimmickMap})</small>`;
+
+                    // of my god im so sorry for this
+                    let allElements = document.getElementsByClassName("count");
+                    let lowestElement = allElements[0];
+                    let secondLowestElement = allElements[1];
+                    let thirdLowestElement = allElements[2];
+                    for (let element in allElements) {
+                        if (parseInt(allElements[element].textContent) <= parseInt(lowestElement.textContent)) {
+                            thirdLowestElement = secondLowestElement;
+                            secondLowestElement = lowestElement;
+                            lowestElement = allElements[element];
+                        } else if (parseInt(allElements[element].textContent) <= parseInt(secondLowestElement.textContent)) {
+                            thirdLowestElement = secondLowestElement;
+                            secondLowestElement = allElements[element];
+                        } else if (parseInt(allElements[element].textContent) <= parseInt(thirdLowestElement.textContent)) {
+                            thirdLowestElement = allElements[element];
+                        }
+                    }
+                    lowestElement.parentElement.classList.add("purple-glow");
+                    secondLowestElement.parentElement.classList.add("purple-glow");
+                    thirdLowestElement.parentElement.classList.add("purple-glow");
+                });
+        }
+        setInterval(updateCounts, 60000);
+        updateCounts();
+        // #endregion
+
+        // #region funky little mapper/beatmap display
+        function onBSRInput() {
+            const bsrId = document.getElementById('bsrId').value;
+            let container = document.getElementById("beatmaps-container");
+            container.innerHTML = "";
+            if (bsrId.length == 5) {
+                fetch('https://api.beatsaver.com/maps/id/' + bsrId).then(response => {
+                    if (response.status == 200) {
+                        response.json().then(data => {
+                            createBeatmap(data);
+                        });
+                    } else {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "このBSRキーに該当する譜面がございません。";
+                        container.appendChild(currMapDiv);
+                    }
+                });
+            }
+        }
+
+        function createBeatmap(bsapi) {
+            // setup div
+            let currMapDiv = document.createElement("div");
+            currMapDiv.classList.add("beatmaps");
+            currMapDiv.classList.add("beatmap");
+            //image
+            let imageDiv = document.createElement("div");
+            imageDiv.classList.add("beatmaps");
+            imageDiv.classList.add("image");
+
+            let coverImg = document.createElement("img");
+            coverImg.src = bsapi.versions[0].coverURL;
+            coverImg.alt = bsapi.name;
+            coverImg.width = "113";
+            coverImg.height = "113";
+            coverImg.classList.add("beatmaps");
+            coverImg.classList.add("cover");
+
+            currMapDiv.appendChild(imageDiv);
+            imageDiv.appendChild(coverImg);
+
+            // title
+            let titleDiv = document.createElement("div");
+            titleDiv.classList.add("beatmaps");
+            titleDiv.classList.add("title");
+
+            let titleLink = document.createElement("a");
+            titleLink.href = "https://beatsaver.com/maps/" + bsapi.id;
+            titleLink.innerHTML = bsapi.name;
+            titleLink.target = "_blank";
+            titleLink.classList.add("beatmaps");
+            titleLink.classList.add("title");
+
+            let titleInfo = document.createElement("p");
+            titleInfo.innerHTML = `!bsr ${bsapi.id}<br>マッパー: ${bsapi.metadata.levelAuthorName}<br>時間 ${Math.floor(bsapi.metadata.duration / 60)}:${Math.floor(bsapi.metadata.duration % 60)}`;
+            titleInfo.classList.add("beatmaps");
+            titleInfo.classList.add("title");
+
+            let diffColors = document.createElement("div");
+            diffColors.classList.add("beatmaps");
+            diffColors.classList.add("difficulties");
+            for (let map of bsapi.versions[0].diffs) {
+                let bnsStuff = convertToBNS(map.characteristic, map.difficulty);
+                let diff = document.createElement("div");
+                diff.classList.add("beatmaps");
+                diff.classList.add("difficulty");
+                diff.style.backgroundColor = "#" + bnsStuff.color;
+                let img = document.createElement("img");
+                img.src = "/cdn/char/" + bnsStuff.charecteristic + ".svg";
+                img.alt = map.characteristic + " " + map.difficulty;
+                img.width = "20";
+                img.height = "20";
+                img.style = "padding-left: 4px;";
+                img.title = map.characteristic + " " + map.difficulty;
+                diff.appendChild(img);
+                diffColors.appendChild(diff);
+            }
+
+            currMapDiv.appendChild(titleDiv);
+            titleDiv.appendChild(titleLink);
+            titleDiv.appendChild(titleInfo);
+            titleDiv.appendChild(diffColors);
+
+            let test = document.getElementById("beatmaps-container");
+            let placeholder = document.getElementById("TEMP_PLACEHOLDER");
+            test.insertBefore(currMapDiv, placeholder);
+        }
+
+        function convertToBNS(charecteristic, difficulty) {
+            let returnObj = {
+                charecteristic: "",
+                color: "000"
+            };
+            switch (charecteristic) {
+                case "Standard":
+                    returnObj.charecteristic = "standard";
+                    break;
+                case "OneSaber":
+                    returnObj.charecteristic = "one-saber";
+                    break;
+                case "NoArrows":
+                    returnObj.charecteristic = "no-arrows";
+                    break;
+                case "360Degree":
+                    returnObj.charecteristic = "360-degree";
+                    break;
+                case "90Degree":
+                    returnObj.charecteristic = "90-degree";
+                    break;
+                case "Lawless":
+                    returnObj.charecteristic = "lawless";
+                    break;
+                case "Lightshow":
+                    returnObj.charecteristic = "lightshow";
+                    break;
+                case "Legacy":
+                    returnObj.charecteristic = "legacy";
+                    break;
+            }
+            switch (difficulty) {
+                case "Easy":
+                    returnObj.color = "008055";
+                    break;
+                case "Normal":
+                    returnObj.color = "1268a1";
+                    break;
+                case "Hard":
+                    returnObj.color = "bd5500";
+                    break;
+                case "Expert":
+                    returnObj.color = "b52a1c";
+                    break;
+                case "ExpertPlus":
+                    returnObj.color = "7646af";
+                    break;
+            }
+            return returnObj;
+        }
+
+        function onMapperInput() {
+            const mapper = document.getElementById('name').value;
+            const category = document.getElementById('category').value;
+            if (category == "OTY-Pack") {
+                return;
+            }
+            let container = document.getElementById("beatmaps-container");
+            container.innerHTML = "";
+            let sendId = "";
+            let isID = false;
+            let cancel = false;
+            if (mapper.length > 2) {
+                if (mapper.includes("https://")) {
+                    sendId = mapper.replace("https://beatsaver.com/profile/", "");
+                    isID = true;
+                } else if (mapper.match("[a-zA-Z]+")) {
+                    sendId = mapper.replace(" ", "%20");
+                    isID = false;
+                } else {
+                    sendId = mapper;
+                    isID = true;
+                }
+                let req;
+                if (isID) {
+                    req = fetch('https://api.beatsaver.com/users/id/' + sendId);
+                } else {
+                    if (mapper.match(/[^a-zA-Z0-9:_/. \-]+/)) {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "該当するマッパー名がございません。";
+                        container.appendChild(currMapDiv);
+                        return;
+                    } else {
+                        req = fetch('https://api.beatsaver.com/users/name/' + sendId);
+                    }
+                }
+                req.then(response => {
+                    if (response.status == 200) {
+                        response.json().then(data => {
+                            let currMapDiv = document.createElement("div");
+                            currMapDiv.classList.add("beatmaps");
+                            currMapDiv.classList.add("beatmap");
+                            currMapDiv.style = "width: 300px"
+                            //image
+                            let imageDiv = document.createElement("div");
+                            imageDiv.classList.add("beatmaps");
+                            imageDiv.classList.add("image");
+
+                            let coverImg = document.createElement("img");
+                            coverImg.src = data.avatar;
+                            coverImg.alt = data.name;
+                            coverImg.title = data.name;
+                            coverImg.width = "100";
+                            coverImg.height = "100";
+                            coverImg.classList.add("beatmaps");
+                            coverImg.classList.add("cover");
+
+                            currMapDiv.appendChild(imageDiv);
+                            imageDiv.appendChild(coverImg);
+
+                            // title
+                            let titleDiv = document.createElement("div");
+                            titleDiv.classList.add("beatmaps");
+                            titleDiv.classList.add("mapper");
+                            titleDiv.style = "text-align: center; margin: auto;";
+
+                            let titleLink = document.createElement("a");
+                            titleLink.href = "https://beatsaver.com/profile/" + data.id;
+                            titleLink.innerHTML = data.name;
+                            titleLink.target = "_blank";
+                            titleLink.classList.add("beatmaps");
+                            titleLink.classList.add("title");
+                            titleLink.style = "font-size: 24px;";
+
+                            currMapDiv.appendChild(titleDiv);
+                            titleDiv.appendChild(titleLink);
+
+                            let test = document.getElementById("beatmaps-container");
+                            let placeholder = document.getElementById("TEMP_PLACEHOLDER");
+                            test.insertBefore(currMapDiv, placeholder);
+                            document.getElementById('name').value = "https://beatsaver.com/profile/" + data.id;
+                        });
+                    } else {
+                        let currMapDiv = document.createElement("div");
+                        currMapDiv.classList.add("beatmaps");
+                        currMapDiv.classList.add("beatmap");
+                        currMapDiv.style = "align-items: center; justify-content: center; text-align: center;";
+                        currMapDiv.innerHTML = "該当するマッパー名がございません。";
+                        container.appendChild(currMapDiv);
+                    }
+                });
+            }
+        }
+        // #endregion
+    </script>
+</body>
+
+</html>

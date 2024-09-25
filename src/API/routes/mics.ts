@@ -96,6 +96,11 @@ export class MiscRoutes {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/index.html`));
         });
+
+        this.app.get(`/jp`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/index-jp.html`));
+        });
         
         this.app.get(`/success`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
