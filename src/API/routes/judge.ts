@@ -134,7 +134,7 @@ export class JudgeingRoutes {
                 return res.status(400).send({ message: `Invalid Parameters.` });
             }
 
-            fetch(`https://api.beatsaver.com/playlists/id/${id}`).then(async (response) => {
+            fetch(`https://api.beatsaver.com/playlists/id/${idInt}`).then(async (response) => {
                 if (response.status !== 200) {
                     return res.status(400).send({ message: `Invalid Playlist ID` });
                 }
