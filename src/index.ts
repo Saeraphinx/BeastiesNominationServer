@@ -18,6 +18,7 @@ const memstore = MemoryStore(session);
 const port = server.port;
 new DatabaseManager();
 
+app.set(`trust proxy`, `uniquelocal, loopback`);
 app.use(express.json({ limit: 100000 }));
 app.use(express.urlencoded({limit : 10000, parameterLimit: 10 }));
 app.use(session({
