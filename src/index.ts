@@ -10,6 +10,7 @@ import { AuthRoutes } from './API/routes/auth';
 import { MiscRoutes } from './API/routes/mics';
 import { SortingRoutes } from './API/routes/sorting';
 import { JudgeingRoutes } from './API/routes/judge';
+import rateLimit from 'express-rate-limit';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -34,6 +35,14 @@ app.use(session({
         httpOnly: true,
         sameSite: `strict`
     }
+}));
+
+app.use(rateLimit({
+    windowMs: 60 * 1000,
+    max: 100,
+    statusCode: 429,
+    message: `Rate limit exceeded.`,
+    skipSuccessfulRequests: true
 }));
 
 app.get(`/pinkcute`, (req, res) => {
