@@ -10,7 +10,7 @@
 
 </head>
 
-<body>
+<body style="background-color: black;">
     <div class="overlay" id="avoverlay" style="display: none;" onclick="closeArcViewer()">
         <iframe id="ArcViewer" frameborder="0"></iframe>
     </div>
@@ -211,7 +211,7 @@
         let cache = [];
         function loadSubmission(nomId, bsrId, name, category, selectedDiff, selectedChar, showMods, showRanked, validFullSpread) {
             if (bsrId == null || bsrId.length < 4) {
-                if ((category.includes("Mapper") || category.includes("Lighter")) && name?.includes("https://beatsaver.com/profile/")) {
+                if ((category.includes("Mapper") || category.includes("Lighter")) && name?.startsWith("https://beatsaver.com/profile/")) {
                     let nonEmbedElement = document.getElementById("submissionList").appendChild(createName(nomId, name, null, name, null, category));
                     let id = name.split("https://beatsaver.com/profile/")[1];
                     fetch(`https://api.beatsaver.com/users/id/${id}`).then(response => response.json()).then(data => {
@@ -647,4 +647,5 @@
         }
         //#endregion
     </script>
+    <script src="/judging/background.js"></script>
 </body>

@@ -100,6 +100,10 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            hash: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
             involvedMappers: {
                 type: DataTypes.STRING,
                 allowNull: true,
@@ -492,6 +496,7 @@ export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, I
     public name?:string;
     public difficulty?:string;
     public characteristic?:string;
+    public hash?:string;
     public involvedMappers?:string[];
 }
 
@@ -560,8 +565,8 @@ export const SortedSubmissionsCategoryEnglish = {
     Modchart: [`Mods-Modchart`, `Modchart`],
     ArtMap: [`Mods-ArtMap`, `Art Map`],
 
-    RankedMapLower: [`Ranked-RankedMapLower`, `Ranked-RankedMapLower`],
-    RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked-RankedMapHigher`],
+    RankedMapLower: [`Ranked-RankedMapLower`, `Ranked Lower Star`],
+    RankedMapHigher: [`Ranked-RankedMapHigher`, `Ranked Higher Star`],
 
     BalancedMap: [`Style-Balanced`, `Balanced`],
     TechMap: [`Style-Tech`, `Tech`],

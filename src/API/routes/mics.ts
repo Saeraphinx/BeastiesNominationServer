@@ -1,6 +1,7 @@
 import { Express, NextFunction, RequestHandler } from 'express';
-import { DatabaseHelper, NominationCount } from '../../Shared/Database';
+import { DatabaseHelper, NominationCount, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
 import path from 'node:path';
+import fs from 'node:fs';
 
 export class MiscRoutes {
     private app: Express;
@@ -89,6 +90,30 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
 
+        this.app.get(`/cdn/beastsaber.jpg`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/beastsaber.jpg`));
+        });
+
+        this.app.get(`/cdn/Forest.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Forest.png`));
+        });
+
+        this.app.get(`/cdn/Lily.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Lily's Outlook.png`));
+        });
+
+        this.app.get(`/cdn/MadelineAndTheo.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/Madeline And Theo.png`));
+        });
+
+        this.app.get(`/cdn/XI.png`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/bg/XI's Shadow.png`));
+        });
         // #endregion
     
         // #region HTML
@@ -120,6 +145,64 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/judging/sort.html`));
         });
 
+        this.app.get(`/judging/judge`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge?.roles?.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            res.sendFile(path.resolve(`assets/judging/judge.html`));
+        });
+
+        this.app.get(`/judging/judge/voteScript.js`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge?.roles?.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            res.sendFile(path.resolve(`assets/judging/voteScript.js`));
+        });
+
+        this.app.get(`/judging/judge/:category`, async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`judge`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+            
+            const { category } = req.params;
+
+            if (!category || typeof category !== `string`) {
+                return res.status(400).send(this.redirectTo(`/judging`));
+            }
+
+            if (!validateEnumValue(category, SortedSubmissionsCategory) || !judge.permittedCategories.includes(category as SortedSubmissionsCategory)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            let response = fs.readFileSync(path.resolve(`assets/judging/judgeMapTemplate.html`), `utf8`);
+
+            let allCategories = Object.values(SortedSubmissionsCategoryEnglish);
+            response = response.replaceAll(`{{CATEGORY_FREN_NAME}}`, allCategories.find(c => c[0] == category)[1]); //fuck it wii ball
+            response = response.replaceAll(`{{CATEGORY_PROG_NAME}}`, allCategories.find(c => c[0] == category)[0]);
+
+            res.send(response);
+        });
+
         this.app.get(`/judging`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/index.html`));
@@ -128,6 +211,10 @@ export class MiscRoutes {
         this.app.get(`/judging/style.css`, async (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/style.css`));
+        });
+
+        this.app.get(`/judging/background.js`, async (req, res) => {
+            res.sendFile(path.resolve(`assets/judging/background.js`));
         });
     }
 

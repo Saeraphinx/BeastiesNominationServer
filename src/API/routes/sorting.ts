@@ -87,13 +87,20 @@ export class SortingRoutes {
             }
 
             let involvedMappers:any[] = [];
+            let hash = null;
+
+            let parsedBSR = parseInt(bsrId, 16);
+            if (isNaN(parsedBSR)) {
+                return res.status(400).send({ message: `Invalid BSR ID` });
+            }
             if (!DatabaseHelper.isNameRequiredSortedSubmission(category)) {
-                fetch(`https://api.beatsaver.com/maps/id/${bsrId}`).then(async (response) => {
+                fetch(`https://api.beatsaver.com/maps/id/${parsedBSR.toString(16)}`).then(async (response) => {
                     if (response.status !== 200) {
                         return res.status(400).send({ message: `Invalid BSR ID` });
                     }
 
                     let json = await response.json() as any;
+                    hash = json.versions[0].hash;
                     involvedMappers.push(json.uploader.id);
                     if (json.collaborators) {
                         json.collaborators.forEach((collab:any) => {
@@ -109,6 +116,7 @@ export class SortingRoutes {
                 difficulty: difficulty,
                 characteristic: characteristic,
                 category: category,
+                hash: hash,
                 involvedMappers: (involvedMappers as string[]),
             });
 

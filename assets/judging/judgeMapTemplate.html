@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="category-prog-name" content="{{CATEGORY_PROG_NAME}}">
+    <meta name="category-fren-name" content="{{CATEGORY_FREN_NAME}}">
+    <!--<link href="style.css" rel="stylesheet">!-->
+    <link href="/judging/style.css" rel="stylesheet">
+
+</head>
+
+<body style="background-color: black;">
+    <div class="overlay" id="avoverlay" style="display: none;" onclick="closeArcViewer()">
+        <iframe id="ArcViewer" frameborder="0"></iframe>
+    </div>
+    <div class="overlay" id="sortmodal" style="display: none;" onclick="closeModal()">
+        <div class="form">
+            <span onclick="stopBubble(event)">
+                <form id="form" >
+                    <h2>Re-assign Submission</h2>
+                    <p>For recategorization only.</p>
+                    <label for="judId">SortedSubmission ID</label>
+                    <input type="text" id="judId" name="judId" readonly>
+                    <label for="category">Category:</label>
+                    <select id="category" name="category">
+                    </select>
+                    <input type="submit" value="Submit">
+                </form>
+            </span>
+        </div>
+    </div>
+    <div class="overlay" id="descriptionmodal" style="display: none;" onclick="closeDescModal()">
+        <div class="header" style="margin: auto; margin-top: 50px; background-color: black;">
+            <span onclick="stopBubble(event)">
+                <h2 id="overlay_title">Submission Description</h2>
+                <p id="overlay_desc">Here you can find the description of the submission. This is a placeholder for now.</p>
+            </span>
+        </div>
+    </div>
+    <nav>
+        <a class="nav" href="/judging">Home</a>
+        <a class="nav" href="/judging/sort">Sort Submissions</a>
+        <a class="nav active" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" id="username" href="/api/auth/logout">Logout</a>
+    </nav>
+    <div class="header">
+        <h1>Judge Submissions - {{CATEGORY_FREN_NAME}}</h1>
+        <p>There are only 10 cards per page. If I do any more, I start to get ratelimited by BeatSaver and I don't want that lmao. Your internal ID is associated with every judge vote.<br><br>
+            Vote Definitions:<br>
+            Yes: The map is the best it can be and should be in the final 5.<br>
+            No: I don't think this map should be in the final 5.<br>
+            Involved: You are involved with this map. This is autovoted for some people. Please note that this does not hurt the map's chances of being in the final 5.<br>
+            Votes will not be shared with other judges. Notes will not be shared with anyone.<br>At the end of voting, all votes will be combined and averaged by the number of judges that voted on that map.<br><br>If you have any questions or issues, please contact Saeraphinx in the BeastSaber Discord.</p>
+        </p>
+        <!--<button onclick="openSortModal()">Debug Modal</button>!-->
+        <div>
+        <button onclick="loadSubmissions()">Refresh</button>
+        <button onclick="downloadPlaylist(event)">Download Playlist</button>
+        </div>
+        <div id="pages" class="page">
+            <button class="active">1</button>
+        </div>
+    </div>
+    <div class="submissionList" id="submissionList">
+    </div>
+    <script src="/judging/judge/voteScript.js"></script>
+    <script src="/judging/background.js"></script>
+</body>
