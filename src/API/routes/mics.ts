@@ -193,7 +193,7 @@ export class MiscRoutes {
 
             let allCategories = Object.values(SortedSubmissionsCategoryEnglish);
             response = response.replaceAll(`{{CATEGORY_FREN_NAME}}`, allCategories.find(c => c[0] == category)[1]); //fuck it wii ball
-            response = response.replaceAll(`{{CATEGORY_PROG_NAME}}`, category);
+            response = response.replaceAll(`{{CATEGORY_PROG_NAME}}`, allCategories.find(c => c[0] == category)[0]);
 
             res.send(response);
         });
