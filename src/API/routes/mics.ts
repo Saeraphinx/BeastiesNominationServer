@@ -107,7 +107,7 @@ export class MiscRoutes {
 
         this.app.get(`/cdn/MadelineAndTheo.png`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
-            res.sendFile(path.resolve(`assets/bg/Madeline And Theo.png`));
+            res.sendFile(path.resolve(`assets/bg/Madeline and Theo.png`));
         });
 
         this.app.get(`/cdn/XI.png`, (req, res) => {
