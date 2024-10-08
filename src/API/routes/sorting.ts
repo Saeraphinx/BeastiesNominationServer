@@ -89,11 +89,11 @@ export class SortingRoutes {
             let involvedMappers:any[] = [];
             let hash = null;
 
-            let parsedBSR = parseInt(bsrId, 16);
-            if (isNaN(parsedBSR)) {
-                return res.status(400).send({ message: `Invalid BSR ID` });
-            }
             if (!DatabaseHelper.isNameRequiredSortedSubmission(category)) {
+                let parsedBSR = parseInt(bsrId, 16);
+                if (isNaN(parsedBSR)) {
+                    return res.status(400).send({ message: `Invalid BSR ID` });
+                }
                 fetch(`https://api.beatsaver.com/maps/id/${parsedBSR.toString(16)}`).then(async (response) => {
                     if (response.status !== 200) {
                         return res.status(400).send({ message: `Invalid BSR ID` });
