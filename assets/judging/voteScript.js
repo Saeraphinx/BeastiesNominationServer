@@ -447,7 +447,6 @@ function openDescModal(e, title, desc) {
         output = output.replace(link[0], `<a href="${link[0]}" target="_blank">${link[0]}</a>`);
     });
     descElement.innerHTML = output;
-    console.log(output);
     let overlay = document.getElementById(`descriptionmodal`);
     overlay.style.display = `block`;
 }
