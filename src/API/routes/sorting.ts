@@ -46,7 +46,7 @@ export class SortingRoutes {
             }
             let start = pageSizeInt * (pageInt - 1);
 
-            console.log(`Sending submissions ${start} to ${start + pageSizeInt} of ${response.length}`);
+            console.log(`Sending submissions to user ${req.session.userId} (${start} to ${start + pageSizeInt} of ${response.length})`);
             return res.send({data: response.slice(start, start + pageSizeInt), page: pageInt, pageSize: pageSizeInt, totalPages: Math.ceil(response.length / pageSizeInt)});
 
         });
@@ -110,15 +110,20 @@ export class SortingRoutes {
                 });
             }
 
-            let sortedSubmission = await DatabaseHelper.database.sortedSubmissions.create({
-                name: name,
-                bsrId: bsrId,
-                difficulty: difficulty,
-                characteristic: characteristic,
-                category: category,
-                hash: hash,
-                involvedMappers: (involvedMappers as string[]),
-            });
+            let sortedSubmission;
+            try {
+                sortedSubmission = await DatabaseHelper.database.sortedSubmissions.create({
+                    name: name,
+                    bsrId: bsrId,
+                    difficulty: difficulty,
+                    characteristic: characteristic,
+                    category: category,
+                    hash: hash,
+                    involvedMappers: (involvedMappers as string[]),
+                });
+            } catch (e) {
+                return res.status(500).send({ message: `Failed to add submission. This shouldn't happen...` });
+            }
 
             if (!sortedSubmission) {
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
@@ -148,7 +153,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`Accepted submission ${submission.nominationId} with ${otherSubmissions.length} duplicates`);
+            console.log(`User ${req.session.userId} accepted submission ${submission.nominationId} with ${otherSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission added successfully`, duplicates: otherSubmissions.length, submission: sortedSubmission });
         });
 
@@ -190,7 +195,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`Rejected submissions ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
+            console.log(`User ${req.session.userId} rejected submission ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission removed successfully`, duplicates: duplicateSubmissions.length });
         });
     }
