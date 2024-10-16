@@ -2,6 +2,7 @@ import { Express } from 'express';
 import { DatabaseHelper, Judge, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
 import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
+import { Logger } from '../../Shared/Logger';
 
 export class JudgeingRoutes {
     private app: Express;
@@ -55,7 +56,7 @@ export class JudgeingRoutes {
             let response = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: result.category } });
             let start = pageSizeInt * (pageInt - 1);
 
-            console.log(`Sending submissions ${start} to ${start + pageSizeInt} of ${response.length}`);
+            console.log(`User ${result.judge.id} - Sending submissions ${start} to ${start + pageSizeInt} of ${response.length}`);
             let response_Sliced = response.slice(start, start + pageSizeInt);
             let existingVotes = [];
             for (let response in response_Sliced) {
@@ -108,6 +109,7 @@ export class JudgeingRoutes {
                 existingVote.score = voteNumber;
                 existingVote.notes = updateNote ? note : existingVote.notes;
                 await existingVote.save();
+                Logger.log(`User ${req.session.userId} updated their vote for submission ${submissionId}`, `Judge`);
                 return res.status(200).send({ message: `Vote Updated.` });
             } else {
                 await DatabaseHelper.database.judgeVotes.create({
@@ -116,6 +118,7 @@ export class JudgeingRoutes {
                     score: voteNumber,
                     notes: updateNote ? note : ``
                 });
+                Logger.log(`User ${req.session.userId} voted for submission ${submissionId}`, `Judge`);
                 return res.status(200).send({ message: `Vote Submitted.` });
             }
         });
@@ -183,6 +186,7 @@ export class JudgeingRoutes {
                     playlist.songs.push({ key: curRes.bsrId, hash: curRes.hash });
                 }
             }
+            Logger.log(`User ${req.session.userId} requested a playlist generated for ${category}`, `Judge`);
             return res.type(`bplist`).send(playlist);
         });
     }

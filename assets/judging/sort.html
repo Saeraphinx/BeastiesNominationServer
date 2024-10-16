@@ -276,13 +276,19 @@
             beatmap.appendChild(diffColors);
 
             //title
-            let title = document.createElement("p");
-            title.classList.add("title");
-            title.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
-            title.title = title.innerText;
-            if (title.innerText.length > 18) {
-                title.innerText = title.innerText.substring(0, 15) + "...";
+            let title = document.createElement(`p`);
+            title.classList.add(`title`);
+            let aTitle = document.createElement(`a`);
+            aTitle.classList.add(`title`);
+            aTitle.href = `https://beatsaver.com/maps/${bsapi.id}`;
+            aTitle.target = `_blank`;
+            aTitle.innerText = `${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``} by ${bsapi.metadata.songAuthorName}`;
+            title.title = aTitle.innerText;
+            aTitle.title = aTitle.innerText;
+            if (aTitle.innerText.length > 18) {
+                aTitle.innerText = aTitle.innerText.substring(0, 15) + `...`;
             }
+            title.appendChild(aTitle);
             beatmap.appendChild(title);
 
             //subtext
@@ -551,12 +557,17 @@
 
         function openDescModal(e, title, desc) {
             e.preventDefault();
-            let titleElement = document.getElementById("overlay_title");
-            titleElement.innerText = title;
-            let descElement = document.getElementById("overlay_desc");
-            descElement.innerText = desc;
-            let overlay = document.getElementById("descriptionmodal");
-            overlay.style.display = "block";
+    let titleElement = document.getElementById(`overlay_title`);
+    titleElement.innerText = title;
+    let descElement = document.getElementById(`overlay_desc`);
+    let links = desc.matchAll(/(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gim);
+    let output = desc.replaceAll(`\n`, `<br>`);
+    Array.from(links).forEach(link => {
+        output = output.replace(link[0], `<a href="${link[0]}" target="_blank">${link[0]}</a>`);
+    });
+    descElement.innerHTML = output;
+    let overlay = document.getElementById(`descriptionmodal`);
+    overlay.style.display = `block`;
         }
 
         function closeDescModal() {

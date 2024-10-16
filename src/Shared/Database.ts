@@ -2,6 +2,7 @@ import path from "path";
 import { exit } from "process";
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Op, Sequelize } from "sequelize";
 import { storage } from '../../storage/config.json';
+import { Logger } from "./Logger";
 
 export class DatabaseManager {
     public sequelize: Sequelize;
@@ -23,6 +24,13 @@ export class DatabaseManager {
         this.sequelize.sync().then(() => {
             console.log(`Database Loaded.`);
             new DatabaseHelper(this);
+            setInterval(() => {
+                DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
+                    Logger.log(`Database health check: ${healthcheck}`);
+                }).catch((error) => {
+                    Logger.error(`Error checking database health: ${error}`);
+                });
+            }, 1000 * 60 * 60 * 24);
         }).catch((error) => {
             console.error(`Error loading database: ${error}`);
             exit(-1);

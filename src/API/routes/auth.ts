@@ -3,6 +3,7 @@ import { BeatLeaderAuthHelper, BeatSaverAuthHelper, DiscordAuthHelper } from '..
 import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
 import { DatabaseHelper } from '../../Shared/Database';
+import { Logger } from '../../Shared/Logger';
 
 export class AuthRoutes {
     private app: Express;
@@ -168,6 +169,7 @@ export class AuthRoutes {
             req.session.username = judge.name;
             req.session.service = `judgeId`;
             req.session.save();
+            Logger.log(`Judge ${judge.name} logged in.`, `Auth`);
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}/judging" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}/judging">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
     }
