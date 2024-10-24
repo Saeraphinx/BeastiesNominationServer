@@ -240,9 +240,12 @@
             let disabledFlag = false;
             let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
 
-            if ((showRanked || showMods) || !currDiff) {
-                showRanked = false;
-                showMods = false;
+            //if (!(showRanked || showMods)) {
+            //    showRanked = false;
+            //    showMods = false;
+            //}
+
+            if (!currDiff) {
                 disabledFlag = true;
             }
 
