@@ -299,12 +299,12 @@
             subtext.classList.add("subtext");
             subtext.innerText = `!bsr ${bsapi.id}`;
             beatmap.appendChild(subtext);
-            if (showMods) {
+            if (showMods && currDiff) {
                 subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
                 if (!currDiff.ne && !currDiff.chroma && !category.includes("Mods-Lightshow")) {
                     disabledFlag = true;
                 }
-            } else if (showRanked) {
+            } else if (showRanked && currDiff) {
                 subtext.innerText += ` | SS: ${currDiff.stars || `N/A`}★ | BL: ${currDiff.blStars || `N/A`}★`;
                 if (!currDiff.stars && !currDiff.blStars) {
                     disabledFlag = true;
