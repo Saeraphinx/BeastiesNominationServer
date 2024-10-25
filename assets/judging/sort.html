@@ -312,6 +312,7 @@
             } else if (validFullSpread) {
                 if (bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus")) {
                     subtext.innerText += ` | Full Spread`;
+                    disabledFlag = false;
                 } else {
                     subtext.innerText += ` | Missing Difficulties`;
                     disabledFlag = true;
