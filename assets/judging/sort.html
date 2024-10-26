@@ -88,6 +88,7 @@
             <button class="active">1</button>
             <button>2</button>
         </div>
+        <p style="font-size: 12px;" id="status">Awaiting Input...</p>
     </div>
     <div class="submissionList" id="submissionList">
     </div>
@@ -372,6 +373,8 @@
                     })
                 }).then(response => response.json()).then(data => {
                     console.log(data);
+                    document.getElementById("status").innerText = `${data.message} - ${data.duplicates} duplicate${data.duplicates == 1 ? "" : "s"} found.`;
+                    document.getElementById("status").style.color = "red";
                     loadSubmissions(activePage);
                 });
             }
@@ -468,6 +471,8 @@
                     })
                 }).then(response => response.json()).then(data => {
                     console.log(data);
+                    document.getElementById("status").innerText = `${data.message} - ${data.duplicates} duplicate${data.duplicates == 1 ? "" : "s"} found.`;
+                    document.getElementById("status").style.color = "red";
                     loadSubmissions(activePage);
                 });
             }
@@ -622,6 +627,8 @@
             }).then(response => response.json()).then(data => {
                 console.log(data);
                 closeModal();
+                document.getElementById("status").innerText = `${data.message} - ${data.duplicates} duplicate${data.duplicates == 1 ? "" : "s"} found.`;
+                document.getElementById("status").style.color = "lime";
                 loadSubmissions(activePage);
             });
             return false; 
