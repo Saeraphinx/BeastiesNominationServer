@@ -627,7 +627,7 @@
             let options = document.getElementsByClassName("categoryOption");
             if (isLighting) {
                 for (let i = 0; i < options.length; i++) {
-                    if (options[i].value.includes("Lightshow")) {
+                    if (options[i].value.includes("Lightshow") ||options[i].value.includes("Mods")) {
                         options[i].style.display = "block";
                     } else {
                         options[i].style.display = "none";
