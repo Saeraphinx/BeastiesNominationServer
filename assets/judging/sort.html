@@ -240,9 +240,12 @@
             let disabledFlag = false;
             let currDiff = bsapi.versions[0].diffs.find(diff => diff.difficulty === selectedDiff && diff.characteristic === selectedChar);
 
-            if ((showRanked || showMods) && !currDiff) {
-                showRanked = false;
-                showMods = false;
+            //if (!(showRanked || showMods)) {
+            //    showRanked = false;
+            //    showMods = false;
+            //}
+
+            if (!currDiff) {
                 disabledFlag = true;
             }
 
@@ -296,12 +299,12 @@
             subtext.classList.add("subtext");
             subtext.innerText = `!bsr ${bsapi.id}`;
             beatmap.appendChild(subtext);
-            if (showMods) {
+            if (showMods && currDiff) {
                 subtext.innerText += ` | NE: ${currDiff.ne} | Chroma: ${currDiff.chroma}`;
                 if (!currDiff.ne && !currDiff.chroma && !category.includes("Mods-Lightshow")) {
                     disabledFlag = true;
                 }
-            } else if (showRanked) {
+            } else if (showRanked && currDiff) {
                 subtext.innerText += ` | SS: ${currDiff.stars || `N/A`}★ | BL: ${currDiff.blStars || `N/A`}★`;
                 if (!currDiff.stars && !currDiff.blStars) {
                     disabledFlag = true;
@@ -309,6 +312,7 @@
             } else if (validFullSpread) {
                 if (bsapi.versions[0].diffs.find(diff => diff.difficulty === "Easy") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Normal") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Hard") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "Expert") && bsapi.versions[0].diffs.find(diff => diff.difficulty === "ExpertPlus")) {
                     subtext.innerText += ` | Full Spread`;
+                    disabledFlag = false;
                 } else {
                     subtext.innerText += ` | Missing Difficulties`;
                     disabledFlag = true;
