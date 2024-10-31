@@ -189,7 +189,7 @@
                 const data = res.data;
                 document.getElementById("submissionList").innerHTML = "";
                 for (let i = 0; i < data.length; i++) {
-                    loadSubmission(data[i].nominationId, data[i].bsrId, data[i].name, data[i].category, data[i].diff, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
+                    loadSubmission(data[i].nominationId, data[i].bsrId, data[i].name, data[i].category, data[i].difficulty, data[i].characteristic, data[i].category.includes("Mods"), data[i].category.includes("Ranked"), data[i].category.includes("FullSpread"));
                 }
                 let pageDiv = document.getElementById("pages");
                 pageDiv.innerHTML = "";
