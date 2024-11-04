@@ -101,10 +101,10 @@ export class SortingRoutes {
 
                     let json = await response.json() as any;
                     hash = json.versions[0].hash;
-                    involvedMappers.push(json.uploader.id);
+                    involvedMappers.push(json.uploader.id as string);
                     if (json.collaborators) {
                         json.collaborators.forEach((collab:any) => {
-                            involvedMappers.push(collab.id);
+                            involvedMappers.push(collab.id as string);
                         });
                     }
                 });

@@ -11,6 +11,7 @@ import { MiscRoutes } from './API/routes/mics';
 import { SortingRoutes } from './API/routes/sorting';
 import { JudgeingRoutes } from './API/routes/judge';
 import rateLimit from 'express-rate-limit';
+import { AdminRoutes } from './API/routes/admin';
 
 console.log(`Starting setup...`);
 const app = express();
@@ -55,6 +56,7 @@ new AuthRoutes(app);
 new MiscRoutes(app);
 new SortingRoutes(app);
 new JudgeingRoutes(app);
+new AdminRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 
