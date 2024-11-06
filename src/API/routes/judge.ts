@@ -169,19 +169,19 @@ export class JudgeingRoutes {
                 if (curRes.bsrId === null) {
                     continue;
                 } else {
-                    if (!curRes.hash || !isEmptyOrSpaces(curRes.hash)) {
-                        //await fetch(`https://api.beatsaver.com/maps/id/${curRes.bsrId}`).then(async (response) => {
-                        //    if (response.status !== 200) {
-                        //        return res.status(500).send({ message: `Invalid BSR ID` });
-                        //    }
-                        //    let json = await response.json() as any;
-                        //    curRes.hash = json.versions[0].hash;
-                        //    curRes.save();
-                        // });
+                    if (!curRes.hash || isEmptyOrSpaces(curRes.hash)) {
+                        await fetch(`https://api.beatsaver.com/maps/id/${curRes.bsrId}`).then(async (response) => {
+                            if (response.status !== 200) {
+                                return res.status(500).send({ message: `Invalid BSR ID` });
+                            }
+                            let json = await response.json() as any;
+                            curRes.hash = json.versions[0].hash;
+                            curRes.save();
+                        });
                         console.log(`Submission ${curRes.id} has no hash, skipping...`);
                     }
                 }
-                if (curRes.characteristic && curRes.difficulty && !isEmptyOrSpaces(curRes.characteristic) && !isEmptyOrSpaces(curRes.characteristic)) {
+                if (curRes.characteristic && curRes.difficulty && !isEmptyOrSpaces(curRes.characteristic) && !isEmptyOrSpaces(curRes.difficulty)) {
                     playlist.songs.push({ key: curRes.bsrId, hash: curRes.hash, difficulties: [{ characteristic: curRes.characteristic, name: curRes.difficulty }] });
                 } else {
                     playlist.songs.push({ key: curRes.bsrId, hash: curRes.hash });
