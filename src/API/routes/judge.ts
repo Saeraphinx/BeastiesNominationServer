@@ -170,14 +170,15 @@ export class JudgeingRoutes {
                     continue;
                 } else {
                     if (!curRes.hash || !isEmptyOrSpaces(curRes.hash)) {
-                        await fetch(`https://api.beatsaver.com/maps/id/${curRes.bsrId}`).then(async (response) => {
-                            if (response.status !== 200) {
-                                return res.status(500).send({ message: `Invalid BSR ID` });
-                            }
-                            let json = await response.json() as any;
-                            curRes.hash = json.versions[0].hash;
-                            curRes.save();
-                        });
+                        //await fetch(`https://api.beatsaver.com/maps/id/${curRes.bsrId}`).then(async (response) => {
+                        //    if (response.status !== 200) {
+                        //        return res.status(500).send({ message: `Invalid BSR ID` });
+                        //    }
+                        //    let json = await response.json() as any;
+                        //    curRes.hash = json.versions[0].hash;
+                        //    curRes.save();
+                        // });
+                        console.log(`Submission ${curRes.id} has no hash, skipping...`);
                     }
                 }
                 if (curRes.characteristic && curRes.difficulty && !isEmptyOrSpaces(curRes.characteristic) && !isEmptyOrSpaces(curRes.characteristic)) {
