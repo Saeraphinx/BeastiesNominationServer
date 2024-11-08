@@ -67,7 +67,7 @@ function loadSubmission(submissionId, bsrId, name, category, selectedDiff, selec
             });
             return;
         }
-        document.getElementById(`submissionList`).appendChild(createName(submissionId, name, null, name, null, category));
+        document.getElementById(`submissionList`).appendChild(createName(submissionId, name, null, name, null, category, voteScore, notes));
         return; //temp fix for invalid bsr keys
     }
     if (cache.find(beatmap => beatmap.id === bsrId)) {
@@ -256,6 +256,7 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
 }
 
 function createName(nomId, titleText, subtextText, rawnameText, imageUrl, category = `you fucked up`, voteScore = -1, notes = ``) {
+    console.log(`loading submission ${nomId} with vote ${voteScore} notes ${notes}`);
     let beatmap = document.createElement(`div`);
     beatmap.classList.add(`beatmap`);
 

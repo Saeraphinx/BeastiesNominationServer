@@ -71,7 +71,7 @@ export class JudgeingRoutes {
             const { submissionId, vote, note } = req.body;
 
             if (!submissionId) {
-                return res.status(400).send({ message: `Invalid Parameters.` });
+                return res.status(400).send({ message: `Invalid Submission ID.` });
             }
 
             let submission = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: submissionId } });
@@ -86,14 +86,10 @@ export class JudgeingRoutes {
                 return;
             }
 
-            if (!vote) {
-                return res.status(400).send({ message: `Invalid Parameters.` });
-            }
-
             let voteNumber = parseFloat(vote);
 
             if (isNaN(voteNumber) || (voteNumber !== 1 && voteNumber != 0 && voteNumber != 0.5)) {
-                return res.status(400).send({ message: `Invalid Parameters.` });
+                return res.status(400).send({ message: `Invalid Vote.` });
             }
 
             let existingVote = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId, judgeId: req.session.userId } });
