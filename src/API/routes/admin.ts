@@ -114,7 +114,7 @@ export class AdminRoutes {
                 return res.status(400).send({ error: `Missing category.` });
             }
 
-            let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll();
+            let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category }});
             let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
 
             for (let aS of categoryAcceptedSubmissions) {
@@ -155,6 +155,7 @@ export class AdminRoutes {
                     }
                 }
             }
+            res.send({ message: `Repopulated sorted submissions for ${category}` });
         });
     }
 }
@@ -166,7 +167,7 @@ async function getMapperAndHash(bsrId: string): Promise<{ hash: string, involved
     if (isNaN(parsedBSR)) {
         return null;
     }
-    await fetch(`https://api.beatsaver.com/maps/id/${parsedBSR.toString(16)}`).then(async (response) => {
+    await fetch(`https://api.beatsaver.com/maps/id/${parsedBSR.toString(16)}`).then(async (response): Promise<void> => {
         if (response.status !== 200) {
             return null;
         }
