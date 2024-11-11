@@ -113,7 +113,7 @@ export class JudgeingRoutes {
                     score: voteNumber,
                     notes: updateNote ? note : ``
                 });
-                Logger.log(`User ${req.session.userId} voted for submission ${submissionId}`, `Judge`);
+                Logger.log(`User ${req.session.userId} voted for submission ${submissionId} (score: ${voteNumber})`, `Judge`);
                 return res.status(200).send({ message: `Vote Submitted.` });
             }
         });
