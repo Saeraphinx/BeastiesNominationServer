@@ -156,7 +156,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`User ${req.session.userId} accepted submission ${submission.nominationId} with ${otherSubmissions.length} duplicates`);
+            Logger.log(`User ${req.session.userId} accepted submission ${submission.nominationId} to ${submission.category} with ${otherSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission added successfully`, duplicates: otherSubmissions.length, submission: sortedSubmission });
         });
 
@@ -198,7 +198,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`User ${req.session.userId} rejected submission ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
+            Logger.log(`User ${req.session.userId} rejected submission ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission removed successfully`, duplicates: duplicateSubmissions.length });
         });
     }
