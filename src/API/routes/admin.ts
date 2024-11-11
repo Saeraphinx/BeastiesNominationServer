@@ -30,7 +30,7 @@ export class AdminRoutes {
             for (let entry of allEntries) {
                 i++;
                 setTimeout(async () => {
-                    if (!bsrAlreadyDone.includes(entry.bsrId) && entry.bsrId !== null && entry.bsrId !== "") {
+                    if (!bsrAlreadyDone.includes(entry.bsrId) && entry.bsrId !== null && entry.bsrId !== ``) {
                         let response = await fetch(`https://api.beatsaver.com/maps/id/${entry.bsrId}`);
                         if (response.ok) {
                             let data = await response.json() as any;

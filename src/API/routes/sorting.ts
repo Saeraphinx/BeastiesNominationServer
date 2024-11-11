@@ -1,6 +1,6 @@
 import { Express } from 'express';
 import { DatabaseHelper, DatabaseManager, NominationAttributes, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
-import { Model } from 'sequelize';
+import { BaseError, Model } from 'sequelize';
 import { Logger } from '../../Shared/Logger';
 
 export class SortingRoutes {
@@ -127,7 +127,7 @@ export class SortingRoutes {
                 return res.status(500).send({ message: `Failed to add submission. This shouldn't happen...` });
             }
 
-            if (!sortedSubmission) {
+            if (!sortedSubmission || sortedSubmission instanceof BaseError) {
                 Logger.warn(`Failed to add submission`);
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
             }
