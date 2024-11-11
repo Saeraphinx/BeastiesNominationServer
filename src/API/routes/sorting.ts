@@ -1,6 +1,7 @@
 import { Express } from 'express';
-import { DatabaseHelper, DatabaseManager, NominationAttributes, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
-import { Model } from 'sequelize';
+import { DatabaseHelper, NominationAttributes, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { BaseError } from 'sequelize';
+import { Logger } from '../../Shared/Logger';
 
 export class SortingRoutes {
     private app: Express;
@@ -122,10 +123,12 @@ export class SortingRoutes {
                     involvedMappers: (involvedMappers as string[]),
                 });
             } catch (e) {
+                Logger.warn(`Failed to add submission: ${e}`);
                 return res.status(500).send({ message: `Failed to add submission. This shouldn't happen...` });
             }
 
-            if (!sortedSubmission) {
+            if (!sortedSubmission || sortedSubmission instanceof BaseError) {
+                Logger.warn(`Failed to add submission`);
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
             }
 
@@ -153,7 +156,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`User ${req.session.userId} accepted submission ${submission.nominationId} with ${otherSubmissions.length} duplicates`);
+            Logger.log(`User ${req.session.userId} accepted submission ${submission.nominationId} to ${submission.category} with ${otherSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission added successfully`, duplicates: otherSubmissions.length, submission: sortedSubmission });
         });
 
@@ -195,7 +198,7 @@ export class SortingRoutes {
                 });
             }
 
-            console.log(`User ${req.session.userId} rejected submission ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
+            Logger.log(`User ${req.session.userId} rejected submission ${submission.nominationId} with ${duplicateSubmissions.length} duplicates`);
             return res.status(200).send({ message: `Submission removed successfully`, duplicates: duplicateSubmissions.length });
         });
     }

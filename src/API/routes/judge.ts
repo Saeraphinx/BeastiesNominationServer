@@ -1,6 +1,5 @@
 import { Express } from 'express';
 import { DatabaseHelper, Judge, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
-import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
 import { Logger } from '../../Shared/Logger';
 
@@ -105,7 +104,7 @@ export class JudgeingRoutes {
                 existingVote.score = voteNumber;
                 existingVote.notes = updateNote ? note : existingVote.notes;
                 await existingVote.save();
-                Logger.log(`User ${req.session.userId} updated their vote for submission ${submissionId}`, `Judge`);
+                Logger.log(`User ${req.session.userId} updated their vote for submission ${submissionId} to ${voteNumber}`, `Judge`);
                 return res.status(200).send({ message: `Vote Updated.` });
             } else {
                 await DatabaseHelper.database.judgeVotes.create({
@@ -114,7 +113,7 @@ export class JudgeingRoutes {
                     score: voteNumber,
                     notes: updateNote ? note : ``
                 });
-                Logger.log(`User ${req.session.userId} voted for submission ${submissionId}`, `Judge`);
+                Logger.log(`User ${req.session.userId} voted for submission ${submissionId} (score: ${voteNumber})`, `Judge`);
                 return res.status(200).send({ message: `Vote Submitted.` });
             }
         });

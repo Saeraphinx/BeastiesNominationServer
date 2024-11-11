@@ -400,3 +400,8 @@ div.beatmaps.difficulty {
 p.category {
     align-content: center;
 }
+
+div.header-row {
+    display: flex;
+    flex-direction: row;
+}

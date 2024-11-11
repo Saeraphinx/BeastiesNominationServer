@@ -208,6 +208,20 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/judging/index.html`));
         });
 
+        this.app.get("/judging/admin", async (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+
+            const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!judge.roles.includes(`admin`)) {
+                return res.status(403).send(this.redirectTo(`/judging`));
+            }
+
+            res.sendFile(path.resolve(`assets/judging/admin.html`));
+        });
+
         this.app.get(`/judging/style.css`, async (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/judging/style.css`));
