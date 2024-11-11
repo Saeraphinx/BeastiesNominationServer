@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<head>
+    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.png">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--<link href="style.css" rel="stylesheet">!-->
+    <link href="/judging/style.css" rel="stylesheet">
+
+</head>
+<body style="background-color: black;">
+    <nav>
+        <a class="nav" href="/judging">Home</a>
+        <a class="nav" href="/judging/sort">Sort Submissions</a>
+        <a class="nav" href="/judging/judge">Judge Submissions</a>
+        <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav" id="login" href="/api/auth/discord">Login</a>
+    </nav>
+    <div class="header">
+        <h1>2024 BeastSaber Mapping Awards</h1>
+    </div>
+    <div class="header">
+        <h2>Admin Panel</h2>
+        <p>Various Admin tools that realistcally should've been the first things i added.</p>
+    </div>
+    <div class="header">
+        <div class="header-row">
+        <h2>One Shot</h2>
+        <button id="updateNullValues">updateNullValues</button><button id="runInvolvedCheck">runInvolvedCheck</button>
+    </div>
+    </div>
+    <div class="header">
+        <h2>Per Category</h2>
+        <input type="dropdown" id="categoryId" placeholder="Category ID">
+        <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
+    </div>
+    <div class="header">
+        <h2>Per Submission</h2>
+        <input type="text" id="submissionId" placeholder="Submission ID">
+        <button id="updateSubmission">Delete</button>
+    </div>
+    <div class="header">
+        <h2>Per SortedSubmission</h2>
+        <input type="text" id="sortedSubmissionId" placeholder="Sorted Submission ID">
+        <div class="header-row">
+            <button id="loadSortedSubmission">Load</button>
+            <button id="updateUser">Delete</button>
+        </div>
+    </div>
+    <script src="/judging/background.js"></script>
+    <script>
+        fetch(`/api/auth/judging`).then(response => {
+    if (response.status == 200) {
+        response.json().then(data => {
+            if (data.username) {
+                document.getElementById(`username`).innerText = `Logout (${data.username})`;
+                username = data.username;
+            }
+        });
+    } else {
+        window.location.href = `/judging`;
+    }
+});
+    
+    document.getElementById(`updateNullValues`).addEventListener(`click`, () => {
+        fetch(`/api/updateNullValues`).then(response => {
+            if (response.status == 200) {
+                response.json().then(data => {
+                    alert(data.message);
+                });
+            } else {
+                alert(`Error!`);
+            }
+        });
+    });
+    </script>
+</body>
