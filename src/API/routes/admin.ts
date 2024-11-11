@@ -124,6 +124,10 @@ export class AdminRoutes {
                             if (sS.characteristic == aS.characteristic && sS.difficulty == aS.difficulty && sS.bsrId == aS.bsrId) {
                                 return true;
                             }
+                        } else if (category == `Gen-FullSpread`) {
+                            if (sS.bsrId == aS.bsrId) {
+                                return true;
+                            }
                         } else {
                             return false;
                         }
