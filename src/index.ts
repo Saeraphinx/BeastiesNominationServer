@@ -76,3 +76,15 @@ Logger.log(`Setup complete.`);
 process.on(`exit`, (code) => {
     Logger.log(`Process exiting with code ${code}`);
 });
+
+process.on(`SIGTERM`, () => {
+    Logger.log(`Received SIGTERM, exiting.`);
+});
+
+process.on(`SIGINT`, () => {
+    Logger.log(`Received SIGINT, exiting.`);
+});
+
+process.on(`SIGQUIT`, () => {
+    Logger.log(`Received SIGQUIT, exiting.`);
+});
