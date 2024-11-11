@@ -19,10 +19,10 @@ export class DatabaseManager {
             storage: path.resolve(storage.database),
         });
 
-        console.log(`Loading Database...`);
+        Logger.log(`Loading Database...`);
         this.loadTables();
         this.sequelize.sync().then(() => {
-            console.log(`Database Loaded.`);
+            Logger.log(`Database Loaded.`);
             new DatabaseHelper(this);
             setInterval(() => {
                 DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
@@ -32,7 +32,7 @@ export class DatabaseManager {
                 });
             }, 1000 * 60 * 60 * 24);
         }).catch((error) => {
-            console.error(`Error loading database: ${error}`);
+            Logger.error(`Error loading database: ${error}`);
             exit(-1);
         });
     }

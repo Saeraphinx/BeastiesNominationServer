@@ -12,8 +12,9 @@ import { SortingRoutes } from './API/routes/sorting';
 import { JudgeingRoutes } from './API/routes/judge';
 import rateLimit from 'express-rate-limit';
 import { AdminRoutes } from './API/routes/admin';
+import { Logger } from './Shared/Logger';
 
-console.log(`Starting setup...`);
+Logger.log(`Starting setup...`);
 const app = express();
 const memstore = MemoryStore(session);
 const port = server.port;
@@ -71,4 +72,4 @@ app.listen(port, () => {
         //console.log(`http://localhost:${port}/api/posts`);
     }
 });
-console.log(`Setup complete.`);
+Logger.log(`Setup complete.`);
