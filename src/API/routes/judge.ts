@@ -61,7 +61,7 @@ export class JudgeingRoutes {
             let existingVotes = [];
             for (let response in response_Sliced) {
                 const curRes = response_Sliced[response];
-                const votes = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId: curRes.id } });
+                const votes = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId: curRes.id, judgeId: result.judge.id } });
                 existingVotes.push(votes);
             }
             return res.send({ submissiondata: response_Sliced, voteData: existingVotes, page: pageInt, pageSize: pageSizeInt, totalPages: Math.ceil(response.length / pageSizeInt) });

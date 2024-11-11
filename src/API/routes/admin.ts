@@ -75,19 +75,21 @@ export class AdminRoutes {
                 Logger.log(`Checking ${judge.name}`);
                 for (let mapperId of judge.beatSaverIds) {
                     for (let entry of allEntries) {
-                        // @ts-ignore honestly uh fuck
-                        if (entry.involvedMappers.includes(parseInt(mapperId))) {
-                            Logger.log(`Found ${mapperId} in id ${entry.id}`);
-                            let existingVote = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId: entry.id, judgeId: judge.id } });
+                        if (entry.involvedMappers && entry.involvedMappers.length > 0) {
+                            // @ts-ignore honestly uh fuck
+                            if (entry.involvedMappers.includes(parseInt(mapperId))) {
+                                Logger.log(`Found ${mapperId} in id ${entry.id}`);
+                                let existingVote = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId: entry.id, judgeId: judge.id } });
 
-                            if (!existingVote) {
-                                Logger.log(`Creating vote for ${entry.hash} by ${mapperId} for ${judge.name}`);
-                                await DatabaseHelper.database.judgeVotes.create({
-                                    submissionId: entry.id,
-                                    judgeId: judge.id,
-                                    score: 0.5,
-                                    notes: `Automatically created by BNS.`
-                                });
+                                if (!existingVote) {
+                                    Logger.log(`Creating vote for ${entry.hash} by ${mapperId} for ${judge.name}`);
+                                    await DatabaseHelper.database.judgeVotes.create({
+                                        submissionId: entry.id,
+                                        judgeId: judge.id,
+                                        score: 0.5,
+                                        notes: `Automatically created by BNS.`
+                                    });
+                                }
                             }
                         }
                     }
