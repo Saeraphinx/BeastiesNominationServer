@@ -1,6 +1,5 @@
 import { Express } from 'express';
 import { DatabaseHelper, Judge, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
-import { HTTPTools } from '../classes/HTTPTools';
 import { server } from '../../../storage/config.json';
 import { Logger } from '../../Shared/Logger';
 

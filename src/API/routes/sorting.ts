@@ -1,6 +1,6 @@
 import { Express } from 'express';
-import { DatabaseHelper, DatabaseManager, NominationAttributes, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
-import { BaseError, Model } from 'sequelize';
+import { DatabaseHelper, NominationAttributes, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { BaseError } from 'sequelize';
 import { Logger } from '../../Shared/Logger';
 
 export class SortingRoutes {
