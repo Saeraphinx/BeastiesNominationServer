@@ -105,7 +105,7 @@ export class JudgeingRoutes {
                 existingVote.score = voteNumber;
                 existingVote.notes = updateNote ? note : existingVote.notes;
                 await existingVote.save();
-                Logger.log(`User ${req.session.userId} updated their vote for submission ${submissionId}`, `Judge`);
+                Logger.log(`User ${req.session.userId} updated their vote for submission ${submissionId} to ${voteNumber}`, `Judge`);
                 return res.status(200).send({ message: `Vote Updated.` });
             } else {
                 await DatabaseHelper.database.judgeVotes.create({

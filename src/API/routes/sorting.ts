@@ -1,6 +1,7 @@
 import { Express } from 'express';
 import { DatabaseHelper, DatabaseManager, NominationAttributes, NominationCategory, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Model } from 'sequelize';
+import { Logger } from '../../Shared/Logger';
 
 export class SortingRoutes {
     private app: Express;
@@ -122,10 +123,12 @@ export class SortingRoutes {
                     involvedMappers: (involvedMappers as string[]),
                 });
             } catch (e) {
+                Logger.warn(`Failed to add submission: ${e}`);
                 return res.status(500).send({ message: `Failed to add submission. This shouldn't happen...` });
             }
 
             if (!sortedSubmission) {
+                Logger.warn(`Failed to add submission`);
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
             }
 
