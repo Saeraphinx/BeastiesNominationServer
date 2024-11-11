@@ -73,3 +73,6 @@ app.listen(port, () => {
     }
 });
 Logger.log(`Setup complete.`);
+process.on(`exit`, (code) => {
+    Logger.log(`Process exiting with code ${code}`);
+});
