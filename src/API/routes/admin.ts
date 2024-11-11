@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Express } from 'express';
-import { BeatLeaderAuthHelper, BeatSaverAuthHelper, DiscordAuthHelper } from '../classes/AuthHelper';
-import { HTTPTools } from '../classes/HTTPTools';
-import { server } from '../../../storage/config.json';
-import { DatabaseHelper } from '../../Shared/Database';
+import { DatabaseHelper, SortedSubmissionsCategory } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
 
 export class AdminRoutes {
@@ -97,6 +94,89 @@ export class AdminRoutes {
                 }
             }
         });
+
+        this.app.get(`/api/admin/repopulateSortedSubmissions`, async (req, res) => {
+            if (!req.session.userId && req.session.service !== `judgeId`) {
+                return res.status(401).send({ error: `Not logged in.` });
+            }
+
+            let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+            if (!user || !user.roles.includes(`admin`)) {
+                return res.status(403).send({ error: `Not authorized.` });
+            }
+
+            let category = req.query.category as string;
+
+            if (!category) {
+                return res.status(400).send({ error: `Missing category.` });
+            }
+
+            let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll();
+            let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
+
+            for (let aS of categoryAcceptedSubmissions) {
+                let alreadySorted = allSortedSubmissions.find((sS) => {
+                    if (category == sS.category) {
+                        if (DatabaseHelper.isDiffCharRequired(category)) {
+                            if (sS.characteristic == aS.characteristic && sS.difficulty == aS.difficulty && sS.bsrId == aS.bsrId) {
+                                return true;
+                            }
+                        } else {
+                            return false;
+                        }
+                    } else {
+                        return false;
+                    }
+                });
+
+                if (!alreadySorted) {
+                    if (DatabaseHelper.isDiffCharRequired(category)) {
+                        let hashAndMappers = await getMapperAndHash(aS.bsrId);
+                        if (!hashAndMappers) {
+                            Logger.warn(`Failed to fetch data for ${aS.bsrId}, map is likely deleted.`);
+                            continue;
+                        }
+
+                        let newSorted = await DatabaseHelper.database.sortedSubmissions.create({
+                            bsrId: aS.bsrId,
+                            category: category as SortedSubmissionsCategory,
+                            characteristic: aS.characteristic,
+                            difficulty: aS.difficulty,
+                            hash: hashAndMappers.hash,
+                            involvedMappers: hashAndMappers.involvedMappers
+                        });
+                        if (!newSorted) {
+                            Logger.warn(`Failed to create new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
+                        }
+                        Logger.log(`Created new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
+                    }
+                }
+            }
+        });
     }
 }
 
+async function getMapperAndHash(bsrId: string): Promise<{ hash: string, involvedMappers: string[] }|null> {
+    let involvedMappers: any[] = [];
+    let hash = null;
+    let parsedBSR = parseInt(bsrId, 16);
+    if (isNaN(parsedBSR)) {
+        return null;
+    }
+    await fetch(`https://api.beatsaver.com/maps/id/${parsedBSR.toString(16)}`).then(async (response) => {
+        if (response.status !== 200) {
+            return null;
+        }
+
+        let json = await response.json() as any;
+        hash = json.versions[0].hash;
+        involvedMappers.push(json.uploader.id as string);
+        if (json.collaborators) {
+            json.collaborators.forEach((collab: any) => {
+                involvedMappers.push(collab.id as string);
+            });
+        }
+    });
+    return { hash, involvedMappers };
+}
