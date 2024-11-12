@@ -197,7 +197,13 @@ div.buttonContainer a {
     transition: box-shadow 0.3s;
 }
 
-a:hover:not(.mapper, .title), button:hover, .nav.active {
+button:disabled {
+    background-color: #000000aa;
+    color: #6d6d6d;
+    cursor: not-allowed;
+}
+
+a:hover:not(.mapper, .title), button:hover:not(:disabled), .nav.active {
     transition: box-shadow 0.3s;
     box-shadow: 0 0 5px 2px #0095ff;
 }
@@ -404,4 +410,12 @@ p.category {
 div.header-row {
     display: flex;
     flex-direction: row;
+}
+/* #endregion */
+
+/* #region admin */
+td {
+    word-wrap: break-word; 
+    word-break: break-all;
+    max-width: 400px;
 }

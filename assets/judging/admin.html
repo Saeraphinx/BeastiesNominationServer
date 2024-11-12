@@ -9,12 +9,14 @@
     <link href="/judging/style.css" rel="stylesheet">
 
 </head>
+
 <body style="background-color: black;">
     <nav>
         <a class="nav" href="/judging">Home</a>
         <a class="nav" href="/judging/sort">Sort Submissions</a>
         <a class="nav" href="/judging/judge">Judge Submissions</a>
         <a class="nav" href="/api/counts">Counts (API)</a>
+        <a class="nav active" href="/judging/admin">Admin</a>
         <a class="nav" id="login" href="/api/auth/discord">Login</a>
     </nav>
     <div class="header">
@@ -22,57 +24,88 @@
     </div>
     <div class="header">
         <h2>Admin Panel</h2>
-        <p>Various Admin tools that realistcally should've been the first things i added.</p>
+        <p>Various Admin tools that realistcally should've been the first things i added.<br>Please note, your IP has been logged for security reasons.</p>
+        <p style="color: red; font-weight: 900;">DO NOT TOUCH ANYTHING IF YOU DON'T KNOW EXACTLY WHAT IT DOES. THIS PAGE CAN AND WILL AND HAS BROKEN THINGS.<br><br>ASSUME THERE ARE NO BACKUPS.</p>
     </div>
-    <div class="header">
-        <div class="header-row">
-        <h2>One Shot</h2>
-        <button id="updateNullValues">updateNullValues</button><button id="runInvolvedCheck">runInvolvedCheck</button>
+    <div class="header-row">
+        <div class="header">
+            <h2>One Shot</h2>
+            <div class="header-row">
+                <button id="updateNullValues">updateNullValues</button> 
+                <button id="runInvolvedCheck">runInvolvedCheck</button>
+            </div>
+        </div>
+        <div class="header">
+            <h2>Per Category</h2>
+            <select id="category1" placeholder="Category"></select>
+            <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
+        </div>
     </div>
+    <div class="header" style="max-width: none;">
+        <h2>Active Database Entry</h2>
+        <table id="activeTable"></table>
     </div>
-    <div class="header">
-        <h2>Per Category</h2>
-        <input type="dropdown" id="categoryId" placeholder="Category ID">
-        <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
-    </div>
-    <div class="header">
-        <h2>Per Submission</h2>
-        <input type="text" id="submissionId" placeholder="Submission ID">
-        <button id="updateSubmission">Delete</button>
-    </div>
-    <div class="header">
-        <h2>Per SortedSubmission</h2>
-        <input type="text" id="sortedSubmissionId" placeholder="Sorted Submission ID">
-        <div class="header-row">
-            <button id="loadSortedSubmission">Load</button>
-            <button id="updateUser">Delete</button>
+    <div class="header-row">
+        <div class="header">
+            <h2>Per Submission</h2>
+            <input type="text" id="submissionId" placeholder="Submission ID">
+            <div class="header-row">
+                <button id="loadSubmission">Load</button>
+                <button id="updateSubmission" disabled>Delete</button>
+            </div>
+            <input type="text" id="submissionBsr" placeholder="Submission BSR (d00c)" disabled>
+            <div class="header-row">
+                <button id="loadSubmissionBsr" disabled>Search</button>
+            </div>
+        </div>
+        <div class="header">
+            <h2>Per SortedSubmission</h2>
+            <input type="text" id="sortedSubmissionId" placeholder="Sorted Submission ID">
+            <div class="header-row">
+                <button id="loadSortedSubmission">Load</button>
+                <button id="deleteSubmission" disabled>Delete</button>
+                <button id="resetAllVotes" disabled>Reset All Votes</button>
+            </div>
+            <input type="text" id="sortedSubmissionBsr" placeholder="Sorted Submission Bsr (d00c)" disabled>
+            <div class="header-row">
+                <button id="loadSortedSubmissionBsr" disabled>Search</button>
+            </div>
+        </div>
+        <div class="header">
+            <h2>Per Judge</h2>
+            <input type="text" id="judgeId" placeholder="Judge ID">
+            <div class="header-row">
+                <button id="loadJudge">Load</button>
+                <button id="deleteJudge" disabled>Delete</button>
+            </div>
+            <div class="header-row">
+                <button id="deleteJudge" disabled>Add Sorting Role</button>
+                <button id="deleteJudge" disabled>Remove Sorting Role</button>
+            </div>
+            <div class="header-row">
+                <button id="deleteJudge" disabled>Add Judge Role</button>
+                <button id="deleteJudge" disabled>Remove Judge Role</button>
+            </div>
+            <select id="category2" placeholder="Category"></select>
+            <div class="header-row">
+                <button id="addCategory">Add to Category</button>
+                <button id="removeCategory">Remove from Category</button>
         </div>
     </div>
     <script src="/judging/background.js"></script>
+    <script src="/judging/admin/script.js"></script>
     <script>
         fetch(`/api/auth/judging`).then(response => {
-    if (response.status == 200) {
-        response.json().then(data => {
-            if (data.username) {
-                document.getElementById(`username`).innerText = `Logout (${data.username})`;
-                username = data.username;
-            }
-        });
-    } else {
-        window.location.href = `/judging`;
-    }
-});
-    
-    document.getElementById(`updateNullValues`).addEventListener(`click`, () => {
-        fetch(`/api/updateNullValues`).then(response => {
             if (response.status == 200) {
                 response.json().then(data => {
-                    alert(data.message);
+                    if (data.username) {
+                        document.getElementById(`login`).innerText = `Logout (${data.username})`;
+                        username = data.username;
+                    }
                 });
             } else {
-                alert(`Error!`);
+                window.location.href = `/judging`;
             }
         });
-    });
     </script>
 </body>

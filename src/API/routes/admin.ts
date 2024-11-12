@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Express } from 'express';
-import { DatabaseHelper, SortedSubmissionsCategory } from '../../Shared/Database';
+import { DatabaseHelper, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
+import { ModelStatic } from 'sequelize';
 
 export class AdminRoutes {
     private app: Express;
@@ -13,17 +14,11 @@ export class AdminRoutes {
     }
 
     private async loadRoutes() {
+        // #region One Shot
         this.app.get(`/api/admin/updateNullValues`, async (req, res) => {
-            if (!req.session.userId && req.session.service !== `judgeId`) {
-                return res.status(401).send({ error: `Not logged in.` });
-            }
-
-            let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
-
-            if (!user || !user.roles.includes(`admin`)) {
-                return res.status(403).send({ error: `Not authorized.` });
-            }
-
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+            
             let bsrAlreadyDone: string[] = [];
             let i = 0;
             let allEntries = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { hash: null } });
@@ -58,15 +53,8 @@ export class AdminRoutes {
         });
 
         this.app.get(`/api/admin/runInvolvedCheck`, async (req, res) => {
-            if (!req.session.userId && req.session.service !== `judgeId`) {
-                return res.status(401).send({ error: `Not logged in.` });
-            }
-
-            let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
-
-            if (!user || !user.roles.includes(`admin`)) {
-                return res.status(403).send({ error: `Not authorized.` });
-            }
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
 
             res.status(200).send({ message: `Started running involved check.` });
             let allEntries = await DatabaseHelper.database.sortedSubmissions.findAll();
@@ -97,16 +85,24 @@ export class AdminRoutes {
             }
         });
 
+        this.app.get(`/api/admin/database/integrityCheck`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
+                Logger.log(`Manual - Database health check: ${healthcheck}`);
+                res.send({ message: `Database health check: ${healthcheck}` });
+            }).catch((error) => {
+                Logger.error(`Manual - Error checking database health: ${error}`);
+                res.send({ message: `Database health check: ${error}` });
+            });
+
+        });
+        // #endregion One Shot
+        // #region Per Category
         this.app.get(`/api/admin/repopulateSortedSubmissions`, async (req, res) => {
-            if (!req.session.userId && req.session.service !== `judgeId`) {
-                return res.status(401).send({ error: `Not logged in.` });
-            }
-
-            let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
-
-            if (!user || !user.roles.includes(`admin`)) {
-                return res.status(403).send({ error: `Not authorized.` });
-            }
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
 
             let category = req.query.category as string;
 
@@ -184,7 +180,183 @@ export class AdminRoutes {
             }
             res.send({ message: `Repopulated sorted submissions for ${category}` });
         });
+
+        // #endregion Per Category
+        // #region Database
+        this.app.get(`/api/admin/database/data/:table/:id`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let table = req.params.table;
+            let id = req.params.id;
+
+            if (!table || !id) {
+                return res.status(400).send({ message: `Missing table or id.` });
+            }
+
+            let results;
+            switch (table) {
+                case `sortedSubmissions`:
+                    results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
+                    break;
+                case `submissions`:
+                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+                    break;
+                case `judges`:
+                    results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+                    break;
+                case `judgeVotes`:
+                    if (user.id == 1) {
+                        results = await DatabaseHelper.database.judgeVotes.findOne({ where: { id: id } });
+                    } else {
+                        return res.status(403).send({ message: `Not authorized.` });
+                    }
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid table.` });
+            }
+
+            if (!results) {
+                return res.status(404).send({ message: `Data not found.` });
+            }
+
+            res.send(results);
+        });
+
+        this.app.get(`/api/admin/database/data/:table`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let table = req.params.table;
+
+            if (!table) {
+                return res.status(400).send({ message: `Missing table or id.` });
+            }
+
+            let bsr = req.query.bsr as string;
+
+            let results;
+            switch (table) {
+                case `sortedSubmissions`:
+                    if (!bsr) {
+                        if (user.id == 1) {
+                            results = await DatabaseHelper.database.sortedSubmissions.findAll();
+                        } else {
+                            return res.status(403).send({ message: `Not authorized.` });
+                        }
+                    } else {
+                        results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { bsrId: bsr } });
+                    }
+                    break;
+                case `submissions`:
+                    if (!bsr) {
+                        if (user.id == 1) {
+                            results = await DatabaseHelper.database.nominations.findAll();
+                        } else {
+                            return res.status(403).send({ message: `Not authorized.` });
+                        }
+                    } else {
+                        results = await DatabaseHelper.database.nominations.findOne({ where: { bsrId: bsr } });
+                    }
+                    break;
+                case `judges`:
+                    let username = req.query.username as string;
+                    results = await DatabaseHelper.database.judges.findOne({ where: { name: username} });
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid table.` });
+            }
+
+            if (!results) {
+                return res.status(404).send({ message: `Data not found.` });
+            }
+
+            res.send(results);
+        });
+        // #endregion Database
+
+        // #region Judges
+        this.app.get(`/api/admin/judges/addCategory`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let category = req.query.category;
+            let id = req.query.id;
+
+            if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
+                return res.status(400).send({ message: `Missing category.` });
+            }
+
+            if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
+                return res.status(400).send({ message: `Missing id.` });
+            }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+
+            if (!judge) {
+                return res.status(404).send({ message: `Judge not found.` });
+            }
+
+            let conCategory = category as SortedSubmissionsCategory;
+
+            if (judge.permittedCategories.includes(conCategory)) {
+                return res.status(400).send({ message: `Judge already has that category.` });
+            }
+
+            judge.permittedCategories = [...judge.permittedCategories, conCategory];
+            await judge.save();
+
+            res.send({ message: `Added category ${category} to judge ${judge.name}` });
+        });
+
+        this.app.get(`/api/admin/judges/removeCategory`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let category = req.query.category;
+            let id = req.query.id;
+
+            if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
+                return res.status(400).send({ message: `Missing category.` });
+            }
+
+            if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
+                return res.status(400).send({ message: `Missing id.` });
+            }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+
+            if (!judge) {
+                return res.status(404).send({ message: `Judge not found.` });
+            }
+
+            if (!judge.permittedCategories.includes(category as SortedSubmissionsCategory)) {
+                return res.status(400).send({ message: `Judge does not have that category.` });
+            }
+
+            judge.permittedCategories = judge.permittedCategories.filter((c) => c !== category);
+            await judge.save();
+
+            res.send({ message: `Removed category ${category} from judge ${judge.name}` });
+        });
+        // #endregion Judges
     }
+}
+
+async function isAuthroizedSession(req: any, res:any) {
+    if (!req.session.userId && req.session.service !== `judgeId`) {
+        res.status(401).send({ error: `Not logged in.` });
+        return false;
+    }
+
+    let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+    if (!user || !user.roles.includes(`admin`)) {
+        res.status(403).send({ error: `Not authorized.` });
+        return false;
+    }
+
+    return user;
 }
 
 async function getMapperAndHash(bsrId: string): Promise<{ hash: string, involvedMappers: string[] }|null> {
