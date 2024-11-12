@@ -160,6 +160,25 @@ export class AdminRoutes {
                             Logger.warn(`Failed to create new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
                         }
                         Logger.log(`Created new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
+                    } else if (category == `Gen-FullSpread`) {
+                        let hashAndMappers = await getMapperAndHash(aS.bsrId);
+                        if (!hashAndMappers) {
+                            Logger.warn(`Failed to fetch data for ${aS.bsrId}, map is likely deleted.`);
+                            continue;
+                        }
+
+                        let newSorted = await DatabaseHelper.database.sortedSubmissions.create({
+                            bsrId: aS.bsrId,
+                            category: category as SortedSubmissionsCategory,
+                            characteristic: null,
+                            difficulty: null,
+                            hash: hashAndMappers.hash,
+                            involvedMappers: hashAndMappers.involvedMappers
+                        });
+                        if (!newSorted) {
+                            Logger.warn(`Failed to create new sorted submission for ${aS.bsrId} in ${category}`);
+                        }
+                        Logger.log(`Created new sorted submission for ${aS.bsrId} in ${category}`);
                     }
                 }
             }
