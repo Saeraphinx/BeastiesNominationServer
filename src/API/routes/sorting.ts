@@ -156,7 +156,7 @@ export class SortingRoutes {
                 });
             }
 
-            Logger.log(`User ${req.session.userId} accepted submission ${submission.nominationId} to ${submission.category} with ${otherSubmissions.length} duplicates`);
+            Logger.log(`User ${req.session.userId} accepted submission ${submission.nominationId} to ${submission.category} with ${otherSubmissions.length} duplicates. Sorted submission ID: ${sortedSubmission.id}`);
             return res.status(200).send({ message: `Submission added successfully`, duplicates: otherSubmissions.length, submission: sortedSubmission });
         });
 
