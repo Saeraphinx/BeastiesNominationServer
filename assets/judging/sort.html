@@ -388,7 +388,7 @@
             buttonContainer.classList.add("buttonContainer");
             let infoButton = document.createElement("a");
             infoButton.innerText = "🛈"
-            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, bsapi.description);
+            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, `Nom ID: ${nomId}<br>${bsapi.description}`);
             buttonContainer.appendChild(infoButton);
             let viewButton = document.createElement("a");
             viewButton.innerText = "▶";

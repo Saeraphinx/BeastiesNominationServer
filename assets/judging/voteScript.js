@@ -115,7 +115,9 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     }
     let catText = document.createElement(`p`);
     catText.classList.add(`category`);
-    catText.innerText = `${selectedChar} ${selectedDiff}`;
+    if (!validFullSpread) {
+        catText.innerText = `${selectedChar} ${selectedDiff}`;
+    }
     diffColors.appendChild(catText);
     beatmap.appendChild(diffColors);
 
@@ -231,7 +233,7 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     buttonContainer.classList.add(`buttonContainer`);
     let infoButton = document.createElement(`a`);
     infoButton.innerText = `🛈`;
-    infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, bsapi.description);
+    infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, `Submission ID:${nomId}<br>${bsapi.description}`);
     buttonContainer.appendChild(infoButton);
     let viewButton = document.createElement(`a`);
     viewButton.innerText = `▶`;
@@ -424,14 +426,14 @@ function generateMapperBlurb(bsapi) {
 
 function openArcViewer(e, bsr) {
     e.preventDefault();
-    let iframe = document.getElementById(`ArcViewer`)
+    let iframe = document.getElementById(`ArcViewer`);
     iframe.src = `https://allpoland.github.io/ArcViewer/?id=${bsr}`;
     let overlay = document.getElementById(`avoverlay`);
     overlay.style.display = `block`;
 }
 
 function closeArcViewer() {
-    let iframe = document.getElementById(`ArcViewer`)
+    let iframe = document.getElementById(`ArcViewer`);
     iframe.src = ``;
     let overlay = document.getElementById(`avoverlay`);
     overlay.style.display = `none`;
@@ -482,16 +484,16 @@ function sendVote(submissionId, vote, notes) {
         loadSubmissions(activePage);
     });
 }
-
+/*
 function openSortModal(sortsubId, category) { //old
     let overlay = document.getElementById(`sortmodal`);
     overlay.style.display = `block`;
-    let form = document.getElementById(`form`); 
+    let form = document.getElementById(`form`);
     form.sortsubId.value = sortsubId || ``;
     form.category.value = category || ``;
-    form.removeEventListener(`submit`, handleSubmit);
+    //form.removeEventListener(`submit`, handleSubmit);
     form.addEventListener(`submit`, handleSubmit);
-} 
+}*/
 
 function handleReclassifySubmit(e) {
     console.log(`submit`);
@@ -522,7 +524,7 @@ function handleReclassifySubmit(e) {
         closeModal();
         loadSubmissions(activePage);
     });
-    return false; 
+    return false;
 }
 
 function closeModal() {
