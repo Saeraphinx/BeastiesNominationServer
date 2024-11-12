@@ -122,10 +122,12 @@ export class AdminRoutes {
                     if (category == sS.category) {
                         if (DatabaseHelper.isDiffCharRequired(category)) {
                             if (sS.characteristic == aS.characteristic && sS.difficulty == aS.difficulty && sS.bsrId == aS.bsrId) {
+                                console.log(`Found ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
                                 return true;
                             }
                         } else if (category == `Gen-FullSpread`) {
                             if (sS.bsrId == aS.bsrId) {
+                                console.log(`Found ${aS.bsrId} in ${category}`);
                                 return true;
                             }
                         } else {
