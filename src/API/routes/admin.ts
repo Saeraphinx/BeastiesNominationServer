@@ -117,6 +117,8 @@ export class AdminRoutes {
             let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category }});
             let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
 
+            console.log(`Found ${allSortedSubmissions.length} sorted submissions and ${categoryAcceptedSubmissions.length} accepted submissions.`);
+
             for (let aS of categoryAcceptedSubmissions) {
                 let alreadySorted = allSortedSubmissions.find((sS) => {
                     if (category == sS.category) {
