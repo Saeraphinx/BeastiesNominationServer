@@ -325,7 +325,7 @@
         }
 
         /* #endregion */
-    
+
         @media only screen and (max-width: 546px) {
             p.bio {
                 font-size: 14px;
@@ -344,7 +344,10 @@
                 font-size: 0.8em;
             }
 
-            p#username, a.username, h4#timeLeft, p.categoryinfo {
+            p#username,
+            a.username,
+            h4#timeLeft,
+            p.categoryinfo {
                 font-size: 12px;
             }
         }
@@ -391,7 +394,8 @@
             For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
             <br><br>!-->
         </p>
-        <a class="lang active" onclick="setLanguage(`en`)">English</a><a class="lang" onclick="setLanguage(`jp`)">日本語</a>
+        <a class="lang active" onclick="setLanguage(`en`)">English</a><a class="lang"
+            onclick="setLanguage(`jp`)">日本語</a>
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
@@ -450,12 +454,12 @@
         <div class="beatmaps-container" id="beatmaps-container">
             <div id="TEMP_PLACEHOLDER"></div>
         </div>
-        <p id="username"><a href="/api/auth/beatleader"><img
-                    src="/cdn/loginbltrans.png" width="300px" style="max-width: 300px; min-width: 100px; width: 100%;"
-                    alt="BeatLeader Login Button" /></a>
-                    <a href="/api/auth/beatsaver"><img
-                        src="/cdn/loginbs.png" width="300px" style="max-width: 300px; min-width: 100px; width: 100%;"
-                        alt="BeatLeader Login Button" /></a><br>Not currently logged in.</p>
+        <p id="username"><a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png" width="300px"
+                    style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
+            <a href="/api/auth/beatsaver"><img src="/cdn/loginbs.png" width="300px"
+                    style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a><br>Not
+            currently logged in.
+        </p>
     </div>
     <div id="countsContainer">
         <h1>Submission Counts</h1>
@@ -559,7 +563,9 @@
     </div>
     <footer>
         <p class="footer"><a class="footer" href="https://saeraphinx.dev">Created by Saeraphinx</a> • <a class="footer"
-                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
+                href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a
+                class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer"
+                href="https://beatsaver.com">BeatSaver!</a></p>
     </footer>
     <script>
         // #region Beginning
@@ -567,7 +573,7 @@
             const loadedLang = localStorage.getItem(`language`);
             if (loadedLang === `jp`) {
                 window.location.href = `/jp`;
-            } 
+            }
 
             const auth = await fetch('/api/auth', {
                 method: 'GET',
@@ -588,7 +594,7 @@
                     element.innerHTML = `Logged in as <a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
                 } else {
                     element.innerHTML = `Logged in as ${data.username} • <a class="username" href="api/auth/logout">Log Out</a>`;
-                }   
+                }
                 element.style.marginTop = "10px";
             }
         };
@@ -627,6 +633,18 @@
         };
 
         const OSTMaps = [
+            "Mostercat Vol 2. | Teminite & Skybreak - Accelerate",
+            "Mostercat Vol 2. | Excision & Dion Timmer - DABADABADABADABA",
+            "Mostercat Vol 2. | Grant & Ellis - Dead Man Walking",
+            "Mostercat Vol 2. | Bossfight - Endgame",
+            "Mostercat Vol 2. | Nitro Fun - Final Boss",
+            "Mostercat Vol 2. | Dyro x Conro - Memory Bank",
+            "Mostercat Vol 2. | F.O.O.L & Power Glove - Mercenary",
+            "Mostercat Vol 2. | Teddy Killerzs & Pegboard Nerds - Pump",
+            "Mostercat Vol 2. | Tokyo Machine - RAD",
+            "Mostercat Vol 2. | wnboss & Selva - RIOT",
+            "Mostercat Vol 2. | Sullivan King - Thrones of Blood",
+            "Mostercat Vol 2. | Alan Walker - Wake Up",
             "Britney Spears Pack | Britney Spears - Circus",
             "Britney Spears Pack | Britney Spears - Gimme More",
             "Britney Spears Pack | Britney Spears - I’m A Slave 4 U",
