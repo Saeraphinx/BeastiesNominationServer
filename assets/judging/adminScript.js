@@ -52,7 +52,7 @@ for (let key in categories) {
 
 // #region oneshot
 document.getElementById(`updateNullValues`).addEventListener(`click`, () => {
-    fetch(`/api/admin/updateNullValues`).then(response => {
+    fetch(`/api/admin/updateNullValues`, { method: `POST` }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -60,7 +60,7 @@ document.getElementById(`updateNullValues`).addEventListener(`click`, () => {
 });
 
 document.getElementById(`runInvolvedCheck`).addEventListener(`click`, () => {
-    fetch(`/api/admin/runInvolvedCheck`).then(response => {
+    fetch(`/api/admin/runInvolvedCheck`, { method: `POST` }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -69,7 +69,7 @@ document.getElementById(`runInvolvedCheck`).addEventListener(`click`, () => {
 
 document.getElementById(`repopulateSortedSubmissions`).addEventListener(`click`, () => {
     let category = document.getElementById(`category1`).value;
-    fetch(`/api/admin/repopulateSortedSubmissions?category=${encodeURIComponent(category)}`).then(response => {
+    fetch(`/api/admin/repopulateSortedSubmissions`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ category: category }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -89,7 +89,7 @@ function loadTable(data) {
             tableHeaders.appendChild(header);
         });
         table.appendChild(tableHeaders);
-        
+
         for (let obj of data) {
             let tableBody = document.createElement(`tr`);
             Object.keys(obj).forEach(key => {
@@ -169,7 +169,7 @@ document.getElementById(`loadJudge`).addEventListener(`click`, () => {
 document.getElementById(`addCategory`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
     let category = document.getElementById(`category2`).value;
-    fetch(`/api/admin/judges/addCategory?id=${encodeURIComponent(id)}&category=${encodeURIComponent(category)}`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addCategory`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ category: category }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -179,7 +179,7 @@ document.getElementById(`addCategory`).addEventListener(`click`, () => {
 document.getElementById(`removeCategory`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
     let category = document.getElementById(`category2`).value;
-    fetch(`/api/admin/judges/removeCategory?id=${encodeURIComponent(id)}&category=${encodeURIComponent(category)}`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeCategory`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ category: category }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -188,7 +188,7 @@ document.getElementById(`removeCategory`).addEventListener(`click`, () => {
 
 document.getElementById(`addSortingRole`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
-    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole?role=sort`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ role: `sort` }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -197,7 +197,7 @@ document.getElementById(`addSortingRole`).addEventListener(`click`, () => {
 
 document.getElementById(`removeSortingRole`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
-    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole?role=sort`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ role: `sort` }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -206,7 +206,7 @@ document.getElementById(`removeSortingRole`).addEventListener(`click`, () => {
 
 document.getElementById(`addJudgeRole`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
-    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole?role=judge`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ role: `judge` }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -215,7 +215,7 @@ document.getElementById(`addJudgeRole`).addEventListener(`click`, () => {
 
 document.getElementById(`removeJudgeRole`).addEventListener(`click`, () => {
     let id = document.getElementById(`judgeId`).value;
-    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole?role=judge`).then(response => {
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole`, { method: `POST`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ role: `judge` }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
