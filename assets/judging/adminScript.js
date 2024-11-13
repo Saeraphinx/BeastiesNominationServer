@@ -185,3 +185,39 @@ document.getElementById(`removeCategory`).addEventListener(`click`, () => {
         });
     });
 });
+
+document.getElementById(`addSortingRole`).addEventListener(`click`, () => {
+    let id = document.getElementById(`judgeId`).value;
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole?role=sort`).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
+document.getElementById(`removeSortingRole`).addEventListener(`click`, () => {
+    let id = document.getElementById(`judgeId`).value;
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/addRole?role=sort`).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
+document.getElementById(`addJudgeRole`).addEventListener(`click`, () => {
+    let id = document.getElementById(`judgeId`).value;
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole?role=judge`).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
+document.getElementById(`removeJudgeRole`).addEventListener(`click`, () => {
+    let id = document.getElementById(`judgeId`).value;
+    fetch(`/api/admin/judges/${encodeURIComponent(id)}/removeRole?role=judge`).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});

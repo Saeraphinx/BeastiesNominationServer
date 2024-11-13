@@ -339,6 +339,88 @@ export class AdminRoutes {
 
             res.send({ message: `Removed category ${category} from judge ${judge.name}` });
         });
+
+        this.app.get(`/api/admin/judges/:id/addRole`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let id = req.params.id;
+            let role = req.query.role;
+
+            if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
+                return res.status(400).send({ message: `Missing id.` });
+            }
+
+            if (!role || typeof role !== `string`) {
+                return res.status(400).send({ message: `Missing role.` });
+            }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+
+            if (!judge) {
+                return res.status(400).send({ message: `Judge doesn't exist.` });
+            }
+
+            switch (role) {
+                case `judge`:
+                    if (judge.roles.includes(`judge`)) {
+                        return res.status(400).send({ message: `Judge already has that role.` });
+                    }
+                    judge.roles = [...judge.roles, `judge`];
+                    break;
+                case `sort`:
+                    if (judge.roles.includes(`sort`)) {
+                        return res.status(400).send({ message: `Judge already has that role.` });
+                    }
+                    judge.roles = [...judge.roles, `sort`];
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid role.` });
+            }
+            await judge.save();
+            res.send({ message: `Added judge role to ${judge.name}` });
+        });
+
+        this.app.get(`/api/admin/judges/:id/removeRole`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let id = req.params.id;
+            let role = req.query.role;
+
+            if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
+                return res.status(400).send({ message: `Missing id.` });
+            }
+
+            if (!role || typeof role !== `string`) {
+                return res.status(400).send({ message: `Missing role.` });
+            }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+
+            if (!judge) {
+                return res.status(400).send({ message: `Judge doesn't exist.` });
+            }
+
+            switch (role) {
+                case `judge`:
+                    if (!judge.roles.includes(`judge`)) {
+                        return res.status(400).send({ message: `Judge doesn't have that role.` });
+                    }
+                    judge.roles = judge.roles.filter((r) => r !== `judge`);
+                    break;
+                case `sort`:
+                    if (!judge.roles.includes(`sort`)) {
+                        return res.status(400).send({ message: `Judge doesn't have that role.` });
+                    }
+                    judge.roles = judge.roles.filter((r) => r !== `sort`);
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid role.` });
+            }
+            await judge.save();
+            res.send({ message: `Removed judge role from ${judge.name}` });
+        });
         // #endregion Judges
     }
 }
