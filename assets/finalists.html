@@ -4,7 +4,11 @@
 <head>
     <title>2024 BeastSaber Mapping Awards Submission Form</title>
     <link rel="icon" type="image/x-icon" href="/favicon.png">
-    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap"
+        rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         @keyframes bg {
@@ -121,12 +125,37 @@
         }
 
         div.finalist-map-card {
-            width: 20%;
-            min-width: 130px;
+            display: flex;
+            flex-direction: row;
+            width: 350px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            margin: 5px;
         }
 
         div.finalist-map-card img {
             border-radius: 10px;
+            margin: 10px;
+        }
+
+        div.finalist-map-card p {
+            margin: 0;
+            text-align: left;
+        }
+
+        div.finalist-map-card p.map-name {
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        div.finalist-map-card p.map-author {
+            font-size: 1em;
+            font-weight: 300;
+        }
+
+        div.finalist-map-card p.map-artist {
+            font-size: 1em;
+            font-weight: 400;
         }
     </style>
 
@@ -151,45 +180,55 @@
         <p id="categoryTitle">Map of the Year</h1>
         <p id="categoryDesc">The best unmodded map of the year. Full stop. It has it all - representation, emphasis,
             flow - everything coming together for an incredible playing experience to go with the song.</p>
-        <div class="row">
-            <div class="column" style="max-width: 30%; position: relative; margin-right: 20px;">
-                <span style="overflow: hidden; width: 256px; height: 256px; border-radius: 16px;">
-                    <img src='https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg' width=265px height=265px style="filter: blur(4px); margin-left: -5px; margin-top: -5px;">
-                </span>
-                <span id="categoryDesc" style="position: absolute; text-shadow: #000 0 0 6px;">
-                    <h2>HAYAKO - ANALYS</h2>
-                    <p>Mapped by</p>
-                    <p>Reaxt</p>
-                </span>
-            </div>
-            <div class="column" style="max-width: 70%;">
-                <div class="row" id="maps">
-                    <div class="finalist-map-card">
-                        <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg"
-                            width="128px" height="128px">
-                    </div>
-                    <div class="finalist-map-card">
-                        <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg"
-                            width="128px" height="128px">
-                    </div>
-                    <div class="finalist-map-card">
-                        <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg"
-                            width="128px" height="128px">
-                    </div>
+        <div class="row" id="maps">
+            <div class="finalist-map-card" id="test">
+                <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg" width="92"
+                    height="92" alt="Map 1" />
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">HAYAKO</p>
+                    <p class="map-name">ANALYS</p>
+                    <p class="map-author">Mapper(s): Reaxt</p>
                 </div>
-                <div class="row" id="maps">
-                    <div class="finalist-map-card">
-                        <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg"
-                            width="128px" height="128px">
-                    </div>
-                    <div class="finalist-map-card">
-                        <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg"
-                            width="128px" height="128px">
-                    </div>
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/f1c50aa9f71fbc9ea3521359ec312d9066712cc5.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">Suzumu ft. Soraru</p>
+                    <p class="map-name">Zetsubousei: Hero Chiryouyaku (TV Size)</p>
+                    <p class="map-author">Mapper(s): Saeraphinx</p>
+                </div>
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/713e301fc4f774edf4ea1001a19dd5bf7e3f4ce6.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">Alan Walker</p>
+                    <p class="map-name">Darkside (feat. Au/Ra and Tomine Harket)</p>
+                    <p class="map-author">Mapper(s): Liam, Riz & KyleT</p>
+                </div>
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">Camellia</p>
+                    <p class="map-name">Electromagnetic Stealth Girl Born In Philadelphia</p>
+                    <p class="map-author">Mapper(s): Joshabi</p>
+                </div>
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">Camellia</p>
+                    <p class="map-name">tentaclar aliens' epic extraterrestrial jungle dance party inside of a super-ultra-mega-gigantic u.f.o., it maybe u.u.f.o., silently flying over illinois st.</p>
+                    <p class="map-author">Mapped By Checkthepan</p>
                 </div>
             </div>
         </div>
     </div>
+    <button id="download">Download</button>
 </body>
 
 </html>
