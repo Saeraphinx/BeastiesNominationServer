@@ -116,6 +116,8 @@
         p#categoryDesc {
             font-size: 1em;
             margin: 0;
+            margin-top: 10px;
+            margin-bottom: 10px;
             padding: 0;
             color: white;
         }
@@ -127,6 +129,7 @@
         div.finalist-map-card {
             display: flex;
             flex-direction: row;
+            position: relative;
             width: 350px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
@@ -140,22 +143,43 @@
 
         div.finalist-map-card p {
             margin: 0;
+            margin-right: 5px;
             text-align: left;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
         }
 
         div.finalist-map-card p.map-name {
-            font-size: 1.2em;
+            font-size: 1.15em;
             font-weight: 600;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
         }
 
         div.finalist-map-card p.map-author {
-            font-size: 1em;
+            font-size: 0.95em;
             font-weight: 300;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
         }
 
         div.finalist-map-card p.map-artist {
-            font-size: 1em;
+            font-size: 0.95em;
             font-weight: 400;
+            -webkit-line-clamp: 1;
+            line-clamp: 1;
+        }
+
+        div.links {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            border-radius: 0 10px 10px 0;
+            background-color: rgba(25, 1, 243, 0.7);
         }
     </style>
 
@@ -189,6 +213,7 @@
                     <p class="map-name">ANALYS</p>
                     <p class="map-author">Mapper(s): Reaxt</p>
                 </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
             </div>
             <div class="finalist-map-card">
                 <img src="https://na.cdn.beatsaver.com/f1c50aa9f71fbc9ea3521359ec312d9066712cc5.jpg" width="92"
@@ -198,6 +223,7 @@
                     <p class="map-name">Zetsubousei: Hero Chiryouyaku (TV Size)</p>
                     <p class="map-author">Mapper(s): Saeraphinx</p>
                 </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
             </div>
             <div class="finalist-map-card">
                 <img src="https://na.cdn.beatsaver.com/713e301fc4f774edf4ea1001a19dd5bf7e3f4ce6.jpg" width="92"
@@ -207,6 +233,7 @@
                     <p class="map-name">Darkside (feat. Au/Ra and Tomine Harket)</p>
                     <p class="map-author">Mapper(s): Liam, Riz & KyleT</p>
                 </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
             </div>
             <div class="finalist-map-card">
                 <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
@@ -216,15 +243,37 @@
                     <p class="map-name">Electromagnetic Stealth Girl Born In Philadelphia</p>
                     <p class="map-author">Mapper(s): Joshabi</p>
                 </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
             </div>
             <div class="finalist-map-card">
                 <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
                     height="92" alt="Map 1">
                 <div class="column" style="align-items: normal;">
                     <p class="map-artist">Camellia</p>
-                    <p class="map-name">tentaclar aliens' epic extraterrestrial jungle dance party inside of a super-ultra-mega-gigantic u.f.o., it maybe u.u.f.o., silently flying over illinois st.</p>
-                    <p class="map-author">Mapped By Checkthepan</p>
+                    <p class="map-name">Tentaclar Aliens' Epic Extraterretterrestrial Jungle Dance Party Inside Of A Super​-​Ultra​-​Mega​-​Gigantic U​.​F​.​O. (It Maybe U​.​U​.​F​.​O​.​) Silently Flying Over Illinois St.</p>
+                    <p class="map-author">Mapper(s): Checkthepan</p>
                 </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/349432ae0eff1895effcb9ea38aa2113b64fc41c.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist"></p>
+                    <p class="map-name">chip</p>
+                    <p class="map-author">Mapper(s): denyah_, cumical, logan5969, rfcaps_, Spledgey_, Parapass, 4orizon, gamble9000, Joetastic, Potassium__737, Caeden117, bear_, Supaconnor, Mawntee, astrella_, jessnbs, Camical, Pink</p>
+                </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
+            </div>
+            <div class="finalist-map-card">
+                <img src="https://na.cdn.beatsaver.com/9dd717c7dad635ecf94296a5a0b3f2966ba2ab00.jpg" width="92"
+                    height="92" alt="Map 1">
+                <div class="column" style="align-items: normal;">
+                    <p class="map-artist">BEMANI Sound Team "DARK TRAIN"</p>
+                    <p class="map-name">S-Bahn</p>
+                    <p class="map-author">Mapper(s): PnfrlEnm</p>
+                </div>
+                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
             </div>
         </div>
     </div>
