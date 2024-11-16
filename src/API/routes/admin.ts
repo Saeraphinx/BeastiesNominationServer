@@ -57,6 +57,8 @@ export class AdminRoutes {
             if (!user) { return; }
 
             res.status(200).send({ message: `Started running involved check.` });
+            let voteCount = 0;
+            let detectedCount = 0;
             let allEntries = await DatabaseHelper.database.sortedSubmissions.findAll();
             let allJudges = await DatabaseHelper.database.judges.findAll();
             for (let judge of allJudges) {
@@ -66,11 +68,13 @@ export class AdminRoutes {
                         if (entry.involvedMappers && entry.involvedMappers.length > 0) {
                             // @ts-ignore honestly uh fuck
                             if (entry.involvedMappers.includes(parseInt(mapperId))) {
-                                Logger.log(`Found ${mapperId} in id ${entry.id}`);
+                                console.log(`Found ${mapperId} in id ${entry.id}`);
+                                detectedCount++;
                                 let existingVote = await DatabaseHelper.database.judgeVotes.findOne({ where: { submissionId: entry.id, judgeId: judge.id } });
 
                                 if (!existingVote) {
-                                    Logger.log(`Creating vote for ${entry.hash} by ${mapperId} for ${judge.name}`);
+                                    console.log(`Creating vote for ${entry.hash} by ${mapperId} for ${judge.name}`);
+                                    voteCount++;
                                     await DatabaseHelper.database.judgeVotes.create({
                                         submissionId: entry.id,
                                         judgeId: judge.id,
@@ -83,6 +87,7 @@ export class AdminRoutes {
                     }
                 }
             }
+            Logger.log(`Finished running involved check. - ${detectedCount} involved votes detected, ${voteCount} votes created.`);
         });
 
         this.app.get(`/api/admin/database/integrityCheck`, async (req, res) => {
@@ -113,8 +118,9 @@ export class AdminRoutes {
             let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category }});
             let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
 
-            console.log(`Found ${allSortedSubmissions.length} sorted submissions and ${categoryAcceptedSubmissions.length} accepted submissions.`);
+            Logger.log(`Found ${allSortedSubmissions.length} sorted submissions and ${categoryAcceptedSubmissions.length} accepted submissions.`);
 
+            let count = 0;
             for (let aS of categoryAcceptedSubmissions) {
                 let alreadySorted = allSortedSubmissions.find((sS) => {
                     if (category == sS.category) {
@@ -155,7 +161,7 @@ export class AdminRoutes {
                         if (!newSorted) {
                             Logger.warn(`Failed to create new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
                         }
-                        Logger.log(`Created new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
+                        console.log(`Created new sorted submission for ${aS.bsrId} in ${category} ${aS.characteristic} ${aS.difficulty}`);
                     } else if (category == `Gen-FullSpread`) {
                         let hashAndMappers = await getMapperAndHash(aS.bsrId);
                         if (!hashAndMappers) {
@@ -174,10 +180,12 @@ export class AdminRoutes {
                         if (!newSorted) {
                             Logger.warn(`Failed to create new sorted submission for ${aS.bsrId} in ${category}`);
                         }
-                        Logger.log(`Created new sorted submission for ${aS.bsrId} in ${category}`);
+                        count++;
+                        console.log(`Created new sorted submission for ${aS.bsrId} in ${category}`);
                     }
                 }
             }
+            Logger.log(`Repopulated ${count} sorted submissions for ${category}`);
             res.send({ message: `Repopulated sorted submissions for ${category}` });
         });
 
