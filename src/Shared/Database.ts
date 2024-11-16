@@ -24,13 +24,20 @@ export class DatabaseManager {
         this.sequelize.sync().then(() => {
             Logger.log(`Database Loaded.`);
             new DatabaseHelper(this);
+            DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
+                let healthcheckString = (healthcheck[0][0] as any).integrity_check;
+                Logger.log(`Database health check: ${healthcheckString}`);
+            }).catch((error) => {
+                Logger.error(`Error checking database health: ${error}`);
+            });
             setInterval(() => {
                 DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
-                    Logger.log(`Database health check: ${healthcheck}`);
+                    let healthcheckString = (healthcheck[0][0] as any).integrity_check;
+                    Logger.log(`Database health check: ${healthcheckString}`);
                 }).catch((error) => {
                     Logger.error(`Error checking database health: ${error}`);
                 });
-            }, 1000 * 60 * 60 * 24);
+            }, 1000 * 60 * 60 * 1);
         }).catch((error) => {
             Logger.error(`Error loading database: ${error}`);
             exit(-1);

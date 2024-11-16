@@ -15,7 +15,7 @@ export class AdminRoutes {
 
     private async loadRoutes() {
         // #region One Shot
-        this.app.get(`/api/admin/updateNullValues`, async (req, res) => {
+        this.app.post(`/api/admin/updateNullValues`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
             
@@ -52,7 +52,7 @@ export class AdminRoutes {
             return res.status(200).send({ message: `Started updating null hashes.` });
         });
 
-        this.app.get(`/api/admin/runInvolvedCheck`, async (req, res) => {
+        this.app.post(`/api/admin/runInvolvedCheck`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
@@ -105,11 +105,11 @@ export class AdminRoutes {
         });
         // #endregion One Shot
         // #region Per Category
-        this.app.get(`/api/admin/repopulateSortedSubmissions`, async (req, res) => {
+        this.app.post(`/api/admin/repopulateSortedSubmissions`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
-            let category = req.query.category as string;
+            let category = req.body.category as string;
 
             if (!category) {
                 return res.status(400).send({ error: `Missing category.` });
@@ -284,12 +284,12 @@ export class AdminRoutes {
         // #endregion Database
 
         // #region Judges
-        this.app.get(`/api/admin/judges/addCategory`, async (req, res) => {
+        this.app.post(`/api/admin/judges/:id/addCategory`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
-            let category = req.query.category;
-            let id = req.query.id;
+            let category = req.body.category;
+            let id = req.params.id;
 
             if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
                 return res.status(400).send({ message: `Missing category.` });
@@ -317,12 +317,12 @@ export class AdminRoutes {
             res.send({ message: `Added category ${category} to judge ${judge.name}` });
         });
 
-        this.app.get(`/api/admin/judges/removeCategory`, async (req, res) => {
+        this.app.post(`/api/admin/judges/:id/removeCategory`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
-            let category = req.query.category;
-            let id = req.query.id;
+            let category = req.body.category;
+            let id = req.params.id;
 
             if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
                 return res.status(400).send({ message: `Missing category.` });
@@ -348,12 +348,12 @@ export class AdminRoutes {
             res.send({ message: `Removed category ${category} from judge ${judge.name}` });
         });
 
-        this.app.get(`/api/admin/judges/:id/addRole`, async (req, res) => {
+        this.app.post(`/api/admin/judges/:id/addRole`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
             let id = req.params.id;
-            let role = req.query.role;
+            let { role } = req.body;
 
             if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
                 return res.status(400).send({ message: `Missing id.` });
@@ -386,15 +386,15 @@ export class AdminRoutes {
                     return res.status(400).send({ message: `Invalid role.` });
             }
             await judge.save();
-            res.send({ message: `Added judge role to ${judge.name}` });
+            res.send({ message: `Added ${role} role to ${judge.name}` });
         });
 
-        this.app.get(`/api/admin/judges/:id/removeRole`, async (req, res) => {
+        this.app.post(`/api/admin/judges/:id/removeRole`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
             let id = req.params.id;
-            let role = req.query.role;
+            let { role } = req.body;
 
             if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
                 return res.status(400).send({ message: `Missing id.` });
@@ -427,7 +427,7 @@ export class AdminRoutes {
                     return res.status(400).send({ message: `Invalid role.` });
             }
             await judge.save();
-            res.send({ message: `Removed judge role from ${judge.name}` });
+            res.send({ message: `Removed ${role} role from ${judge.name}` });
         });
         // #endregion Judges
     }

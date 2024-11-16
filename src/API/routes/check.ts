@@ -28,6 +28,11 @@ export class SubmissionRoutes {
                 res.status(429).send({ message: `Rate limited.` });
                 return;
             }
+
+            if (new Date(Date.now()) >= new Date(`15 Dec 2024 00:00:00 UTC`)) {
+                res.status(400).send({ message: `Submissions are now closed. Thank you for participating!` });
+                return;
+            }
             
             const userId = req.body[`id`];
             const bsrId = req.body[`bsrId`];
@@ -120,6 +125,12 @@ export class SubmissionRoutes {
                 res.status(429).send(this.getErrorResponseString(`You've been rate limited. Please try again later.`));
                 return;
             }
+
+            if (new Date(Date.now()) >= new Date(`15 Dec 2024 00:00:00 UTC`)) {
+                res.status(400).send(this.getErrorResponseString(`Submissions are now closed. Thank you for participating!`));
+                return;
+            }
+
             const category = req.body[`category`];
             if (!category || typeof category != `string`) {
                 res.status(400).send(this.getErrorResponseString(`Invalid request.`));
@@ -212,6 +223,11 @@ export class SubmissionRoutes {
         });
 
         this.app.post(`/api/beatleader/submitmap`, async (req, res) => {
+            if (new Date(Date.now()) >= new Date(`15 Dec 2024 00:00:00 UTC`)) {
+                res.status(400).send({ message: `Submissions are now closed. Thank you for participating!` });
+                return;
+            }
+
             const category = req.body[`category`];
             if (!category || typeof category != `string`) {
                 res.status(400).send({ message: `Invalid request.` });
