@@ -95,8 +95,9 @@ export class AdminRoutes {
             if (!user) { return; }
 
             DatabaseHelper.database.sequelize.query(`PRAGMA integrity_check;`).then((healthcheck) => {
-                Logger.log(`Manual - Database health check: ${healthcheck}`);
-                res.send({ message: `Database health check: ${healthcheck}` });
+                let healthcheckString = (healthcheck[0][0] as any).integrity_check;
+                Logger.log(`Manual - Database health check: ${healthcheckString}`);
+                res.send({ message: `Database health check: ${healthcheckString}` });
             }).catch((error) => {
                 Logger.error(`Manual - Error checking database health: ${error}`);
                 res.send({ message: `Database health check: ${error}` });
@@ -314,6 +315,7 @@ export class AdminRoutes {
             judge.permittedCategories = [...judge.permittedCategories, conCategory];
             await judge.save();
 
+            Logger.log(`Added category ${category} to judge ${judge.name}`, `Admin`);
             res.send({ message: `Added category ${category} to judge ${judge.name}` });
         });
 
@@ -345,6 +347,7 @@ export class AdminRoutes {
             judge.permittedCategories = judge.permittedCategories.filter((c) => c !== category);
             await judge.save();
 
+            Logger.log(`Removed category ${category} from judge ${judge.name}`, `Admin`);
             res.send({ message: `Removed category ${category} from judge ${judge.name}` });
         });
 
@@ -386,6 +389,7 @@ export class AdminRoutes {
                     return res.status(400).send({ message: `Invalid role.` });
             }
             await judge.save();
+            Logger.log(`Added ${role} role to ${judge.name}`, `Admin`);
             res.send({ message: `Added ${role} role to ${judge.name}` });
         });
 
@@ -427,6 +431,7 @@ export class AdminRoutes {
                     return res.status(400).send({ message: `Invalid role.` });
             }
             await judge.save();
+            Logger.log(`Removed ${role} role from ${judge.name}`, `Admin`);
             res.send({ message: `Removed ${role} role from ${judge.name}` });
         });
         // #endregion Judges
