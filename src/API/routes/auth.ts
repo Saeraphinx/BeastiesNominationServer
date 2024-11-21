@@ -152,9 +152,11 @@ export class AuthRoutes {
             if (!judge) {
                 let discordGuildMemberInfo = await DiscordAuthHelper.getGuildMemberData(token.access_token, `452928402203344908`, user.id);
                 if (!discordGuildMemberInfo) {
+                    Logger.warn(`Failed to get guild member data for ${user.username}.`, `Auth`);
                     return res.status(500).send({ error: `Internal server error.` });
                 }
                 if (!discordGuildMemberInfo.roles.includes(`933458558408884244`)) {
+                    console.log(`id ${user.id} is not a judge`);
                     return res.status(403).send({ error: `You are not involved with The Beasties.` });
                 }
 
