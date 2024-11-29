@@ -237,8 +237,8 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     buttonContainer.appendChild(infoButton);
     let viewButton = document.createElement(`a`);
     viewButton.innerText = `▶`;
-    viewButton.onclick = (e) => openArcViewer(e, bsapi.id);
-    viewButton.href = `https://allpoland.github.io/ArcViewer/?id=${bsapi.id}`;
+    viewButton.onclick = (e) => openArcViewer(e, bsapi.id, selectedChar, selectedDiff);
+    viewButton.href = `https://allpoland.github.io/ArcViewer/?id=${encodeURIComponent(bsapi.id)}&difficulty=${encodeURIComponent(selectedDiff)}&mode=${encodeURIComponent(selectedChar)}`;
     viewButton.target = `_top`;
     buttonContainer.appendChild(viewButton);
     let oneclickButton = document.createElement(`a`);
@@ -424,10 +424,10 @@ function generateMapperBlurb(bsapi) {
     return mapperLink;
 }
 
-function openArcViewer(e, bsr) {
+function openArcViewer(e, bsr, mode, diff) {
     e.preventDefault();
     let iframe = document.getElementById(`ArcViewer`);
-    iframe.src = `https://allpoland.github.io/ArcViewer/?id=${bsr}`;
+    iframe.src = `https://allpoland.github.io/ArcViewer/?id=${encodeURIComponent(bsr)}&difficulty=${encodeURIComponent(diff)}&mode=${encodeURIComponent(mode)}`;
     let overlay = document.getElementById(`avoverlay`);
     overlay.style.display = `block`;
 }
