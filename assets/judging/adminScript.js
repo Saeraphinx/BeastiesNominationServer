@@ -14,10 +14,10 @@ const categories = {
 
     RankedMapBLLessThan8: [`Ranked-BLLessThan8`, `BL Ranked Less than 8*`],
     RankedMapBL8To12: [`Ranked-BL8To12`, `BL Ranked 8* to 12*`],
-    RankedMapBL12Plus: [`Ranked-BL8To12`, `BL Ranked 12* and above`],
+    RankedMapBL12Plus: [`Ranked-BL12Plus`, `BL Ranked 12* and above`],
     RankedMapSSLessThan8: [`Ranked-SSLessThan8`, `SS Ranked Less than 8*`],
     RankedMapSS8To12: [`Ranked-SS8To12`, `SS Ranked 8* to 12*`],
-    RankedMapSS12Plus: [`Ranked-SS8To12`, `SS Ranked 12* and above`],
+    RankedMapSS12Plus: [`Ranked-SS12Plus`, `SS Ranked 12* and above`],
 
     BalancedMap: [`Style-Balanced`, `Balanced`],
     TechMap: [`Style-Tech`, `Tech`],
