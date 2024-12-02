@@ -448,6 +448,11 @@ export class AdminRoutes {
             if (!user) { return; }
 
             let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+
+            if (!judge) {
+                return res.status(404).send({ message: `Judge not found.` });
+            }
+
             let votes = await DatabaseHelper.database.judgeVotes.findAll({ where: { judgeId: id } });
             let submissions = await DatabaseHelper.database.sortedSubmissions.findAll();
 
