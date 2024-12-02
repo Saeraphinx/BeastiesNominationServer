@@ -457,9 +457,11 @@ export class AdminRoutes {
             let submissions = await DatabaseHelper.database.sortedSubmissions.findAll();
 
             let totalVotes = 0;
+            let totalAssigned = 0;
             let response: {category:string, totalSubmissions:number, judgeVotes:number, precentage:number}[] = [];
             for (let category of judge.permittedCategories) {
                 let categorySubmissions = submissions.filter((s) => s.category == category);
+                totalAssigned += categorySubmissions.length;
                 let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId));
                 totalVotes += categoryVotes.length;
                 response.push({
@@ -470,7 +472,7 @@ export class AdminRoutes {
                 });
             }
 
-            res.send({ totalVotes, response });
+            res.send({ totalVotes, totalAssigned, precentage: (totalVotes / totalAssigned) * 100, response });
         });
         // #endregion Judges
     }
