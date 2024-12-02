@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Express } from 'express';
-import { DatabaseHelper, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, Judge, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
 import { ModelStatic } from 'sequelize';
 
@@ -436,8 +436,6 @@ export class AdminRoutes {
         });
 
         this.app.get(`/api/admin/judges/:id/precentdone`, async (req, res) => {
-            
-
             let id = req.params.id;
 
             if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
@@ -452,6 +450,8 @@ export class AdminRoutes {
             if (!judge) {
                 return res.status(404).send({ message: `Judge not found.` });
             }
+
+            Logger.log(`Getting precentage done for ${judge.name} (Req by ${user.name})`, `Admin`);
 
             let votes = await DatabaseHelper.database.judgeVotes.findAll({ where: { judgeId: id } });
             let submissions = await DatabaseHelper.database.sortedSubmissions.findAll();
@@ -478,17 +478,17 @@ export class AdminRoutes {
     }
 }
 
-async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|number = false): Promise<any> {
+async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|number = false): Promise<Judge|null> {
     if (!req.session.userId && req.session.service !== `judgeId`) {
         res.status(401).send({ error: `Not logged in.` });
-        return false;
+        return null;
     }
 
     let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
 
     if (!user) {
         res.status(403).send({ error: `Not authorized.` });
-        return false;
+        return null;
     }
 
     if (typeof allowSelfJudge === `number`) {
@@ -499,7 +499,7 @@ async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|num
 
     if (!user.roles.includes(`admin`)) {
         res.status(403).send({ error: `Not authorized.` });
-        return false;
+        return null;
     }
 
     return user;
