@@ -479,13 +479,18 @@ async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|num
 
     let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
 
+    if (!user) {
+        res.status(403).send({ error: `Not authorized.` });
+        return false;
+    }
+
     if (typeof allowSelfJudge === `number`) {
         if (user.id == allowSelfJudge) {
             return user;
         }
     }
 
-    if (!user || !user.roles.includes(`admin`)) {
+    if (!user.roles.includes(`admin`)) {
         res.status(403).send({ error: `Not authorized.` });
         return false;
     }
