@@ -434,17 +434,56 @@ export class AdminRoutes {
             Logger.log(`Removed ${role} role from ${judge.name}`, `Admin`);
             res.send({ message: `Removed ${role} role from ${judge.name}` });
         });
+
+        this.app.get(`/api/admin/judges/:id/precentdone`, async (req, res) => {
+            
+
+            let id = req.params.id;
+
+            if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
+                return res.status(400).send({ message: `Missing id.` });
+            }
+
+            let user = await isAuthroizedSession(req, res, parseInt(id));
+            if (!user) { return; }
+
+            let judge = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+            let votes = await DatabaseHelper.database.judgeVotes.findAll({ where: { judgeId: id } });
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll();
+
+            let totalVotes = 0;
+            let response: {category:string, totalSubmissions:number, judgeVotes:number, precentage:number}[] = [];
+            for (let category of judge.permittedCategories) {
+                let categorySubmissions = submissions.filter((s) => s.category == category);
+                let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId));
+                totalVotes += categoryVotes.length;
+                response.push({
+                    category: category,
+                    totalSubmissions: categorySubmissions.length,
+                    judgeVotes: categoryVotes.length,
+                    precentage: (categoryVotes.length / categorySubmissions.length) * 100
+                });
+            }
+
+            res.send({ totalVotes, response });
+        });
         // #endregion Judges
     }
 }
 
-async function isAuthroizedSession(req: any, res:any) {
+async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|number = false): Promise<any> {
     if (!req.session.userId && req.session.service !== `judgeId`) {
         res.status(401).send({ error: `Not logged in.` });
         return false;
     }
 
     let user = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
+
+    if (typeof allowSelfJudge === `number`) {
+        if (user.id == allowSelfJudge) {
+            return user;
+        }
+    }
 
     if (!user || !user.roles.includes(`admin`)) {
         res.status(403).send({ error: `Not authorized.` });
