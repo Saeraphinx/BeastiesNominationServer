@@ -90,6 +90,11 @@ export class MiscRoutes {
             res.sendFile(path.resolve(`assets/favicon.png`));
         });
 
+        this.app.get(`/favicon.ico`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/favicon.png`));
+        });
+
         this.app.get(`/cdn/beastsaber.jpg`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/beastsaber.jpg`));
