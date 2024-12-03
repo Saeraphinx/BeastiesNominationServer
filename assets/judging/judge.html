@@ -21,7 +21,7 @@
     <div class="header">
         <h1>2024 BeastSaber Mapping Awards</h1>
     </div>
-    <div class="header">
+    <div class="header" id="titleBlock">
         <h2>Judges Panel</h2>
         <p>Select the category you'd like to judge.</p>
         
@@ -41,11 +41,12 @@
                         loginButton.innerText = `Logout (${data.username})`;
                     }
 
+                    let titleBlock = document.getElementById('titleBlock');
                     let statsA = document.createElement('a');
                     statsA.classList.add('category');
                     statsA.href = `/api/admin/judge/${data.id}/percentdone`;
                     statsA.innerText = "Stats";
-                    statsA.appendChild(statsA);
+                    titleBlock.appendChild(statsA);
 
                     let categories = data.categories;
                     let categoriesDiv = document.getElementById('categories');
