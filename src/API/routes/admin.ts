@@ -462,7 +462,7 @@ export class AdminRoutes {
             for (let category of judge.permittedCategories) {
                 let categorySubmissions = submissions.filter((s) => s.category == category);
                 totalAssigned += categorySubmissions.length;
-                let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId));
+                let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId && v.score !== -1));
                 totalVotes += categoryVotes.length;
                 response.push({
                     category: category,
