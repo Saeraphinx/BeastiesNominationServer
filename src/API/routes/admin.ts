@@ -435,7 +435,7 @@ export class AdminRoutes {
             res.send({ message: `Removed ${role} role from ${judge.name}` });
         });
 
-        this.app.get(`/api/admin/judges/:id/precentdone`, async (req, res) => {
+        this.app.get(`/api/admin/judges/:id/percentdone`, async (req, res) => {
             let id = req.params.id;
 
             if (!id || typeof id !== `string` || isNaN(parseInt(id))) {

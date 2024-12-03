@@ -34,7 +34,7 @@ export class JudgeingRoutes {
                 return res.status(403).send({ message: `You do not have permission to judge.` });
             }
 
-            return res.status(200).send({ username: req.session.username, categories: judge.permittedCategories, allCategories: SortedSubmissionsCategoryEnglish });
+            return res.status(200).send({ username: req.session.username, id: judge.id, categories: judge.permittedCategories, allCategories: SortedSubmissionsCategoryEnglish });
         });
 
         this.app.get(`/api/judge/getSubmissions`, async (req, res) => {

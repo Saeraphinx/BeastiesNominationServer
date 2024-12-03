@@ -24,6 +24,7 @@
     <div class="header">
         <h2>Judges Panel</h2>
         <p>Select the category you'd like to judge.</p>
+        
     </div>
     <div class="header">
         <h2>Categories</h2>
@@ -39,6 +40,12 @@
                     if (data.username) {
                         loginButton.innerText = `Logout (${data.username})`;
                     }
+
+                    let statsA = document.createElement('a');
+                    statsA.classList.add('category');
+                    statsA.href = `/api/admin/judge/${data.id}/percentdone`;
+                    statsA.innerText = "Stats";
+                    statsA.appendChild(statsA);
 
                     let categories = data.categories;
                     let categoriesDiv = document.getElementById('categories');
