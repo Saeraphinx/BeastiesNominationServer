@@ -44,7 +44,7 @@
                     let titleBlock = document.getElementById('titleBlock');
                     let statsA = document.createElement('a');
                     statsA.classList.add('category');
-                    statsA.href = `/api/admin/judge/${data.id}/percentdone`;
+                    statsA.href = `/api/admin/judges/${data.id}/percentdone`;
                     statsA.innerText = "Stats";
                     titleBlock.appendChild(statsA);
 
