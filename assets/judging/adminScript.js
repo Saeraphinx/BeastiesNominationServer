@@ -79,6 +79,36 @@ document.getElementById(`repopulateSortedSubmissions`).addEventListener(`click`,
         });
     });
 });
+
+document.getElementById(`cutSubmissions`).addEventListener(`click`, () => {
+    let category = document.getElementById(`category1`).value;
+    let amount = parseInt(document.getElementById(`amount`).value);
+    let noThreshold = parseInt(document.getElementById(`noThreshold`).value);
+
+    if (isNaN(amount) && isNaN(noThreshold)) {
+        alert(`Please enter a valid amount or noThreshold value.`);
+        return;
+    }
+
+    fetch(`/api/admin/cutSubmissions`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ 
+        category: category,
+        amount: isNaN(amount) ? null : amount,
+        noThreshold: isNaN(noThreshold) ? null : noThreshold,
+    }) }).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
+document.getElementById(`resetCategoryVotes`).addEventListener(`click`, () => {
+    let category = document.getElementById(`category1`).value;
+    fetch(`/api/admin/resetCategoryVotes`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ category: category }) }).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
 // #endregion
 
 // #region database
@@ -167,6 +197,32 @@ document.getElementById(`loadJudge`).addEventListener(`click`, () => {
         });
     });
 });
+
+document.getElementById(`loadSubmissionBsr`).addEventListener(`click`, () => {
+    let searchValue = document.getElementById(`submissionBsr`).value;
+    fetch(`/api/admin/database/data/submissions?bsr=${encodeURIComponent(searchValue)}`).then(response => {
+        response.json().then(data => {
+            if (response.status !== 200) {
+                alert(data.message);
+                return;
+            }
+            loadTable(data);
+        });
+    });
+});
+
+document.getElementById(`loadSortedSubmissionBsr`).addEventListener(`click`, () => {
+    let searchValue = document.getElementById(`sortedSubmissionBsr`).value;
+    fetch(`/api/admin/database/data/sortedSubmissions?bsr=${encodeURIComponent(searchValue)}`).then(response => {
+        response.json().then(data => {
+            if (response.status !== 200) {
+                alert(data.message);
+                return;
+            }
+            loadTable(data);
+        });
+    });
+});
 // #endregion
 
 // #region updateJudge
@@ -225,3 +281,4 @@ document.getElementById(`removeJudgeRole`).addEventListener(`click`, () => {
         });
     });
 });
+// #endregion

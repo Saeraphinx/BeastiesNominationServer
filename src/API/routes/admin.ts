@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Express } from 'express';
-import { DatabaseHelper, Judge, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, Judge, SortedSubmission, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
 import { ModelStatic } from 'sequelize';
 
@@ -18,7 +18,7 @@ export class AdminRoutes {
         this.app.post(`/api/admin/updateNullValues`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
-            
+
             let bsrAlreadyDone: string[] = [];
             let i = 0;
             let allEntries = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { hash: null } });
@@ -116,7 +116,7 @@ export class AdminRoutes {
                 return res.status(400).send({ error: `Missing category.` });
             }
 
-            let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category }});
+            let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
             let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
 
             Logger.log(`Found ${allSortedSubmissions.length} sorted submissions and ${categoryAcceptedSubmissions.length} accepted submissions.`);
@@ -270,7 +270,7 @@ export class AdminRoutes {
                     break;
                 case `judges`:
                     let username = req.query.username as string;
-                    results = await DatabaseHelper.database.judges.findOne({ where: { name: username} });
+                    results = await DatabaseHelper.database.judges.findOne({ where: { name: username } });
                     break;
                 default:
                     return res.status(400).send({ message: `Invalid table.` });
@@ -435,7 +435,7 @@ export class AdminRoutes {
             res.send({ message: `Removed ${role} role from ${judge.name}` });
         });
 
-        this.app.get(`/api/admin/judges/:id/precentdone`, async (req, res) => {
+        this.app.get(`/api/admin/judges/:id/percentdone`, async (req, res) => {
             let id = req.params.id;
 
             if (!id || typeof id !== `string` || isNaN(parseInt(id))) {
@@ -458,11 +458,11 @@ export class AdminRoutes {
 
             let totalVotes = 0;
             let totalAssigned = 0;
-            let response: {category:string, totalSubmissions:number, judgeVotes:number, precentage:number}[] = [];
+            let response: { category: string, totalSubmissions: number, judgeVotes: number, precentage: number }[] = [];
             for (let category of judge.permittedCategories) {
                 let categorySubmissions = submissions.filter((s) => s.category == category);
                 totalAssigned += categorySubmissions.length;
-                let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId));
+                let categoryVotes = votes.filter((v) => categorySubmissions.find((s) => s.id == v.submissionId && v.score !== -1));
                 totalVotes += categoryVotes.length;
                 response.push({
                     category: category,
@@ -475,10 +475,117 @@ export class AdminRoutes {
             res.send({ totalVotes, totalAssigned, precentage: (totalVotes / totalAssigned) * 100, response });
         });
         // #endregion Judges
+
+        // #region Voting
+        this.app.delete(`/api/admin/cutSubmissions`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let category = req.body.category as string;
+            let amount = parseInt(req.body.amount);
+            let noThreshold = parseInt(req.body.noThreshold);
+
+            if (!category) {
+                return res.status(400).send({ error: `Missing category.` });
+            }
+
+            if (!validateEnumValue(category, SortedSubmissionsCategory)) {
+                return res.status(400).send({ error: `Invalid category.` });
+            }
+
+            Logger.log(`${user.name} has initiated cutting submissions for ${category}`, `Admin`);
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
+            let votes = await DatabaseHelper.database.judgeVotes.findAll();
+            let count = 0;
+            let cutMaps: {submission: SortedSubmission, voteScore?: number, noCount?:number}[] = [];
+
+            if (!noThreshold || isNaN(noThreshold)) {// preform amount cut
+                submissions.sort((a, b) => {
+                    let aVoteScore = 0;
+                    let bVoteScore = 0;
+
+                    for (let vote of votes.filter((v) => v.submissionId == a.id)) {
+                        if (vote.score !== -1) {
+                            aVoteScore += vote.score;
+                        }
+                    }
+
+                    for (let vote of votes.filter((v) => v.submissionId == b.id)) {
+                        if (vote.score !== -1) {
+                            bVoteScore += vote.score;
+                        }
+                    }
+
+                    return bVoteScore - aVoteScore;
+                });
+
+                for (let i = amount; i < submissions.length; i++) {
+                    let submission = submissions[i];
+                    cutMaps.push({ submission, voteScore: null });
+                    await submission.destroy();
+                    count++;
+                }
+            } else if (!amount || isNaN(amount)) { // preform cutTheshold cut
+                for (let submission of submissions) {
+                    let noCount = 0;
+                    for (let vote of votes.filter((v) => v.submissionId == submission.id)) {
+                        if (vote.score == 0) {
+                            noCount++;
+                        }
+                    }
+
+                    if (noCount >= noThreshold) {
+                        cutMaps.push({ submission, noCount });
+                        await submission.destroy();
+                        count++;
+                    }
+                }
+            } else {
+                return res.status(400).send({ error: `Invalid cut type.` });
+            }
+
+            Logger.log(`Cut ${count} submissions for ${category}`, `Admin`);
+            res.send({ message: `Cut ${count} submissions for ${category}`, cuts: cutMaps });
+        });
+
+        this.app.delete(`/api/admin/resetVotes`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let category = req.body.category as string;
+
+            if (!category) {
+                return res.status(400).send({ error: `Missing category.` });
+            }
+
+            if (!validateEnumValue(category, SortedSubmissionsCategory)) {
+                return res.status(400).send({ error: `Invalid category.` });
+            }
+
+            Logger.log(`${user.name} has initiated a vote reset for ${category}`, `Admin`);
+
+            let votes = await DatabaseHelper.database.judgeVotes.findAll();
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
+
+            let count = 0;
+            for (let vote of votes) {
+                if (submissions.find((s) => s.id == vote.submissionId)) {
+                    if (vote.score !== -1 && vote.score !== 0.5) {
+                        vote.score = -1;
+                        await vote.save();
+                        count++;
+                    }
+                }
+            }
+
+            Logger.log(`Reset ${count} votes for ${category}`, `Admin`);
+            res.send({ message: `Reset ${count} votes for ${category}` });
+        });
+        // #endregion Voting
     }
 }
 
-async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|number = false): Promise<Judge|null> {
+async function isAuthroizedSession(req: any, res: any, allowSelfJudge: boolean | number = false): Promise<Judge | null> {
     if (!req.session.userId && req.session.service !== `judgeId`) {
         res.status(401).send({ error: `Not logged in.` });
         return null;
@@ -505,7 +612,7 @@ async function isAuthroizedSession(req: any, res:any, allowSelfJudge:boolean|num
     return user;
 }
 
-async function getMapperAndHash(bsrId: string): Promise<{ hash: string, involvedMappers: string[] }|null> {
+async function getMapperAndHash(bsrId: string): Promise<{ hash: string, involvedMappers: string[] } | null> {
     let involvedMappers: any[] = [];
     let hash = null;
     let parsedBSR = parseInt(bsrId, 16);

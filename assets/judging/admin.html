@@ -39,6 +39,10 @@
             <h2>Per Category</h2>
             <select id="category1" placeholder="Category"></select>
             <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
+            <input type="text" id="amount" placeholder="amount to keep">
+            <input type="text" id="noThreshold" placeholder="amount of nos">
+            <button id="cutSubmissions">cutSubmissions</button>
+            <button id="resetCategoryVotes">resetCategoryVotes</button>
         </div>
     </div>
     <div class="header" style="max-width: none;">
@@ -53,9 +57,9 @@
                 <button id="loadSubmission">Load</button>
                 <button id="updateSubmission" disabled>Delete</button>
             </div>
-            <input type="text" id="submissionBsr" placeholder="Submission BSR (d00c)" disabled>
+            <input type="text" id="submissionBsr" placeholder="Submission BSR (d00c)">
             <div class="header-row">
-                <button id="loadSubmissionBsr" disabled>Search</button>
+                <button id="loadSubmissionBsr">Search</button>
             </div>
         </div>
         <div class="header">
@@ -64,11 +68,10 @@
             <div class="header-row">
                 <button id="loadSortedSubmission">Load</button>
                 <button id="deleteSubmission" disabled>Delete</button>
-                <button id="resetAllVotes" disabled>Reset All Votes</button>
             </div>
-            <input type="text" id="sortedSubmissionBsr" placeholder="Sorted Submission Bsr (d00c)" disabled>
+            <input type="text" id="sortedSubmissionBsr" placeholder="Sorted Submission Bsr (d00c)" >
             <div class="header-row">
-                <button id="loadSortedSubmissionBsr" disabled>Search</button>
+                <button id="loadSortedSubmissionBsr" >Search</button>
             </div>
         </div>
         <div class="header">
