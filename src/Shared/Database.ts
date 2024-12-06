@@ -87,6 +87,8 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+        }, {
+            paranoid: true,
         });
 
         this.sortedSubmissions = this.sequelize.define<SortedSubmission>(`sortedSubmissions`, {
@@ -131,6 +133,8 @@ export class DatabaseManager {
                     this.setDataValue(`involvedMappers`, JSON.stringify(value));
                 },
             },
+        }, {
+            paranoid: true,
         });
 
         this.judges = this.sequelize.define<Judge>(`judges`, {
@@ -190,6 +194,8 @@ export class DatabaseManager {
                     this.setDataValue(`permittedCategories`, JSON.stringify(value));
                 },
             },
+        }, {
+            paranoid: true,
         });
 
         this.judgeVotes = this.sequelize.define<JudgeVote>(`judgeVotes`, {
@@ -214,6 +220,8 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+        }, {
+            paranoid: true,
         });
     }
 }
