@@ -216,7 +216,7 @@ document.getElementById(`deleteSubmission`).addEventListener(`click`, () => {
 });
 
 document.getElementById(`deleteSortedSubmission`).addEventListener(`click`, () => {
-    let id = document.getElementById(`submissionId`).value;
+    let id = document.getElementById(`sortedSubmissionId`).value;
     fetch(`/api/admin/database/data/sortedSubmissions/${encodeURIComponent(id)}`, {
         method: `DELETE`
     }).then(response => {
