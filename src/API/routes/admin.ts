@@ -192,46 +192,6 @@ export class AdminRoutes {
 
         // #endregion Per Category
         // #region Database
-        this.app.get(`/api/admin/database/data/:table/:id`, async (req, res) => {
-            let user = await isAuthroizedSession(req, res);
-            if (!user) { return; }
-
-            let table = req.params.table;
-            let id = req.params.id;
-
-            if (!table || !id) {
-                return res.status(400).send({ message: `Missing table or id.` });
-            }
-
-            let results;
-            switch (table) {
-                case `sortedSubmissions`:
-                    results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
-                    break;
-                case `submissions`:
-                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
-                    break;
-                case `judges`:
-                    results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
-                    break;
-                case `judgeVotes`:
-                    if (user.id == 1) {
-                        results = await DatabaseHelper.database.judgeVotes.findOne({ where: { id: id } });
-                    } else {
-                        return res.status(403).send({ message: `Not authorized.` });
-                    }
-                    break;
-                default:
-                    return res.status(400).send({ message: `Invalid table.` });
-            }
-
-            if (!results) {
-                return res.status(404).send({ message: `Data not found.` });
-            }
-
-            res.send(results);
-        });
-
         this.app.get(`/api/admin/database/data/:table`, async (req, res) => {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
@@ -281,6 +241,89 @@ export class AdminRoutes {
             }
 
             res.send(results);
+        });
+        
+        this.app.get(`/api/admin/database/data/:table/:id`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let table = req.params.table;
+            let id = req.params.id;
+
+            if (!table || !id) {
+                return res.status(400).send({ message: `Missing table or id.` });
+            }
+
+            let results;
+            switch (table) {
+                case `sortedSubmissions`:
+                    results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
+                    break;
+                case `submissions`:
+                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+                    break;
+                case `judges`:
+                    results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+                    break;
+                case `judgeVotes`:
+                    if (user.id == 1) {
+                        results = await DatabaseHelper.database.judgeVotes.findOne({ where: { id: id } });
+                    } else {
+                        return res.status(403).send({ message: `Not authorized.` });
+                    }
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid table.` });
+            }
+
+            if (!results) {
+                return res.status(404).send({ message: `Data not found.` });
+            }
+
+            res.send(results);
+        });
+
+        this.app.delete(`/api/admin/database/data/:table/:id`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let table = req.params.table;
+            let id = req.params.id;
+
+            if (!table || !id) {
+                return res.status(400).send({ message: `Missing table or id.` });
+            }
+
+            let results;
+            switch (table) {
+                case `sortedSubmissions`:
+                    results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
+                    break;
+                case `submissions`:
+                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+                    break;
+                case `judges`:
+                    results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
+                    break;
+                case `judgeVotes`:
+                    if (user.id == 1) {
+                        results = await DatabaseHelper.database.judgeVotes.findOne({ where: { id: id } });
+                    } else {
+                        return res.status(403).send({ message: `Not authorized.` });
+                    }
+                    break;
+                default:
+                    return res.status(400).send({ message: `Invalid table.` });
+            }
+
+            if (!results) {
+                return res.status(404).send({ message: `Data not found.` });
+            }
+
+            let record = results.toJSON() as any;
+            await results.destroy();
+            Logger.log(`Deleted record ${record.id} from ${table} - ${JSON.stringify(record)}`, `Admin`);
+            res.send({ message: `Deleted record ${record.id} from ${table}`, record });
         });
         // #endregion Database
 
@@ -484,6 +527,7 @@ export class AdminRoutes {
             let category = req.body.category as string;
             let amount = parseInt(req.body.amount);
             let noThreshold = parseInt(req.body.noThreshold);
+            let fakeRun = req.body.fakeRun as boolean;
 
             if (!category) {
                 return res.status(400).send({ error: `Missing category.` });
@@ -522,7 +566,7 @@ export class AdminRoutes {
                 for (let i = amount; i < submissions.length; i++) {
                     let submission = submissions[i];
                     cutMaps.push({ submission, voteScore: null });
-                    await submission.destroy();
+                    fakeRun ? null : await submission.destroy();
                     count++;
                 }
             } else if (!amount || isNaN(amount)) { // preform cutTheshold cut
@@ -536,7 +580,7 @@ export class AdminRoutes {
 
                     if (noCount >= noThreshold) {
                         cutMaps.push({ submission, noCount });
-                        await submission.destroy();
+                        fakeRun ? null : await submission.destroy();
                         count++;
                     }
                 }
@@ -544,7 +588,7 @@ export class AdminRoutes {
                 return res.status(400).send({ error: `Invalid cut type.` });
             }
 
-            Logger.log(`Cut ${count} submissions for ${category}`, `Admin`);
+            Logger.log(`Cut ${count} submissions for ${category} - fakeRun: ${fakeRun}`, `Admin`);
             res.send({ message: `Cut ${count} submissions for ${category}`, cuts: cutMaps });
         });
 

@@ -22,7 +22,7 @@ new DatabaseManager();
 
 app.set(`trust proxy`, `uniquelocal, loopback`);
 app.use(express.json({ limit: 100000 }));
-app.use(express.urlencoded({limit : 10000, parameterLimit: 10 }));
+app.use(express.urlencoded({limit : 10000, parameterLimit: 10, extended: false }));
 app.use(session({
     secret: server.sessionSecret,
     name: `session`,

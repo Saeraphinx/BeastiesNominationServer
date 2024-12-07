@@ -84,16 +84,18 @@ document.getElementById(`cutSubmissions`).addEventListener(`click`, () => {
     let category = document.getElementById(`category1`).value;
     let amount = parseInt(document.getElementById(`amount`).value);
     let noThreshold = parseInt(document.getElementById(`noThreshold`).value);
+    let fakeRun = document.getElementById(`fakeRun`).checked;
 
     if (isNaN(amount) && isNaN(noThreshold)) {
         alert(`Please enter a valid amount or noThreshold value.`);
         return;
     }
 
-    fetch(`/api/admin/cutSubmissions`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ 
+    fetch(`/api/admin/cutSubmissions`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
         category: category,
         amount: isNaN(amount) ? null : amount,
         noThreshold: isNaN(noThreshold) ? null : noThreshold,
+        fakeRun: fakeRun
     }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
@@ -197,6 +199,37 @@ document.getElementById(`loadJudge`).addEventListener(`click`, () => {
         });
     });
 });
+
+document.getElementById(`deleteSubmission`).addEventListener(`click`, () => {
+    let id = document.getElementById(`submissionId`).value;
+    fetch(`/api/admin/database/data/submissions/${encodeURIComponent(id)}`, {
+        method: `DELETE`
+    }).then(response => {
+        response.json().then(data => {
+            if (response.status !== 200) {
+                alert(data.message);
+                return;
+            }
+            loadTable(data);
+        });
+    });
+});
+
+document.getElementById(`deleteSortedSubmission`).addEventListener(`click`, () => {
+    let id = document.getElementById(`submissionId`).value;
+    fetch(`/api/admin/database/data/sortedSubmissions/${encodeURIComponent(id)}`, {
+        method: `DELETE`
+    }).then(response => {
+        response.json().then(data => {
+            if (response.status !== 200) {
+                alert(data.message);
+                return;
+            }
+            loadTable(data);
+        });
+    });
+});
+
 
 document.getElementById(`loadSubmissionBsr`).addEventListener(`click`, () => {
     let searchValue = document.getElementById(`submissionBsr`).value;

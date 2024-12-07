@@ -41,6 +41,8 @@
             <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
             <input type="text" id="amount" placeholder="amount to keep">
             <input type="text" id="noThreshold" placeholder="amount of nos">
+            <input type="checkbox" id="fakeRun" name="fakeRun" checked />
+            <label for="fakeRun">fakeRun</label>
             <button id="cutSubmissions">cutSubmissions</button>
             <button id="resetCategoryVotes">resetCategoryVotes</button>
         </div>
@@ -55,7 +57,7 @@
             <input type="text" id="submissionId" placeholder="Submission ID">
             <div class="header-row">
                 <button id="loadSubmission">Load</button>
-                <button id="updateSubmission" disabled>Delete</button>
+                <button id="deleteSubmission">Delete</button>
             </div>
             <input type="text" id="submissionBsr" placeholder="Submission BSR (d00c)">
             <div class="header-row">
@@ -67,7 +69,7 @@
             <input type="text" id="sortedSubmissionId" placeholder="Sorted Submission ID">
             <div class="header-row">
                 <button id="loadSortedSubmission">Load</button>
-                <button id="deleteSubmission" disabled>Delete</button>
+                <button id="deleteSortedSubmission">Delete</button>
             </div>
             <input type="text" id="sortedSubmissionBsr" placeholder="Sorted Submission Bsr (d00c)" >
             <div class="header-row">
