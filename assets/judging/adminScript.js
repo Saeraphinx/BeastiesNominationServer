@@ -105,7 +105,11 @@ document.getElementById(`cutSubmissions`).addEventListener(`click`, () => {
 
 document.getElementById(`resetCategoryVotes`).addEventListener(`click`, () => {
     let category = document.getElementById(`category1`).value;
-    fetch(`/api/admin/resetCategoryVotes`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({ category: category }) }).then(response => {
+    let userIdToRun = parseInt(document.getElementById(`userIdToRun`).value);
+    fetch(`/api/admin/resetVotes`, { method: `DELETE`, headers: { 'Content-Type': `application/json` }, body: JSON.stringify({
+        category: category,
+        userIdToRun: isNaN(userIdToRun) ? null : userIdToRun
+    }) }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });

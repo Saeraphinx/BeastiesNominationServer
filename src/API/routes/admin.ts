@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { Express } from 'express';
-import { DatabaseHelper, Judge, SortedSubmission, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, Judge, JudgeVote, SortedSubmission, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
 import { ModelStatic } from 'sequelize';
 
@@ -597,6 +597,7 @@ export class AdminRoutes {
             if (!user) { return; }
 
             let category = req.body.category as string;
+            let userIdToRun = req.body.userIdToRun as string;
 
             if (!category) {
                 return res.status(400).send({ error: `Missing category.` });
@@ -606,11 +607,21 @@ export class AdminRoutes {
                 return res.status(400).send({ error: `Invalid category.` });
             }
 
-            Logger.log(`${user.name} has initiated a vote reset for ${category}`, `Admin`);
+            
+            let votes: JudgeVote[];
+            if (userIdToRun && isNaN(parseInt(userIdToRun))) {
+                return res.status(400).send({ error: `Invalid user id.` });
+            }
 
-            let votes = await DatabaseHelper.database.judgeVotes.findAll();
-            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
+            if (userIdToRun) {
+                votes = await DatabaseHelper.database.judgeVotes.findAll({ where: { judgeId: userIdToRun } });
+                Logger.log(`${user.name} has initiated a vote reset in ${category} for User ${userIdToRun} `, `Admin`);
+            } else {
+                votes = await DatabaseHelper.database.judgeVotes.findAll();
+                Logger.log(`${user.name} has initiated a vote reset in ${category} `, `Admin`);
+            }
 
+            let submissions: SortedSubmission[] = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
             let count = 0;
             for (let vote of votes) {
                 if (submissions.find((s) => s.id == vote.submissionId)) {
@@ -623,7 +634,7 @@ export class AdminRoutes {
             }
 
             Logger.log(`Reset ${count} votes for ${category}`, `Admin`);
-            res.send({ message: `Reset ${count} votes for ${category}` });
+            res.send({ message: `Reset ${count} votes for ${category} (optionally for user ${userIdToRun})` });
         });
         // #endregion Voting
     }
