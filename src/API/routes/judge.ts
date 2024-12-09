@@ -30,6 +30,10 @@ export class JudgeingRoutes {
 
             const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
 
+            if (!judge) {
+                return res.status(500).send({ message: `Judge not found.` });
+            }
+
             if (!judge.roles.includes(`judge`)) {
                 return res.status(403).send({ message: `You do not have permission to judge.` });
             }
