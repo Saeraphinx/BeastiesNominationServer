@@ -195,13 +195,25 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
     noteTextArea.classList.add(`notes`);
     noteTextArea.value = notes ? notes : ``;
     rejectButton.onclick = (e) => {
-        sendVote(nomId, 0, noteTextArea.value);
+        if (voteScore == 0) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 0, noteTextArea.value);
+        }
     };
     approveButton.onclick = (e) => {
-        sendVote(nomId, 1, noteTextArea.value);
+        if (voteScore == 1) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 1, noteTextArea.value);
+        }
     };
     involvedButton.onclick = (e) => {
-        sendVote(nomId, 0.5, noteTextArea.value);
+        if (voteScore == 0.5) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 0.5, noteTextArea.value);
+        }
     };
 
     switch (voteScore) {
@@ -317,13 +329,25 @@ function createName(nomId, titleText, subtextText, rawnameText, imageUrl, catego
     noteTextArea.classList.add(`notes`);
     noteTextArea.value = notes ? notes : ``;
     rejectButton.onclick = (e) => {
-        sendVote(nomId, 0, noteTextArea.value);
+        if (voteScore == 0) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 0, noteTextArea.value);
+        }
     };
     approveButton.onclick = (e) => {
-        sendVote(nomId, 1, noteTextArea.value);
+        if (voteScore == 1) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 1, noteTextArea.value);
+        }
     };
     involvedButton.onclick = (e) => {
-        sendVote(nomId, 0.5, noteTextArea.value);
+        if (voteScore == 0.5) {
+            sendVote(nomId, -1, noteTextArea.value);
+        } else {
+            sendVote(nomId, 0.5, noteTextArea.value);
+        }
     };
 
     switch (voteScore) {

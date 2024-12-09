@@ -91,7 +91,7 @@ export class JudgeingRoutes {
 
             let voteNumber = parseFloat(vote);
 
-            if (isNaN(voteNumber) || (voteNumber !== 1 && voteNumber != 0 && voteNumber != 0.5)) {
+            if (isNaN(voteNumber) || (voteNumber !== 1 && voteNumber != 0 && voteNumber != 0.5 && voteNumber != -1)) {
                 return res.status(400).send({ message: `Invalid Vote.` });
             }
 
