@@ -215,6 +215,9 @@ function createBeatmap(nomId, bsapi, category = `you fucked up`, selectedDiff = 
             sendVote(nomId, 0.5, noteTextArea.value);
         }
     };
+    noteTextArea.onchange = (e) => {
+        sendVote(nomId, voteScore ?? -1, noteTextArea.value);
+    };
 
     switch (voteScore) {
         case 0:
