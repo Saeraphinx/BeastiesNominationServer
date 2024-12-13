@@ -399,10 +399,7 @@
     </div>
     <div id="form">
         <h2>2024 Map Submission Form</h2>
-        <i>
-            <h4 id="timeLeft"></h4>
-        </i>
-        <!--<h3 style="color: red;">This is a demo form. Data submitted will not be saved.</h3>!-->
+        <h4 id="timeLeft"></h4>
         <form action="form/submitmap" method="post" id="nominationForm" style="display: none;">
             <b><label for="category">Category</label></b>
             <select id="category" name="category" onchange="onChange()" required></select>
@@ -596,6 +593,7 @@
                     element.innerHTML = `Logged in as ${data.username} • <a class="username" href="api/auth/logout">Log Out</a>`;
                 }
                 element.style.marginTop = "10px";
+                timeRemaining();
             }
         };
         function timeRemaining() {
@@ -603,7 +601,12 @@
             const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
             const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-            document.getElementById('timeLeft').innerHTML = `Time left to submit: ${days} days, ${hours} ${hours == 1 ? "hour" : "hours"}, ${minutes} ${minutes == 1 ? 'minute' : 'minutes'}.`;
+            document.getElementById('timeLeft').innerHTML = `<i>Time left to submit: ${days} days, ${hours} ${hours == 1 ? "hour" : "hours"}, ${minutes} ${minutes == 1 ? 'minute' : 'minutes'}.</i>`;
+            if (timeLeft < 0) {
+                document.getElementById('username').style.display = `none`;
+                document.getElementById('nominationForm').style.display = `none`;
+                document.getElementById('timeLeft').innerHTML = `Submissions are closed!<br>Thank you for submitting. Stay tuned for community voting!`;
+            }
         }
         setInterval(timeRemaining, 60000);
         timeRemaining();
@@ -924,10 +927,13 @@
 
                     // of my god im so sorry for this
                     let allElements = document.getElementsByClassName("count");
-                    let lowestElement = allElements[0];
-                    let secondLowestElement = allElements[1];
-                    let thirdLowestElement = allElements[2];
+                    let lowestElement = allElements[1];
+                    let secondLowestElement = allElements[2];
+                    let thirdLowestElement = allElements[3];
                     for (let element in allElements) {
+                        if (allElements[element].id == "ostCount") {
+                            continue;
+                        }
                         if (parseInt(allElements[element].textContent) <= parseInt(lowestElement.textContent)) {
                             thirdLowestElement = secondLowestElement;
                             secondLowestElement = lowestElement;
