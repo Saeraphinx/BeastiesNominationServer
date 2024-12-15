@@ -20,7 +20,8 @@ const categories = {
     RankedMapSS12Plus: [`Ranked-SS12Plus`, `SS Ranked 12* and above`],
 
     BalancedMap: [`Style-Balanced`, `Balanced`],
-    TechMap: [`Style-Tech`, `Tech`],
+    LowTechMap: [`Style-LowTech`, `Low Tech`],
+    HighTechMap: [`Style-HighTech`, `High Tech`],
     SpeedMap: [`Style-Speed`, `Speed`],
     DanceMap: [`Style-Dance`, `Dance`],
     FitnessMap: [`Style-Fitness`, `Fitness`],
