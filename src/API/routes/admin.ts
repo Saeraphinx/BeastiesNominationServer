@@ -636,6 +636,25 @@ export class AdminRoutes {
             Logger.log(`Reset ${count} votes for ${category}`, `Admin`);
             res.send({ message: `Reset ${count} votes for ${category} (optionally for user ${userIdToRun})` });
         });
+
+        this.app.get(`/api/admin/checkDuplicateVotes`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let votes = await DatabaseHelper.database.judgeVotes.findAll();
+            let duplicates: JudgeVote[] = [];
+            let count = 0;
+            for (let vote of votes) {
+                let duplicate = votes.find((v) => v.id !== vote.id && v.submissionId == vote.submissionId && v.judgeId == vote.judgeId);
+                if (duplicate) {
+                    duplicates.push(vote);
+                    count++;
+                }
+            }
+
+            Logger.log(`Found ${count} duplicate votes.`, `Admin`);
+            res.send({ message: `Found ${count} duplicate votes.`, duplicates });
+        });
         // #endregion Voting
     }
 }
