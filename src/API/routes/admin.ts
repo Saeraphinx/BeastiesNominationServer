@@ -655,6 +655,103 @@ export class AdminRoutes {
             Logger.log(`Found ${count} duplicate votes.`, `Admin`);
             res.send({ message: `Found ${count} duplicate votes.`, duplicates });
         });
+
+        this.app.get(`/api/admin/getFinalVotes`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+            let doTotalCalc = req.query.total === `true` ? true : false;
+            let doAdjustedCalc = req.query.adjusted === `true` ? true : false;
+            let category = req.query.category as string;
+
+            if (!category) {
+                return res.status(400).send({ error: `Missing category.` });
+            }
+
+            if (!validateEnumValue(category, SortedSubmissionsCategory)) {
+                return res.status(400).send({ error: `Invalid category.` });
+            }
+
+            let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
+            let votes = await DatabaseHelper.database.judgeVotes.findAll();
+            let judges = await DatabaseHelper.database.judges.findAll();
+            let finalVotes: any[] = [];
+            Logger.log(`Getting final votes for ${category} (initiated by ${user.name})`, `Admin`);
+
+            for (let submission of submissions) {
+                await new Promise((resolve) => setTimeout(resolve, 300));
+                let name = ``;
+                let mapper = ``;
+                await fetch(`https://api.beatsaver.com/maps/id/${submission.bsrId}`).then(async (response): Promise<void> => {
+                    if (response.status !== 200) {
+                        return null;
+                    }
+
+                    let json = await response.json() as any;
+                    name = `${json.metadata.songAuthorName} - ${json.metadata.songName}`;
+                    mapper = json.metadata.levelAuthorName;
+                });
+                // find all votes for this submission
+                let submissionVotes = votes.filter((v) => v.submissionId == submission.id && v.score !== -1);
+                // filter out votes from judges that don't have the category assigned to them
+                submissionVotes = submissionVotes.filter((v) => judges.find((j) => j.id == v.judgeId && j.permittedCategories.includes(submission.category)));
+                let totalObj = null;
+                if (doTotalCalc) {
+                    // calculate total votes and score
+                    let totalVotes = submissionVotes.length;
+                    let totalScore = 0;
+                    for (let vote of submissionVotes) {
+                        totalScore += vote.score;
+                    }
+                    totalObj = {
+                        totalVotes,
+                        totalScore,
+                        precentage: Math.round(totalScore / totalVotes * 100)
+                    };
+                }
+                let adjObj = null;
+                if (doAdjustedCalc) {
+                    // calculate total votes and score with involved votes removed completely
+                    let adjustedSubmissionVotes = submissionVotes.filter((v) => v.score !== 0.5);
+                    let totalAdjustedVotes = adjustedSubmissionVotes.length;
+                    let totalAdjustedScore = 0;
+                    for (let vote of submissionVotes.filter((v) => v.score !== 0.5)) {
+                        totalAdjustedScore += vote.score;
+                    }
+                    adjObj = {
+                        totalAdjustedVotes,
+                        totalAdjustedScore,
+                        precentage: Math.round(totalAdjustedScore / totalAdjustedVotes * 100)
+                    };
+                }
+
+
+                let retVal = {
+                    mapInfo: {
+                        bsr: submission.bsrId,
+                        name,
+                        levelAuthor: mapper
+                    },
+                    totalVotes: totalObj,
+                    adjustedVotes: adjObj
+                };
+                finalVotes.push(retVal);
+            }
+
+            finalVotes.sort((a, b) => {
+                if (`totalAdjustedVotes` in a && `totalAdjustedVotes` in b) {
+                    return b.adjustedVotes.precentage - a.adjustedVotes.precentage;
+                } else if (`totalVotes` in a && `totalVotes` in b) {
+                    return b.totalVotes.precentage - a.totalVotes.precentage;
+                } else {
+                    return 0;
+                }
+            });
+
+            res.type(`application/json`);
+            res.attachment(`${category}.json`);
+            res.status(200).send(JSON.stringify(finalVotes, null, 2));
+            Logger.log(`Finished getting final votes for ${category} (initiated by ${user.name})`, `Admin`);
+        });
         // #endregion Voting
     }
 }

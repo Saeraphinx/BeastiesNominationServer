@@ -116,6 +116,38 @@ document.getElementById(`resetCategoryVotes`).addEventListener(`click`, () => {
         });
     });
 });
+
+document.getElementById(`getFinalVotes`).addEventListener(`click`, () => {
+    let category = document.getElementById(`category1`).value;
+    let runTotal = document.getElementById(`total`).checked;
+    let runAdjusted = document.getElementById(`adjusted`).checked;
+    let buttonElement = document.getElementById(`getFinalVotes`);
+    buttonElement.disabled = true;
+    let counter = 0;
+    let interval = setInterval(() => {
+        counter++;
+        buttonElement.innerText = `Getting final votes${`.`.repeat(counter % 4)}`;
+    }, 500);
+    fetch(`/api/admin/getFinalVotes?category=${encodeURIComponent(category)}&total=${encodeURIComponent(runTotal)}&adjusted=${encodeURIComponent(runAdjusted)}`).then(response => {
+        if (response.status !== 200) {
+            alert(response.statusText);
+            return;
+        }
+
+        response.blob().then(blob => {
+            let url = window.URL.createObjectURL(blob);
+            let a = document.createElement(`a`);
+            a.href = url;
+            a.download = `finalVotes_${category}.json`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            clearInterval(interval);
+            buttonElement.disabled = false;
+            buttonElement.innerText = `Get Final Votes`;
+        });
+    });
+});
 // #endregion
 
 // #region database
