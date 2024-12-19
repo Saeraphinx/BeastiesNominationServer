@@ -681,6 +681,7 @@ export class AdminRoutes {
                 await new Promise((resolve) => setTimeout(resolve, 300));
                 let name = ``;
                 let mapper = ``;
+                let diff = ``;
                 await fetch(`https://api.beatsaver.com/maps/id/${submission.bsrId}`).then(async (response): Promise<void> => {
                     if (response.status !== 200) {
                         return null;
@@ -689,6 +690,7 @@ export class AdminRoutes {
                     let json = await response.json() as any;
                     name = `${json.metadata.songAuthorName} - ${json.metadata.songName}`;
                     mapper = json.metadata.levelAuthorName;
+                    diff = `${submission.characteristic} ${submission.difficulty}`;
                 });
                 // find all votes for this submission
                 let submissionVotes = votes.filter((v) => v.submissionId == submission.id && v.score !== -1);
@@ -729,7 +731,8 @@ export class AdminRoutes {
                     mapInfo: {
                         bsr: submission.bsrId,
                         name,
-                        levelAuthor: mapper
+                        levelAuthor: mapper,
+                        diff
                     },
                     totalVotes: totalObj,
                     adjustedVotes: adjObj
