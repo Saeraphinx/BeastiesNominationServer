@@ -682,16 +682,32 @@ export class AdminRoutes {
                 let name = ``;
                 let mapper = ``;
                 let diff = ``;
-                await fetch(`https://api.beatsaver.com/maps/id/${submission.bsrId}`).then(async (response): Promise<void> => {
-                    if (response.status !== 200) {
-                        return null;
-                    }
+                let id = submission.name;
+                if (DatabaseHelper.isNameRequiredSortedSubmission(category)) {
+                    if (category.includes(`Mapper`) || category.includes(`Lighter`)) {
+                        await fetch(`https://api.beatsaver.com/users/id/${id}`).then(async response => {
+                            if (response.status !== 200) {
+                                return null;
+                            }
 
-                    let json = await response.json() as any;
-                    name = `${json.metadata.songAuthorName} - ${json.metadata.songName}`;
-                    mapper = json.metadata.levelAuthorName;
-                    diff = `${submission.characteristic} ${submission.difficulty}`;
-                });
+                            let data = await response.json() as any;
+                            name = data.name;
+                        });
+                    } else {
+                        name = submission.name;
+                    }
+                } else {
+                    await fetch(`https://api.beatsaver.com/maps/id/${submission.bsrId}`).then(async (response): Promise<void> => {
+                        if (response.status !== 200) {
+                            return null;
+                        }
+
+                        let json = await response.json() as any;
+                        name = `${json.metadata.songAuthorName} - ${json.metadata.songName}`;
+                        mapper = json.metadata.levelAuthorName;
+                        diff = `${submission.characteristic} ${submission.difficulty}`;
+                    });
+                }
                 // find all votes for this submission
                 let submissionVotes = votes.filter((v) => v.submissionId == submission.id && v.score !== -1);
                 // filter out votes from judges that don't have the category assigned to them
@@ -727,16 +743,28 @@ export class AdminRoutes {
                 }
 
 
-                let retVal = {
-                    mapInfo: {
-                        bsr: submission.bsrId,
-                        name,
-                        levelAuthor: mapper,
-                        diff
-                    },
-                    totalVotes: totalObj,
-                    adjustedVotes: adjObj
-                };
+                let retVal: any;
+                if (DatabaseHelper.isNameRequiredSortedSubmission(category)) {
+                    retVal = {
+                        mapInfo: {
+                            name,
+                            id
+                        },
+                        totalVotes: totalObj,
+                        adjustedVotes: adjObj
+                    };
+                } else {
+                    retVal = {
+                        mapInfo: {
+                            bsr: submission.bsrId,
+                            name,
+                            levelAuthor: mapper,
+                            diff
+                        },
+                        totalVotes: totalObj,
+                        adjustedVotes: adjObj
+                    };
+                }
                 finalVotes.push(retVal);
             }
 
