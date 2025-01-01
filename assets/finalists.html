@@ -597,7 +597,7 @@
                 return;
             }
 
-            let vote = await fetch(`/api/voting/vote`, {
+            let voteResponse = await fetch(`/api/voting/vote`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json"
@@ -608,12 +608,12 @@
                     })
                 });
 
-            let data = await vote.json();
-            if (vote.status === 200) {
+            let data = await voteResponse.json();
+            if (voteResponse.status === 200) {
                 console.log(data);
             } else {
                 console.error(data);
-                return alert(`Failed to submit vote: ${vote.status} ${vote.statusText}.\n\n${data.message}`);
+                return alert(`Failed to submit vote: ${voteResponse.status} ${voteResponse.statusText}.\n\n${data.message}`);
             }
 
             let cards = document.getElementById(category).querySelectorAll(".map-card");
