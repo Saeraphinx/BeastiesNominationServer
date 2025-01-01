@@ -66,9 +66,10 @@ export class AuthRoutes {
                 return res.status(400).send({ error: `Invalid state.` });
             }
             this.validStates = this.validStates.filter((s) => s !== state + req.ip);
-            let token = BeatLeaderAuthHelper.getToken(code.toString());
+            let token = await BeatLeaderAuthHelper.getToken(code.toString());
             if (!token) { return res.status(400).send({ error: `Invalid code.` }); }
-            let user = await BeatLeaderAuthHelper.getUser((await token).access_token);
+            if (!token.access_token) { return res.status(400).send({ error: `Invalid code.` }); }
+            let user = await BeatLeaderAuthHelper.getUser(token.access_token);
             if (!user) { return res.status(500).send({ error: `Internal server error.` }); }
 
             req.session.userId = user.id;
