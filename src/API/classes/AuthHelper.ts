@@ -77,6 +77,21 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
             //}
         }
     }
+
+    public static async getBeatSaverId(beatLeaderId: string): Promise<string|null> {
+        let req = await fetch(`https://api.beatleader.xyz/player/${beatLeaderId}?stats=false`, {
+            method: `GET`
+        });
+
+        if (req.status !== 200) {
+            return null;
+        }
+
+        let json = await req.json() as any;
+        if (`mapperId` in json) {
+            return json.mapperId;
+        }
+    }
 }
 
 export interface BeatLeaderIdentify {
@@ -198,5 +213,6 @@ declare module 'express-session' {
         userId: string;
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
+        beatSaverId: string;
     }
 }

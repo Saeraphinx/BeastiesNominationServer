@@ -10,6 +10,7 @@ export class DatabaseManager {
     public sortedSubmissions: ModelStatic<SortedSubmission>;
     public judges: ModelStatic<Judge>;
     public judgeVotes: ModelStatic<JudgeVote>;
+    public publicVotes: ModelStatic<PublicVote>;
 
     constructor() {
         this.sequelize = new Sequelize(`database`, `user`, `password`, {
@@ -217,6 +218,36 @@ export class DatabaseManager {
                 allowNull: false,
             },
             notes: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+        }, {
+            paranoid: true,
+        });
+
+        this.publicVotes = this.sequelize.define<PublicVote>(`publicVotes`, {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+            },
+            service: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            userId: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            voteRecord: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
+            category: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            linkedId: {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
@@ -539,6 +570,15 @@ export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAt
     public submissionId:number;
     public score:number;
     public notes?:string;
+}
+
+export class PublicVote extends Model<InferAttributes<PublicVote>, InferCreationAttributes<PublicVote>> {
+    declare readonly id:number;
+    declare service:string;
+    declare userId:string;
+    declare voteRecord:string|null;
+    declare category:SortedSubmissionsCategory;
+    declare linkedId:string|null;
 }
 
 export enum SortedSubmissionsCategory {

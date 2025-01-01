@@ -13,6 +13,7 @@ import { JudgeingRoutes } from './API/routes/judge';
 import rateLimit from 'express-rate-limit';
 import { AdminRoutes } from './API/routes/admin';
 import { Logger } from './Shared/Logger';
+import { PublicVotingRoutes } from './API/routes/publicVoting';
 
 Logger.log(`Starting setup...`);
 const app = express();
@@ -58,6 +59,7 @@ new MiscRoutes(app);
 new SortingRoutes(app);
 new JudgeingRoutes(app);
 new AdminRoutes(app);
+new PublicVotingRoutes(app);
 
 HTTPTools.handleExpressShenanigans(app);
 

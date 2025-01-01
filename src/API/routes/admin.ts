@@ -685,7 +685,7 @@ export class AdminRoutes {
                 let id = submission.name;
                 if (DatabaseHelper.isNameRequiredSortedSubmission(category)) {
                     if (category.includes(`Mapper`) || category.includes(`Lighter`)) {
-                        await fetch(`https://api.beatsaver.com/users/id/${id}`).then(async response => {
+                        await fetch(`https://api.beatsaver.com/users/id/${id}`).then(async (response): Promise<void> => {
                             if (response.status !== 200) {
                                 return null;
                             }

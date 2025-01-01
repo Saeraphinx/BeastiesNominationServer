@@ -1,4 +1,4 @@
-import { Express, NextFunction, RequestHandler } from 'express';
+import express, { Express, NextFunction, RequestHandler } from 'express';
 import { DatabaseHelper, NominationCount, SortedSubmissionsCategory, SortedSubmissionsCategoryEnglish, validateEnumValue } from '../../Shared/Database';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -20,7 +20,7 @@ export class MiscRoutes {
     }
 
     private async getCount() {
-        this.submissionCountCache = await DatabaseHelper.getNominationCount();
+        //this.submissionCountCache = await DatabaseHelper.getNominationCount();
     }
 
     private async loadRoutes() {
@@ -124,7 +124,8 @@ export class MiscRoutes {
         // #region HTML
         this.app.get(`/`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
-            res.sendFile(path.resolve(`assets/index.html`));
+            //res.sendFile(path.resolve(`assets/index.html`));
+            res.redirect(`/finalists`);
         });
 
         this.app.get(`/jp`, (req, res) => {
@@ -250,6 +251,16 @@ export class MiscRoutes {
         this.app.get(`/judging/background.js`, async (req, res) => {
             res.sendFile(path.resolve(`assets/judging/background.js`));
         });
+
+        this.app.use(`/cdn/icons`, express.static(path.resolve(`assets/icons`), {
+            maxAge: 1000 * 60 * 60 * 24 * 7,
+            extensions: [`svg`],
+            immutable: true,
+            fallthrough: true,
+            dotfiles: `ignore`,
+            etag: true,
+            index: false
+        }));
     }
 
     private redirectTo(url: string) {

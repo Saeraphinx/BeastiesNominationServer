@@ -11,6 +11,7 @@
         rel="stylesheet">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
+        /* #region main */
         @keyframes bg {
             0% {
                 background-position: 0% 24%
@@ -38,6 +39,40 @@
             color: white;
             font-size: 17px;
             text-align: center;
+        }
+
+        footer {
+            font-family: Arial, sans-serif;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-shadow: 0 0 2px rgba(0, 0, 0, 1);
+            padding: 5px;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        a.footer,
+        a:visited.footer,
+        a:active.footer,
+        a:hover.footer {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+        }
+
+        #username,
+        a.username,
+        a:visited.username,
+        a:active.username,
+        a:hover.username {
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin-bottom: 0px;
+            margin-top: 10px;
         }
 
         div.bg {
@@ -68,6 +103,17 @@
             color: white;
         }
 
+        a.bio,
+        a:visited.bio,
+        a:active.bio {
+            text-decoration: none;
+            color: rgb(29, 172, 255);
+        }
+
+        a.bio:hover {
+            text-decoration: underline;
+        }
+
         div.row {
             display: flex;
             flex-direction: row;
@@ -81,12 +127,12 @@
             justify-content: center;
             align-items: center;
         }
-
+        /* #endregion */
+        /* #region card text & main divs */
         div.card {
             margin: 10px;
-            max-width: 800px;
+            max-width: 850px;
             min-width: 250px;
-            width: 80%;
             padding: 20px;
             /* border: 1px solid rgb(92, 4, 255); */
             color: white;
@@ -95,10 +141,9 @@
         }
 
         div.finalist-card {
-            margin: 10px;
-            max-width: 800px;
+            margin: 20px;
+            max-width: 850px;
             min-width: 250px;
-            width: 80%;
             padding: 20px;
             /* border: 1px solid rgb(92, 4, 255); */
             color: white;
@@ -126,22 +171,45 @@
             flex-wrap: wrap;
         }
 
-        div.finalist-map-card {
+        div.map-card {
             display: flex;
             flex-direction: row;
             position: relative;
-            width: 350px;
+            width: 400px;
             background-color: rgba(0, 0, 0, 0.7);
             border-radius: 10px;
             margin: 5px;
+            transition: all 0.2s;
         }
 
-        div.finalist-map-card img {
+        div.map-card-hover:hover {
+            box-shadow: 0 0 10px 5px rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+        }
+
+        div.active {
+            box-shadow: 0 0 5px 2px rgb(2, 255, 2) !important;
+        }
+
+        div.active:hover {
+            box-shadow: 0 0 10px 2px rgb(2, 255, 2) !important;
+        }
+        /* #endregion */
+
+        /* #region map card text & specifics */
+        div.map-card img {
             border-radius: 10px;
             margin: 10px;
         }
 
-        div.finalist-map-card p {
+        img.map-icon {
+            border-radius: 10px;
+            margin: 10px;
+            width: 92px;
+            height: 92px;
+        }
+
+        div.map-card p {
             margin: 0;
             margin-right: 5px;
             text-align: left;
@@ -151,133 +219,613 @@
             -webkit-box-orient: vertical;
         }
 
-        div.finalist-map-card p.map-name {
+        div.map-card p.map-name {
             font-size: 1.15em;
             font-weight: 600;
             -webkit-line-clamp: 2;
             line-clamp: 2;
         }
 
-        div.finalist-map-card p.map-author {
+        div.map-card p.map-author {
             font-size: 0.95em;
             font-weight: 300;
             -webkit-line-clamp: 1;
             line-clamp: 1;
         }
 
-        div.finalist-map-card p.map-artist {
+        div.map-card p.map-artist {
             font-size: 0.95em;
             font-weight: 400;
             -webkit-line-clamp: 1;
             line-clamp: 1;
         }
 
-        div.links {
+        div.difficon {
+            display: flex;
+            align-items: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 15px;
+            margin-top: 5px;
+            margin-right: 5px;
+            position: absolute;
+            bottom: 15px;
+            left: 70px;
+            box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.8);
+        }
+
+        div.mapLinks {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            width: 30px;
+            width: 28px;
+            margin-left: auto;
+            background-color: rgba(255,255,255,0.08);
             border-radius: 0 10px 10px 0;
-            background-color: rgba(25, 1, 243, 0.7);
+            padding-top: 8px;
+            padding-bottom: 6px;
+        }
+
+        .mapLinks a, .mapLinks abutnot {
+            align-content: center;
+            height: 50%;
+        }
+
+        .mapLinks a img, .mapLinks abutnot img {
+            width: 20px;
+            height: 20px;
+            margin: 4px;
+        }
+
+        a.lang {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            margin: 10px;
+            background-color: #00000070;
+            padding: 7px;
+            margin-top: 10px;
+            margin-bottom: 0;
+            display: inline-block;
+            border-radius: 5px;
+        }
+
+        a.lang.active {
+            box-shadow: 0 0 2px 2px rgba(255, 255, 255, 0.5);
+        }
+
+        a.lang:hover {
+            box-shadow: 0 0 2px 2px rgba(0, 157, 255, 0.5);
+            cursor: pointer;
+        }
+        /* #endregion */
+        @media screen and (max-width: 950px) {
+            div.map-card {
+                width: 350px;
+            }
+        }
+
+        @media screen and (max-width: 850px) {
+            div.map-card {
+                width: 300px;
+            }
+
+            div.map-card p.map-name {
+                font-size: 1em;
+            }
+
+            div.map-card p.map-author, div.map-card p.map-artist {
+                font-size: 0.8em;
+            }
+
+            img.map-icon {
+                width: 72px;
+                height: 72px;
+            }
+
+            div.difficon {
+                bottom: 15px;
+                left: 50px;
+            }
+
+            a#oneclick {
+                display: none;
+            }
         }
     </style>
 
 <body>
     <div class="bg"></div>
     <div class="card">
-        <h1>2024 BeastSaber Mapping Awards</h1>
-        <h2>Coming Soon!</h2>
-        <p>Lorem ipsum odor amet, consectetuer adipiscing elit. Aliquam eget ultricies sagittis nunc ex eros integer
-            nascetur condimentum. Neque et euismod ornare mollis sociosqu orci eu eleifend. Phasellus rutrum hendrerit
-            tortor maecenas himenaeos. Congue penatibus cras turpis varius euismod montes id cubilia bibendum. Tortor eu
-            habitasse phasellus euismod est. Per nam augue metus parturient quisque litora proin dignissim.
-            <br><br>
-            Neque dignissim velit dolor euismod ante. Taciti velit purus consequat aliquam egestas egestas; pellentesque
-            eros libero. Venenatis ullamcorper interdum habitant, est gravida tincidunt phasellus fermentum aenean.
-            Mattis dui sapien duis, cras maximus viverra eu. Nostra dignissim nostra tortor nisi venenatis. Varius
-            dignissim lorem suspendisse, turpis consequat natoque class. Pretium sapien tristique lobortis tortor mollis
-            ridiculus ullamcorper integer. Litora fringilla odio metus dis maecenas.
+        <h1 id="tl-title">2024 BeastSaber Mapping Awards</h1>
+        <h2 id="tl-subtitle">Voting Open Now!</h2>
+        <p id="tl-desc">
+            Over 2000 total submissions. 300+ mappers. 30 categories. 1 community.<br><br>
+            It's time to vote for the best of the best in the Beat Saber mapping community. You can only vote for one mapper/map per category, so choose wisely!<br><br>
+            Voting will close on <b>January 31st, 2024</b>. Check out the BeastSaber website for more information.
         </p>
-    </div>
-    <div class="finalist-card">
-        <p id="categoryTitle">Map of the Year</h1>
-        <p id="categoryDesc">The best unmodded map of the year. Full stop. It has it all - representation, emphasis,
-            flow - everything coming together for an incredible playing experience to go with the song.</p>
-        <div class="row" id="maps">
-            <div class="finalist-map-card" id="test">
-                <img src="https://na.cdn.beatsaver.com/f6dbd83b699872e2e42c2fc90337ef0ac2ab8f30.jpg" width="92"
-                    height="92" alt="Map 1" />
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">HAYAKO</p>
-                    <p class="map-name">ANALYS</p>
-                    <p class="map-author">Mapper(s): Reaxt</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/f1c50aa9f71fbc9ea3521359ec312d9066712cc5.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">Suzumu ft. Soraru</p>
-                    <p class="map-name">Zetsubousei: Hero Chiryouyaku (TV Size)</p>
-                    <p class="map-author">Mapper(s): Saeraphinx</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/713e301fc4f774edf4ea1001a19dd5bf7e3f4ce6.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">Alan Walker</p>
-                    <p class="map-name">Darkside (feat. Au/Ra and Tomine Harket)</p>
-                    <p class="map-author">Mapper(s): Liam, Riz & KyleT</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">Camellia</p>
-                    <p class="map-name">Electromagnetic Stealth Girl Born In Philadelphia</p>
-                    <p class="map-author">Mapper(s): Joshabi</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/0110ebfbeef69b3ef853b8f355dd498d7586185b.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">Camellia</p>
-                    <p class="map-name">Tentaclar Aliens' Epic Extraterretterrestrial Jungle Dance Party Inside Of A Super​-​Ultra​-​Mega​-​Gigantic U​.​F​.​O. (It Maybe U​.​U​.​F​.​O​.​) Silently Flying Over Illinois St.</p>
-                    <p class="map-author">Mapper(s): Checkthepan</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/349432ae0eff1895effcb9ea38aa2113b64fc41c.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist"></p>
-                    <p class="map-name">chip</p>
-                    <p class="map-author">Mapper(s): denyah_, cumical, logan5969, rfcaps_, Spledgey_, Parapass, 4orizon, gamble9000, Joetastic, Potassium__737, Caeden117, bear_, Supaconnor, Mawntee, astrella_, jessnbs, Camical, Pink</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-            <div class="finalist-map-card">
-                <img src="https://na.cdn.beatsaver.com/9dd717c7dad635ecf94296a5a0b3f2966ba2ab00.jpg" width="92"
-                    height="92" alt="Map 1">
-                <div class="column" style="align-items: normal;">
-                    <p class="map-artist">BEMANI Sound Team "DARK TRAIN"</p>
-                    <p class="map-name">S-Bahn</p>
-                    <p class="map-author">Mapper(s): PnfrlEnm</p>
-                </div>
-                <img style="position: absolute; right: 0; top: 0;" src="https://cdn.discordapp.com/attachments/1074397441689919498/1270517139249565866/android-chrome-512x512.png?ex=67387b8b&is=67372a0b&hm=f85c3be9916436865075eec7cb0331e3d3bf30c96c4fab34ce6dc23df5f63e32" width="32" height="32" alt="Map 1" />
-            </div>
-        </div>
-    </div>
-    <button id="download">Download</button>
-</body>
 
+        <a class="lang" id="lang-en" onclick="setLanguage(`en`)">English</a>
+        <a class="lang" id="lang-jp" onclick="setLanguage(`jp`)">日本語</a>
+        <p id="username"><a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png" width="300px"
+            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
+    <a href="/api/auth/beatsaver"><img src="/cdn/loginbs.png" width="300px"
+            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatSaver Login Button" /></a><br>Not
+    currently logged in.
+    </p>
+    </div>
+    <span id="finalists">
+        <!-- Finalists will be loaded here -->
+    </span>
+    <footer>
+        <p class="footer"><a class="footer" id="tl-creator" href="https://saeraphinx.dev">作者：Saeraphinx</a> • <a class="footer" id="tl-translator" href="https://www.twitch.tv/mochichi72">翻訳：mochichi</a> • <a class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.com">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
+    </footer>
+    <script>
+        let enableSubmit = false;
+        
+        window.onload = async function loadMaps() {
+            let lang = localStorage.getItem(`language`);
+            if (lang === null) {
+                localStorage.setItem(`language`, `en`);
+            }
+
+            if(lang === `jp`) {
+                document.getElementById(`lang-jp`).classList.add(`active`);
+            } else {
+                document.getElementById(`lang-en`).classList.add(`active`);
+            }
+
+            document.getElementById(`tl-title`).innerHTML = getHardcodedStringLang("title");
+            document.getElementById(`tl-subtitle`).innerHTML = getHardcodedStringLang("subtitle");
+            document.getElementById(`tl-desc`).innerHTML = getHardcodedStringLang("desc");
+            document.getElementById(`tl-creator`).innerHTML = getHardcodedStringLang("saera");
+            document.getElementById(`tl-translator`).innerHTML = getHardcodedStringLang("mochichi");
+
+            const auth = await fetch('/api/auth', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            const element = document.getElementById('username');
+            if (auth.status === 200) {
+                enableSubmit = true;
+                const data = await auth.json();
+                if (data.service == `beatleader`) {
+                    if (data.beatSaverId) {
+                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
+                    } else {
+                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username"  href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
+                    }
+                } else if (data.service == `beatsaver`) {
+                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatsaver.xyz/profile/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
+                } else {
+                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
+                }
+            } else {
+                element.innerHTML = `<a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png" width="300px"
+            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
+    <a href="/api/auth/beatsaver"><img src="/cdn/loginbs.png" width="300px"
+            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatSaver Login Button" /></a><br>${getHardcodedStringLang(`notloggedin`)}`;
+            }
+
+            doInitWebReqs();       
+        }
+
+        // #region Webpage logic
+        function doInitWebReqs() {
+            let finalists = document.getElementById("finalists");
+            let votes = fetch(`/api/voting/votes`).then(response => {
+                if (response.status == 200) {
+                    return response.json();
+                } else {
+                    return null;
+                }
+            });
+
+            fetch("/api/voting/maps").then(response => {
+                if (response.status == 200) {
+                    response.json().then(async data => {
+                        for (let category of data.finalists) {
+                            let categoryVotes = (await votes)?.filter(vote => vote.category == category.internalName);
+                            let categoryCard = generateCategory(category.name, category.description, category.internalName, category.finalists, categoryVotes);
+                            finalists.appendChild(categoryCard);
+                        }
+                    });
+                }
+            });
+        }
+
+        function generateCategory(categoryName, categoryDescription, internalName, mapData, voteData) {
+            let card = document.createElement("div");
+            card.classList.add("finalist-card");
+
+            let title = document.createElement("p");
+            title.id = "categoryTitle";
+            title.innerHTML = getStringPerLang(categoryName);
+            card.appendChild(title);
+
+            let desc = document.createElement("p");
+            desc.id = "categoryDesc";
+            desc.innerHTML = getStringPerLang(categoryDescription);
+            card.appendChild(desc);
+
+            let maps = document.createElement("div");
+            maps.id = "maps";
+            maps.classList.add("row");
+            for (let map of mapData) {
+                let markVoted = voteData?.some(vote => vote.voteRecord == map.id);
+                let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted);
+                maps.appendChild(mapCard);
+            }
+            card.id = internalName;
+            card.appendChild(maps);
+
+            return card;
+        }
+
+        function generateMapCard(intCatName, id, mapName, mapAuthor, mapArtist, iconHash, diff=null, char=null, type = 0, markVoted = false) {
+            let card = document.createElement("div");
+            card.classList.add("map-card");
+            if (enableSubmit) {
+                card.classList.add("map-card-hover");
+            }
+
+            let img = document.createElement("img");
+            img.classList.add("map-icon");
+            img.src = `/cdn/mapIcons/${encodeURIComponent(iconHash)}`;
+            //img.width = 92;
+            //img.height = 92;
+            img.alt = mapName;
+            if (type === 1) {
+                img.style.borderRadius = "50%";
+            }
+            if (diff && char) {
+                card.appendChild(generateDifficultyIcon(char, diff));
+            }
+            card.appendChild(img);
+
+            let column = document.createElement("div");
+            column.classList.add("column");
+            column.style.alignItems = "normal";
+
+            let artist = document.createElement("p");
+            artist.classList.add("map-artist");
+            artist.textContent = mapArtist;
+            artist.title = mapArtist;
+            column.appendChild(artist);
+
+            let name = document.createElement("p");
+            name.classList.add("map-name");
+            name.textContent = mapName;
+            name.title = mapName;
+            column.appendChild(name);
+
+            let author = document.createElement("p");
+            author.classList.add("map-author");
+            if (type == 2) {
+                author.textContent = "Organized by " + mapAuthor;
+                author.title = "Organized by " + mapAuthor;
+            } else if (type === 0 || type === 3) {
+                author.textContent = "Nominee(s): " + mapAuthor;
+                author.title = "Nominee(s): " + mapAuthor;
+            }
+            column.appendChild(author);
+            card.appendChild(column);
+
+            let mapLinks = document.createElement("div");
+            mapLinks.classList.add("mapLinks");
+            let openInNew = document.createElement("a");
+            openInNew.href = `https://beatsaver.com/maps/${id}`;
+            openInNew.target = "_blank";
+            openInNew.rel = "noopener noreferrer";
+            let openInNewImg = document.createElement("img");
+            openInNewImg.src = "/cdn/icons/open-in-new.svg";
+            openInNewImg.alt = getHardcodedStringLang("openinnewalt");
+            openInNewImg.title = getHardcodedStringLang("openinnewtitle");
+            openInNew.appendChild(openInNewImg);
+
+            let oneclick = document.createElement("a");
+            oneclick.href = `beatsaver://${id}`;
+            oneclick.target = "_blank";
+            oneclick.rel = "noopener noreferrer";
+            oneclick.id = "oneclick";
+            let oneclickImg = document.createElement("img");
+            oneclickImg.src = "/cdn/icons/cloud-arrow-down-outline.svg";
+            oneclickImg.alt = getHardcodedStringLang("oneclickalt");
+            oneclickImg.title = getHardcodedStringLang("oneclicktitle");
+            oneclick.appendChild(oneclickImg);
+
+            switch (type) {
+                case 0:
+                    mapLinks.appendChild(openInNew);
+                    mapLinks.appendChild(oneclick);
+                    break;
+                case 1:
+                    openInNew.href = `https://beatsaver.com/profile/${id}`;
+                    mapLinks.appendChild(openInNew);
+                    oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/users/id/${id}/playlist/beatsaver-user-${id}.bplist`;
+                    mapLinks.appendChild(oneclick);
+                    break;
+                case 2:
+                    openInNew.href = `https://beatsaver.com/playlists/${id}`;
+                    mapLinks.appendChild(openInNew);
+                    oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/playlists/id/${id}/playlist/${id}.bplist`;
+                    mapLinks.appendChild(oneclick);
+                    break;
+                case 3:
+                    mapLinks.style.display = "none";
+                default:
+                    break;
+            }
+
+            if (markVoted) {
+                let voted = document.createElement("abutnot");
+                //voted.href = `#`;
+                voted.id = "removeVoteButton";
+                voted.onclick = function (ev) {
+                    ev.preventDefault();
+                    ev.stopPropagation();
+                    vote(intCatName, null);
+                };
+                let votedImg = document.createElement("img");
+                votedImg.src = "/cdn/icons/heart-remove-outline.svg";
+                votedImg.alt = getHardcodedStringLang("removevotealt");
+                votedImg.title = getHardcodedStringLang("removevotetitle");
+                voted.appendChild(votedImg);
+                mapLinks.appendChild(voted);
+                card.classList.add("active");
+            }
+
+            mapLinks.onclick = function click(ev) {
+                ev.stopPropagation();
+            };
+            card.appendChild(mapLinks);
+
+            card.onclick = function () {
+                vote(intCatName, id);
+            };
+
+            card.id = id;
+
+            return card;
+        }
+
+        async function vote(category, map) {
+            if (!enableSubmit) {
+                return;
+            }
+
+            let vote = await fetch(`/api/voting/vote`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        category: category,
+                        id: map
+                    })
+                });
+
+            let data = await vote.json();
+            if (vote.status === 200) {
+                console.log(data);
+            } else {
+                console.error(data);
+                return alert(`Failed to submit vote: ${vote.status} ${vote.statusText}.\n\n${data.message}`);
+            }
+
+            let cards = document.getElementById(category).querySelectorAll(".map-card");
+            if (map === null) {
+                cards.forEach(card => {
+                    card.classList.remove("active");
+                    card.querySelectorAll("#removeVoteButton").forEach(button => {
+                        button.remove();
+                    });
+                });
+                return;
+            }
+
+            cards.forEach(card => {
+                if (card.id == map) {
+                    card.classList.add("active");
+                    let voted = document.createElement("abutnot");
+                    voted.href = `#`;
+                    voted.id = "removeVoteButton";
+                    voted.onclick = function () {
+                        vote(category, null);
+                    };
+                    let votedImg = document.createElement("img");
+                    votedImg.src = "/cdn/icons/heart-remove-outline.svg";
+                    voted.appendChild(votedImg);
+                    
+                    let mapLinks = card.querySelector(".mapLinks");
+                    if (mapLinks.childElementCount <= 2) {
+                        mapLinks.appendChild(voted);
+                    }
+                } else {
+                    card.classList.remove("active");
+                    card.querySelectorAll("#removeVoteButton").forEach(button => {
+                        button.remove();
+                    });
+                }
+            });
+        }
+
+        function generateDifficultyIcon(chara, diffi) {
+            let bnsStuff = convertToBNS(chara.trim(), diffi.trim());
+            let diff = document.createElement("div");
+            diff.classList.add("difficon");
+            diff.style.backgroundColor = "#" + bnsStuff.color;
+            let img = document.createElement("img");
+            img.src = "/cdn/char/" + bnsStuff.charecteristic + ".svg";
+            img.alt = chara.trim() + " " + diffi.trim();
+            img.width = "20";
+            img.height = "20";
+            img.style.paddingLeft = "4px";
+            img.style.margin = "0";
+            img.title = chara + " " + diffi;
+            diff.appendChild(img);
+            return diff;
+        }
+
+        function convertToBNS(charecteristic, difficulty) {
+            let returnObj = {
+                charecteristic: "",
+                color: "000"
+            };
+            switch (charecteristic) {
+                case "Standard":
+                    returnObj.charecteristic = "standard";
+                    break;
+                case "OneSaber":
+                    returnObj.charecteristic = "one-saber";
+                    break;
+                case "NoArrows":
+                    returnObj.charecteristic = "no-arrows";
+                    break;
+                case "360Degree":
+                    returnObj.charecteristic = "360-degree";
+                    break;
+                case "90Degree":
+                    returnObj.charecteristic = "90-degree";
+                    break;
+                case "Lawless":
+                    returnObj.charecteristic = "lawless";
+                    break;
+                case "Lightshow":
+                    returnObj.charecteristic = "lightshow";
+                    break;
+                case "Legacy":
+                    returnObj.charecteristic = "legacy";
+                    break;
+            }
+            switch (difficulty) {
+                case "Easy":
+                    returnObj.color = "008055";
+                    break;
+                case "Normal":
+                    returnObj.color = "1268a1";
+                    break;
+                case "Hard":
+                    returnObj.color = "bd5500";
+                    break;
+                case "Expert":
+                    returnObj.color = "b52a1c";
+                    break;
+                case "ExpertPlus":
+                    returnObj.color = "7646af";
+                    break;
+            }
+            return returnObj;
+        }
+        // #endregion
+
+        // #region Language
+        function setLanguage(lang) {
+            localStorage.setItem(`language`, lang);
+            location.reload();
+        }
+
+        function getStringPerLang(langObj) {
+            let lang = localStorage.getItem(`language`);
+            if (lang === `jp`) {
+                return langObj.jp.replaceAll(`(`,`<br>(`);
+            } else {
+                return langObj.en;
+            }
+        }
+
+        function getHardcodedStringLang(stringName, username="") {
+            let lang = localStorage.getItem(`language`);
+            switch (stringName) {
+                case "title":
+                    if (lang === `jp`) {
+                        return "ビーストセイバー・マッピング・アワード";
+                    } else {
+                        return "The BeastSaber Mapping Awards";
+                    }
+                case "subtitle":
+                    if (lang === `jp`) {
+                        return "投票開始！";
+                    } else {
+                        return "Voting Open Now!";
+                    }
+                case "desc":
+                    if (lang === `jp`) {
+                        return `応募総数 2,000 件以上。マッパー 300 名＋。カテゴリー 30 個。コミュニティ 1 つ。<br><br>Beat Saber マッピング コミュニティの頂点に投票する時が来ました。１カテゴリーにつきファイナリスト 1 名にしか投票できないため、慎重に選んでください。<br><br>投票は 2024 年 1 月 15 日に終了します。<a class="bio" href="https://bsaber.com/posts/the-beasties-2024-nominees">詳細については、BeastSaber の Web サイトをご確認ください。</a>`;
+                    } else {
+                        return `Over 2000 total submissions. 300+ mappers. 30 categories. 1 community.<br><br>It's time to vote for the best of the best in the Beat Saber mapping community. You can only vote for one finalist per category, so choose wisely!<br><br>Voting will close on January 14th, 2024. <a class="bio" href="https://bsaber.com/posts/the-beasties-2024-nominees">Check out the BeastSaber website for more information.</a>`;
+                    }
+                case "notloggedin":
+                    if (lang === `jp`) {
+                        return "現在ログインされていません。";
+                    } else {
+                        return "Not currently logged in.";
+                    }
+                case "username":
+                    if (lang === `jp`) {
+                        return `${username} としてログイン中・`;
+                    } else {
+                        return `Logged in as ${username} • `;
+                    }
+                case "logout":
+                    if (lang === `jp`) {
+                        return "ログアウト";
+                    } else {
+                        return "Log Out";
+                    }
+                case "saera":
+                    if (lang === `jp`) {
+                        return "作者：Saeraphinx";
+                    } else {
+                        return "Created by Saeraphinx";
+                    }
+                case "mochichi":
+                    if (lang === `jp`) {
+                        return "翻訳：mochichi";
+                    } else {
+                        return "Translations by mochichi";
+                    }
+                case "mappers":
+                    if (lang === `jp`) {
+                        return "マッパー";
+                    } else {
+                        return "Mapper(s):";
+                    }
+                case "openinnewalt":
+                    if (lang === `jp`) {
+                        return "新しいタブで開く";
+                    } else {
+                        return "Open in New Tab";
+                    }
+                case "openinnewtitle":
+                    if (lang === `jp`) {
+                        return "BeatSaverページを新しいタブで開く";
+                    } else {
+                        return "Open BeatSaver page in new tab";
+                    }
+                case "oneclicktitle":
+                case "oneclickalt":
+                    if (lang === `jp`) {
+                        return "ワンクリックインストール";
+                    } else {
+                        return "OneClick Install";
+                    }
+                case "removevote":
+                case "removevotealt":
+                case "removevotetitle":
+                    if (lang === `jp`) {
+                        return "投票を削除";
+                    } else {
+                        return "Remove Vote";
+                    }
+                default:
+                    return stringName;
+            }
+        }
+        // #endregion
+   </script>
+</body>
 </html>
