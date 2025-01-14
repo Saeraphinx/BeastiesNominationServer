@@ -68,6 +68,11 @@ export class PublicVotingRoutes {
             let id = req.body.id;
             let category = req.body.category;
 
+            if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
+                res.status(400).send({ message: `Voting is now closed. Thank you for participating!` });
+                return;
+            }
+
             if (!sessionId) {
                 res.status(401).send({ message: `You need to be logged in to submit a nomination.\n\n推薦するにはログインしてください。` });
                 return;
