@@ -69,7 +69,7 @@ export class PublicVotingRoutes {
             let category = req.body.category;
 
             if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
-                res.status(400).send({ message: `Voting is now closed. Thank you for participating!` });
+                res.status(400).send({ message: `Voting is now closed. Thank you for participating!\n\n投票は終了いたしました。ご参加ありがとうございました！` });
                 return;
             }
 

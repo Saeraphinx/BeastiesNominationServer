@@ -392,7 +392,7 @@
             if (auth.status === 200) {
                 if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
                     enableSubmit = false;
-                    alert(`Voting is now closed. Thank you for participating!`);
+                    alert(`Voting is now closed. Thank you for participating!\n\n投票は終了いたしました。ご参加ありがとうございました！`);
                 } else {
                     enableSubmit = true;
                 }
@@ -760,7 +760,7 @@
                 case "desc":
                     if (lang === `jp`) {
                         if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
-                            return `Over 2000 total submissions. 300+ mappers. 30 categories. 1 community.<br><br>Voting is now closed. your votes have be locked in & counted up for the final awards show that premieres in February. We hope to see you there! <a class="bio" href="https://bsaber.com/posts/the-beasties-2024-nominees">Check out the BeastSaber website for more information.</a>`;
+                            return `応募総数 2,000 件以上。マッパー 300 名＋。カテゴリー 30 個。コミュニティ 1 つ。<br><br>投票は完了いたしまして、2月に公開される受賞式に向けて集計されました。授賞式にも是非ご来場ください！<a class="bio" href="https://bsaber.com/posts/the-beasties-2024-nominees"> 詳細につきましては、BeastSaberのWebサイトをご確認ください</a>`;
                         } else {
                             return `応募総数 2,000 件以上。マッパー 300 名＋。カテゴリー 30 個。コミュニティ 1 つ。<br><br>Beat Saber マッピング コミュニティの頂点に投票する時が来ました。１カテゴリーにつきファイナリスト 1 名にしか投票できないため、慎重に選んでください。<br><br>投票は 2025 年 1 月 15 日に終了します。<a class="bio" href="https://bsaber.com/posts/the-beasties-2024-nominees">詳細については、BeastSaber の Web サイトをご確認ください。</a>`;
                         }
