@@ -343,7 +343,7 @@
         <p id="tl-desc">
             Over 2000 total submissions. 300+ mappers. 30 categories. 1 community.<br><br>
             It's time to vote for the best of the best in the Beat Saber mapping community. You can only vote for one mapper/map per category, so choose wisely!<br><br>
-            Voting will close on <b>January 31st, 2024</b>. Check out the BeastSaber website for more information.
+            Voting will close on <b>January 14st, 2025</b>. Check out the BeastSaber website for more information.
         </p>
 
         <a class="lang" id="lang-en" onclick="setLanguage(`en`)">English</a>
@@ -752,10 +752,18 @@
                         return "The BeastSaber Mapping Awards";
                     }
                 case "subtitle":
-                    if (lang === `jp`) {
-                        return "投票開始！";
+                    if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
+                        if (lang === `jp`) {
+                            return "略して The Beasties - マッパーによる、マッパーのための賞";
+                        } else {
+                            return "AKA: The Beasties - By Mappers, for Mappers";
+                        }
                     } else {
-                        return "Voting Open Now!";
+                        if (lang === `jp`) {
+                            return "投票開始！";
+                        } else {
+                            return "Voting Open Now!";
+                        }
                     }
                 case "desc":
                     if (lang === `jp`) {
