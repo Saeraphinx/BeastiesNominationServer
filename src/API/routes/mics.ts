@@ -128,6 +128,19 @@ export class MiscRoutes {
             res.redirect(`/finalists`);
         });
 
+        this.app.get(`/render`, (req, res) => {
+            if (!req.session.id || req.session.service !== `judgeId`) {
+                return res.status(401).send(this.redirectTo(`/judging`));
+            }
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/finalists-render.html`));
+        });
+
+        this.app.get(`/renderscript.js`, (req, res) => {
+            res.setHeader(`Cache-Control`, this.cacheControl);
+            res.sendFile(path.resolve(`assets/dom-to-image.min.js`));
+        });
+
         this.app.get(`/jp`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/index-jp.html`));
