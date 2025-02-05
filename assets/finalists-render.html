@@ -654,6 +654,7 @@
                 mapCard.style.margin = `0`;
                 maps.appendChild(mapCard);
                 let button = document.createElement(`button`);
+                button.classList.add(`download-mapcard-${internalName}`);
                 button.onclick = () => {
                     domtoimage.toPng(mapCard)
                     .then(function (dataUrl) {
@@ -663,9 +664,16 @@
                         link.click();
                     });
                 };
-                button.innerText = `Download`;
+                button.innerText = `Download ${map.name} Card`;
                 card.appendChild(button);
             }
+            let bigbutton = document.createElement(`button`);
+            bigbutton.onclick = () => {
+                let allButtons = document.querySelectorAll(`.download-mapcard-${internalName}`);
+                allButtons.forEach(button => button.click());
+            };
+            bigbutton.innerText = `Download All`;
+            card.appendChild(bigbutton);
             card.id = internalName;
             card.appendChild(maps);
             return card;
@@ -680,7 +688,7 @@
 
             let img = document.createElement("img");
             img.classList.add("map-icon");
-            img.src = `https://mappingawards.saeraphinx.dev/cdn/mapIcons/${encodeURIComponent(iconHash)}`;
+            img.src = `/cdn/mapIcons/${encodeURIComponent(iconHash)}`;
             img.alt = mapName;
             if (type === 1) {
                 img.style.borderRadius = "50%";

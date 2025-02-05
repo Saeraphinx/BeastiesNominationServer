@@ -132,7 +132,7 @@ export class MiscRoutes {
             if (!req.session.id || req.session.service !== `judgeId`) {
                 return res.status(401).send(this.redirectTo(`/judging`));
             }
-            res.setHeader(`Cache-Control`, this.cacheControl);
+            //res.setHeader(`Cache-Control`, this.cacheControl);
             res.sendFile(path.resolve(`assets/finalists-render.html`));
         });
 
