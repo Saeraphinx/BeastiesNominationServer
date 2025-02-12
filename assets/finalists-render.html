@@ -390,7 +390,7 @@
 
         div.map-card p {
             margin: 0;
-            margin-right: 5px;
+            margin-right: 16px;
             text-align: left;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -399,7 +399,7 @@
         }
 
         div.map-card p.map-name {
-            font-size: 3em;
+            font-size: 3.1em;
             font-weight: 600;
             overflow: hidden;
             display: -webkit-box;
@@ -409,8 +409,8 @@
         }
 
         div.map-card p.map-author {
-            font-size: 1.95em;
-            font-weight: 300;
+            font-size: 2.4em;
+            font-weight: 400;
             overflow: hidden;
             display: -webkit-box;
             line-clamp: 2;
@@ -419,7 +419,7 @@
         }
 
         div.map-card p.map-artist {
-            font-size: 1.95em;
+            font-size: 2.4em;
             font-weight: 400;
             overflow: hidden;
             display: -webkit-box;
@@ -581,7 +581,7 @@
             if (auth.status === 200) {
                 if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
                     enableSubmit = false;
-                    alert(`Voting is now closed. Thank you for participating!\n\n投票は終了いたしました。ご参加ありがとうございました！`);
+                    //alert(`Voting is now closed. Thank you for participating!\n\n投票は終了いたしました。ご参加ありがとうございました！`);
                 } else {
                     enableSubmit = true;
                 }
@@ -713,7 +713,18 @@
             name.textContent = mapName;
             name.title = mapName;
             if (type == 1) {
-                name.style.fontSize = "3.3em"
+                name.style.paddingLeft = "16px";
+                if (name.textContent.length > 20) {
+                    name.style.fontSize = "3.3em"
+                } else {
+                    name.style.fontSize = "4.5em"
+                }
+            } else {
+                if (name.textContent.length > 40) {
+                    name.style.fontSize = "3em"
+                } else if (name.textContent.length < 10) {
+                    name.style.fontSize = "3.4em"
+                }
             }
             column.appendChild(name);
 
