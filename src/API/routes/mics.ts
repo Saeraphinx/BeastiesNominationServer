@@ -124,8 +124,8 @@ export class MiscRoutes {
         // #region HTML
         this.app.get(`/`, (req, res) => {
             res.setHeader(`Cache-Control`, this.cacheControl);
-            //res.sendFile(path.resolve(`assets/index.html`));
-            res.redirect(`/finalists`);
+            res.sendFile(path.resolve(`assets/index.html`));
+            //res.redirect(`/finalists`);
         });
 
         this.app.get(`/render`, (req, res) => {
