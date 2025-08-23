@@ -4,10 +4,10 @@ import MemoryStore from 'memorystore';
 import { HTTPTools } from './API/classes/HTTPTools';
 import { DatabaseManager } from './Shared/Database';
 import { SubmissionRoutes } from './API/routes/check';
-import path from 'path';
+
 import { server, devmode } from '../storage/config.json';
 import { AuthRoutes } from './API/routes/auth';
-import { MiscRoutes } from './API/routes/mics';
+import { MiscRoutes } from './API/routes/misc';
 import { SortingRoutes } from './API/routes/sorting';
 import { JudgeingRoutes } from './API/routes/judge';
 import rateLimit from 'express-rate-limit';

@@ -299,12 +299,11 @@ export enum CharacteristicEnum {
 
 export enum NominationCategory {
     OST = `Gen-OST`,
-    AlternativeMap = `Gen-Alternative`, //360,90,one saber, na
+    NonStandardMap = `Gen-NonStandard`, //360,90,one saber, na
     FullSpreadMap = `Gen-FullSpread`,
 
     Lightshow = `Mods-Lightshow`,
-    Modchart = `Mods-Modchart`,
-    ArtMap = `Mods-ArtMap`,
+    GameplayModchart = `Mods-GameplayModchart`,
 
     RankedMap = `Ranked-RankedMap`,
 
@@ -316,10 +315,11 @@ export enum NominationCategory {
     ChallengeMap = `Style-Challenge`,
     AccMap = `Style-Acc`,
     PoodleMap = `Style-Poodle`,
-    GimmickMap = `Style-Gimmick`,
+    WildcardMap = `Style-Wildcard`,
 
     PackOfTheYear = `OTY-Pack`,
     MapOfTheYear = `OTY-Map`,
+    ModdedMapOfTheYear = `OTY-ModdedMap`,
     MapperOfTheYear = `OTY-Mapper`,
     LighterOfTheYear = `OTY-Lighter`,
     RookieLighterOfTheYear = `OTY-RookieLighter`,
@@ -436,11 +436,10 @@ export class DatabaseHelper {
             RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RookieLighterOfTheYear } }),
             PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PackOfTheYear } }),
             OSTMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.OST } }),
-            AlternativeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AlternativeMap } }),
+            NonStandardMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.NonStandardMap } }),
             FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FullSpreadMap } }),
             Lightshow: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Lightshow } }),
-            Modchart: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Modchart } }),
-            ArtMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ArtMap } }),
+            GameplayModchart: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.GameplayModchart } }),
             RankedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RankedMap } }),
             BalancedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.BalancedMap } }),
             TechMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.TechMap } }),
@@ -450,7 +449,8 @@ export class DatabaseHelper {
             ChallengeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ChallengeMap } }),
             AccMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AccMap } }),
             PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
-            GimmickMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.GimmickMap } }),
+            WildcardMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.WildcardMap } }),
+            ModdedMapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ModdedMapOfTheYear } }),
         };
 
         const uniqueCategories = {
@@ -461,11 +461,10 @@ export class DatabaseHelper {
             RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RookieLighterOfTheYear}, distinct: true, col: `name` }),
             PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PackOfTheYear}, distinct: true, col: `name` }),
             OSTMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.OST}, distinct: true, col: `name` }),
-            AlternativeMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.AlternativeMap}, distinct: true, col: `bsrId` }),
+            NonStandardMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.NonStandardMap}, distinct: true, col: `bsrId` }),
             FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.FullSpreadMap}, distinct: true, col: `bsrId` }),
             Lightshow: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.Lightshow}, distinct: true, col: `bsrId` }),
-            Modchart: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.Modchart}, distinct: true, col: `bsrId` }),
-            ArtMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ArtMap}, distinct: true, col: `bsrId` }),
+            GameplayModchart: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GameplayModchart}, distinct: true, col: `bsrId` }),
             RankedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RankedMap}, distinct: true, col: `bsrId` }),
             BalancedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.BalancedMap}, distinct: true, col: `bsrId` }),
             TechMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.TechMap}, distinct: true, col: `bsrId` }),
@@ -475,7 +474,8 @@ export class DatabaseHelper {
             ChallengeMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ChallengeMap}, distinct: true, col: `bsrId` }),
             AccMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.AccMap}, distinct: true, col: `bsrId` }),
             PoodleMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PoodleMap}, distinct: true, col: `bsrId` }),
-            GimmickMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GimmickMap}, distinct: true, col: `bsrId` }),
+            WildcardMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.WildcardMap}, distinct: true, col: `bsrId` }),
+            ModdedMapOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ModdedMapOfTheYear}, distinct: true, col: `bsrId` }),
             Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
         };
 
@@ -504,16 +504,17 @@ export type NominationCount = {
     Total: number;
     MapOfTheYear: number;
     MapperOfTheYear: number;
+    ModdedMapOfTheYear: number;
     LighterOfTheYear: number;
     RookieMapperOfTheYear: number;
     RookieLighterOfTheYear: number;
     PackOfTheYear: number;
     OSTMap: number;
-    AlternativeMap: number;
+    NonStandardMap: number;
     FullSpreadMap: number;
     Lightshow: number;
-    Modchart: number;
-    ArtMap: number;
+    GameplayModchart: number;
+    //ArtMap: number;
     RankedMap: number;
     BalancedMap: number;
     TechMap: number;
@@ -523,7 +524,7 @@ export type NominationCount = {
     ChallengeMap: number;
     AccMap: number;
     PoodleMap: number;
-    GimmickMap: number;
+    WildcardMap: number;
 }
 
 export enum NominationStatusResponse {
@@ -581,18 +582,20 @@ export class PublicVote extends Model<InferAttributes<PublicVote>, InferCreation
     declare linkedId:string|null;
 }
 
+// #region SortedSubmissionsCategory
 export enum SortedSubmissionsCategory {
     OST = `Gen-OST`,
-    AlternativeMap = `Gen-Alternative`, //360,90,one saber, na
+    NonStandardMap = `Gen-NonStandard`, //360,90,one saber, na
     FullSpreadMap = `Gen-FullSpread`,
 
     LightshowVanilla = `Lightshow-Vanilla`,
     LightshowVanillaPlus = `Lightshow-VanillaPlus`,
     LightshowChroma = `Lightshow-Chroma`,
     LightshowChromaPlus = `Lightshow-ChromaPlus`,
+    LightshowVivify = `Lightshow-Vivify`,
 
-    Modchart = `Mods-Modchart`,
-    ArtMap = `Mods-ArtMap`,
+    Modchart = `Mods-GameplayModchart`,
+    //ArtMap = `Mods-ArtMap`,
 
     RankedMapBLLessThan8= `Ranked-BLLessThan8`,
     RankedMapBL8To12 = `Ranked-BL8To12`,
@@ -610,7 +613,7 @@ export enum SortedSubmissionsCategory {
     ChallengeMap = `Style-Challenge`,
     AccMap = `Style-Acc`,
     PoodleMap = `Style-Poodle`,
-    GimmickMap = `Style-Gimmick`,
+    WildcardMap = `Style-Wildcard`,
 
     PackOfTheYear = `OTY-Pack`,
     MapOfTheYear = `OTY-Map`,

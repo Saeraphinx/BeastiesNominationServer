@@ -20,7 +20,7 @@ export class MiscRoutes {
     }
 
     private async getCount() {
-        //this.submissionCountCache = await DatabaseHelper.getNominationCount();
+        this.submissionCountCache = await DatabaseHelper.getNominationCount();
     }
 
     private async loadRoutes() {

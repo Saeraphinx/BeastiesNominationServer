@@ -378,7 +378,7 @@ export class SubmissionRoutes {
                     return RequestSubmissionStatus.Invalid;
                 }
 
-                if ((bsrIdNoHex <= 228010 || bsrIdNoHex >= 270435) && category != NominationCategory.RankedMap) {
+                if ((bsrIdNoHex <= 270435 || bsrIdNoHex >= 9999999) && category != NominationCategory.RankedMap) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }

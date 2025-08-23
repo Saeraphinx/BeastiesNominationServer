@@ -479,12 +479,8 @@
                 <p class="count" id="lightshowCount">0</p>
             </span>
             <span>
-                <p class="countLabel">Modchart</p>
+                <p class="countLabel">Gameplay Modchart</p>
                 <p class="count" id="modchartCount">0</p>
-            </span>
-            <span>
-                <p class="countLabel">Art Map</p>
-                <p class="count" id="artmapCount">0</p>
             </span>
             <span>
                 <p class="countLabel">Ranked Map</p>
@@ -523,7 +519,7 @@
                 <p class="count" id="poodleCount">0</p>
             </span>
             <span>
-                <p class="countLabel">Gimmick Map</p>
+                <p class="countLabel">Wildcard Map</p>
                 <p class="count" id="gimmickCount">0</p>
             </span>
         </div>
@@ -547,6 +543,10 @@
             <span>
                 <p class="countLabel">Pack of the Year</p>
                 <p class="count" id="packotyCount">0</p>
+            </span>
+            <span>
+                <p class="countLabel">Modded Map of the Year</p>
+                <p class="count" id="moddedmapotyCount">0</p>
             </span>
             <span>
                 <p class="countLabel">Map of the Year</p>
@@ -612,6 +612,7 @@
         timeRemaining();
         const NominationCategory = {
             MapOfTheYear: [`OTY-Map`, "Map of the Year"],
+            ModdedMapOfTheYear: [`OTY-ModdedMap`, "Modded Map of the Year"],
             MapperOfTheYear: [`OTY-Mapper`, "Mapper of the Year"],
             LighterOfTheYear: [`OTY-Lighter`, "Lighter of the Year"],
             RookieMapperOfTheYear: [`OTY-RookieMapper`, "Rookie Mapper of the Year"],
@@ -619,11 +620,11 @@
             PackOfTheYear: [`OTY-Pack`, "Pack of the Year"],
             OST: [`Gen-OST`, `OST`],
             FullSpreadMap: [`Gen-FullSpread`, "Full Spread"],
-            AlternativeMap: [`Gen-Alternative`, "Non-Standard"],
+            AlternativeMap: [`Gen-NonStandard`, "Non-Standard"],
             RankedMap: [`Ranked-RankedMap`, "Ranked Map"],
             Lightshow: [`Mods-Lightshow`, "Lightshow"],
-            Modchart: [`Mods-Modchart`, "Modchart"],
-            ArtMap: [`Mods-ArtMap`, "Art Map"],
+            Modchart: [`Mods-GameplayModchart`, "Gameplay Modchart"],
+            //ArtMap: [`Mods-ArtMap`, "Art Map"],
             BalancedMap: [`Style-Balanced`, "Balanced"],
             TechMap: [`Style-Tech`, "Tech"],
             SpeedMap: [`Style-Speed`, "Speed"],
@@ -632,7 +633,7 @@
             ChallengeMap: [`Style-Challenge`, "Challenge"],
             AccMap: [`Style-Acc`, "Acc"],
             PoodleMap: [`Style-Poodle`, "Poodle"],
-            GimmickMap: [`Style-Gimmick`, "Gimmick"],
+            WildcardMap: [`Style-Wildcard`, "Wildcard"],
         };
 
         const OSTMaps = [
@@ -699,6 +700,9 @@
                 case "OTY-Map":
                     element.innerText = `The best unmodded map of the year. Full stop. It has it all - representation, emphasis, flow - everything coming together for an incredible playing experience to go with the song.`;
                     break;
+                case "OTY-ModdedMap":
+                    element.innerText = `The best modded map of the year. Full stop. Combining the full power of Vivify, Noodle Extensions, Chroma, or any other gameplay or visual mods; this map using mods to truly capture and convey the music and/or alter the gameplay in mind-blowing ways.`;
+                    break;
                 case "Gen-OST":
                     element.innerText = `Let's take a moment to shine some light on the great work that our community-turned-official mappers have done and celebrate the best official map made in 2024.`;
                     break;
@@ -708,7 +712,7 @@
                 case "Gen-FullSpread":
                     element.innerText = `This map has something for players at every level and does it with style and masterful mapping. To qualify, the map must have all five true difficulties — Easy, Normal, Hard, Expert, ExpertPlus.`;
                     break;
-                case "Gen-Alternative":
+                case "Gen-NonStandard":
                     element.innerText = `This category celebrates the best of non-standard characteristics: One Saber, No Arrows, and 360/90-Degree maps. (Maps must actually use the alt characteristic and not mods to simulate.)`;
                     break;
                 //individual mapper awards
@@ -719,10 +723,10 @@
                     element.innerText = `A lighter, vanilla or chroma, who not only excels in their art but also shares their experience, leads, and mentors as they are able.`;
                     break;
                 case "OTY-RookieMapper":
-                    element.innerText = `The best up-and-coming mapper whose first map was released during the nomination period. (Previously deleted maps count as first map releases.)`;
+                    element.innerText = `The best up-and-coming mapper whose first map was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2024). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2024-Dec 1st 2024.`;
                     break;
                 case "OTY-RookieLighter":
-                    element.innerText = `The best up-and-coming lighter whose first map/lightshow was released during the nomination period. (Previously deleted maps count as first map releases.)`;
+                    element.innerText = `The best up-and-coming lighter whose first map/lightshow was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2024). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2024-Dec 1st 2025.`;
                     break;
                 //style awards
                 case "Style-Dance":
@@ -749,18 +753,15 @@
                 case "Style-Poodle":
                     element.innerText = `Poodles and Pauls. The best map in the Poodle category has excellent flow and well-placed emphasis with the long hold note swing style. Spirals, Switch-backs, and more!`;
                     break;
-                case "Style-Gimmick":
-                    element.innerText = `The best "Gimmick" map shows off some of the wacky manipulations that play fast and loose with gameplay and have become community fan favorites. This is the catch all category. Have something that is unique and doesn't fit a category? Nominate it here!`;
+                case "Style-Wildcard":
+                    element.innerText = ` This category shines a light on maps that explore beyond "normal" mapping. Cult classics, bending of mechanics, and different ways of thinking can be found here. This is the catch all category. Have something that is unique and doesn't fit a category? Nominate it here! `;
                     break;
                 // ranked
                 case "Ranked-RankedMap":
                     element.innerText = `Nominate your favorite ranked map diff and our team will sort it into the appropriate category. Nominate BeatLeader or ScoreSaber ranked maps.`;
                     break;
                 // mods
-                case "Mods-ArtMap":
-                    element.innerText = `Formerly called "Modchart Visuals", these maps use all the power of Noodle Extensions and Chroma to convey the music and/or tell us a story through the creative use of mods and any notemods aren't the main focus of the map.`;
-                    break;
-                case "Mods-Modchart":
+                case "Mods-GameplayModchart":
                     element.innerText = `Here? There? Where is the next note coming from?! This category includes maps that feature solid mapping AND alter the gameplay in mind-blowing ways through animation and manipulation of notes and obstacles.`;
                     break;
                 //lightshow
@@ -851,17 +852,18 @@
                     // how bad can i possibly be
                     document.getElementById('totalCount').innerHTML = `${data[1].Total} <small>(${data[0].Total})</small>`;
                     document.getElementById('mapotyCount').innerHTML = `${data[1].MapOfTheYear} <small>(${data[0].MapOfTheYear})</small>`;
+                    document.getElementById('moddedmapotyCount').innerHTML = `${data[1].ModdedMapOfTheYear} <small>(${data[0].MapOfTheYear})</small>`;
                     document.getElementById('mapperotyCount').innerHTML = `${data[1].MapperOfTheYear} <small>(${data[0].MapperOfTheYear})</small>`;
                     document.getElementById('lighterotyCount').innerHTML = `${data[1].LighterOfTheYear} <small>(${data[0].LighterOfTheYear})</small>`;
                     document.getElementById('rookiemapperotyCount').innerHTML = `${data[1].RookieMapperOfTheYear} <small>(${data[0].RookieMapperOfTheYear})</small>`;
                     document.getElementById('rookielighterotyCount').innerHTML = `${data[1].RookieLighterOfTheYear} <small>(${data[0].RookieLighterOfTheYear})</small>`;
                     document.getElementById('packotyCount').innerHTML = `${data[1].PackOfTheYear} <small>(${data[0].PackOfTheYear})</small>`;
                     document.getElementById('ostCount').innerHTML = `${data[1].OSTMap} <small>(${data[0].OSTMap})`;
-                    document.getElementById('altCount').innerHTML = `${data[1].AlternativeMap} <small>(${data[0].AlternativeMap})</small>`;
+                    document.getElementById('altCount').innerHTML = `${data[1].NonStandardMap} <small>(${data[0].AlternativeMap})</small>`;
                     document.getElementById('fullspreadCount').innerHTML = `${data[1].FullSpreadMap} <small>(${data[0].FullSpreadMap})</small>`;
                     document.getElementById('lightshowCount').innerHTML = `${data[1].Lightshow} <small>(${data[0].Lightshow})</small>`;
-                    document.getElementById('modchartCount').innerHTML = `${data[1].Modchart} <small>(${data[0].Modchart})</small>`;
-                    document.getElementById('artmapCount').innerHTML = `${data[1].ArtMap} <small>(${data[0].ArtMap})</small>`;
+                    document.getElementById('modchartCount').innerHTML = `${data[1].GameplayModchart} <small>(${data[0].Modchart})</small>`;
+                    //document.getElementById('artmapCount').innerHTML = `${data[1].ArtMap} <small>(${data[0].ArtMap})</small>`;
                     document.getElementById('rankedmapCount').innerHTML = `${data[1].RankedMap} <small>(${data[0].RankedMap})</small>`;
                     document.getElementById('balancedCount').innerHTML = `${data[1].BalancedMap} <small>(${data[0].BalancedMap})</small>`;
                     document.getElementById('techCount').innerHTML = `${data[1].TechMap} <small>(${data[0].TechMap})</small>`;
@@ -871,7 +873,7 @@
                     document.getElementById('challengeCount').innerHTML = `${data[1].ChallengeMap} <small>(${data[0].ChallengeMap})</small>`;
                     document.getElementById('accCount').innerHTML = `${data[1].AccMap} <small>(${data[0].AccMap})</small>`;
                     document.getElementById('poodleCount').innerHTML = `${data[1].PoodleMap} <small>(${data[0].PoodleMap})</small>`;
-                    document.getElementById('gimmickCount').innerHTML = `${data[1].GimmickMap} <small>(${data[0].GimmickMap})</small>`;
+                    document.getElementById('gimmickCount').innerHTML = `${data[1].WildcardMap} <small>(${data[0].GimmickMap})</small>`;
 
                     // of my god im so sorry for this
                     let allElements = document.getElementsByClassName("count");
