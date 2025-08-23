@@ -117,7 +117,7 @@ export class AdminRoutes {
             }
 
             let allSortedSubmissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
-            let categoryAcceptedSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: `Accepted`, category: category } });
+            let categoryAcceptedSubmissions = await DatabaseHelper.database.submissions.findAll({ where: { filterStatus: `Accepted`, category: category } });
 
             Logger.log(`Found ${allSortedSubmissions.length} sorted submissions and ${categoryAcceptedSubmissions.length} accepted submissions.`);
 
@@ -220,12 +220,12 @@ export class AdminRoutes {
                 case `submissions`:
                     if (!bsr) {
                         if (user.id == 1) {
-                            results = await DatabaseHelper.database.nominations.findAll();
+                            results = await DatabaseHelper.database.submissions.findAll();
                         } else {
                             return res.status(403).send({ message: `Not authorized.` });
                         }
                     } else {
-                        results = await DatabaseHelper.database.nominations.findOne({ where: { bsrId: bsr } });
+                        results = await DatabaseHelper.database.submissions.findOne({ where: { bsrId: bsr } });
                     }
                     break;
                 case `judges`:
@@ -260,7 +260,7 @@ export class AdminRoutes {
                     results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
                     break;
                 case `submissions`:
-                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+                    results = await DatabaseHelper.database.submissions.findOne({ where: { nominationId: id } });
                     break;
                 case `judges`:
                     results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });
@@ -300,7 +300,7 @@ export class AdminRoutes {
                     results = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: id } });
                     break;
                 case `submissions`:
-                    results = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+                    results = await DatabaseHelper.database.submissions.findOne({ where: { nominationId: id } });
                     break;
                 case `judges`:
                     results = await DatabaseHelper.database.judges.findOne({ where: { id: id } });

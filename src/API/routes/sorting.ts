@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { DatabaseHelper, NominationAttributes, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
+import { DatabaseHelper, SubmissionAttributes, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { BaseError } from 'sequelize';
 import { Logger } from '../../Shared/Logger';
 
@@ -39,11 +39,11 @@ export class SortingRoutes {
             //    return res.status(400).send({ message: `Category is required` });
             //}
 
-            let response: NominationAttributes[];
+            let response: SubmissionAttributes[];
             if (category && category !== `All`) {
-                response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null, category: category.toString() } });
+                response = await DatabaseHelper.database.submissions.findAll({ where: { filterStatus: null, category: category.toString() } });
             } else {
-                response = await DatabaseHelper.database.nominations.findAll({ where: { filterStatus: null } });
+                response = await DatabaseHelper.database.submissions.findAll({ where: { filterStatus: null } });
             }
             let start = pageSizeInt * (pageInt - 1);
 
@@ -82,7 +82,7 @@ export class SortingRoutes {
                 return res.status(400).send({ message: `Nomination ID is required` });
             }
 
-            let submission = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: nominationId } });
+            let submission = await DatabaseHelper.database.submissions.findOne({ where: { nominationId: nominationId } });
             if (!submission) {
                 return res.status(400).send({ message: `Nomination not found` });
             }
@@ -139,11 +139,11 @@ export class SortingRoutes {
 
             let otherSubmissions;
             if (DatabaseHelper.isDiffCharRequiredSortedSubmission(category)) {
-                otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: bsrId, category: submission.category, difficulty: difficulty, characteristic: characteristic } });
+                otherSubmissions = await DatabaseHelper.database.submissions.findAll({ where: { bsrId: bsrId, category: submission.category, difficulty: difficulty, characteristic: characteristic } });
             } else if (DatabaseHelper.isNameRequiredSortedSubmission(category)) {
-                otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { name: name, category: submission.category } });
+                otherSubmissions = await DatabaseHelper.database.submissions.findAll({ where: { name: name, category: submission.category } });
             } else {
-                otherSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: name, category: submission.category } });
+                otherSubmissions = await DatabaseHelper.database.submissions.findAll({ where: { bsrId: name, category: submission.category } });
             }
 
             for (let otherSubmission of otherSubmissions) {
@@ -170,7 +170,7 @@ export class SortingRoutes {
                 return res.status(400).send({ message: `ID is required` });
             }
 
-            let submission = await DatabaseHelper.database.nominations.findOne({ where: { nominationId: id } });
+            let submission = await DatabaseHelper.database.submissions.findOne({ where: { nominationId: id } });
             if (!submission) {
                 return res.status(400).send({ message: `Submission not found` });
             }
@@ -186,7 +186,7 @@ export class SortingRoutes {
                 filtererId: req.session.userId,
             });
 
-            let duplicateSubmissions = await DatabaseHelper.database.nominations.findAll({ where: { bsrId: submission.bsrId, category: submission.category, difficulty: submission.difficulty, name: submission.name, characteristic: submission.characteristic } });
+            let duplicateSubmissions = await DatabaseHelper.database.submissions.findAll({ where: { bsrId: submission.bsrId, category: submission.category, difficulty: submission.difficulty, name: submission.name, characteristic: submission.characteristic } });
 
             for (let duplicateSubmission of duplicateSubmissions) {
                 if (duplicateSubmission.nominationId == submission.nominationId) {

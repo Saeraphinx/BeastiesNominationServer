@@ -380,7 +380,7 @@
         <p class="bio">
             ビーストセイバー・マッピング・アワード、通称 The Beastiesとは毎年開催されているマッピング賞であり、Beat Saber譜面にある幅広いカテゴリーの中から最高品質の物を祝うイベントです。今年の推薦の対象は2024年12月1日0:00 UTC（世界標準時間）から、2025年11月30日23:59 UTC（日本時間では12月1日午前8:59まで）にリリースされた譜面です。
             <br><br>
-            下記のフォームから自分の一番好きな対象譜面を2025年ビーストセイバー・マッピング・アワードに推薦することができます。各カテゴリーや基準につきましては<a class="bio" href="https://fancy-heath-653.notion.site/The-Beasties-10ac696bffca80a79826f47be321b15c">こちらの投稿</a>をご確認ください。昨年からの変更点につきましては<a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber公式サイト</a>をご確認ください。また、 <a class="bio" href="#counts">このページの一番下</a>では各カテゴリーの現在の推薦数も確認することもできます。
+            下記のフォームから自分の一番好きな対象譜面を2025年ビーストセイバー・マッピング・アワードに推薦することができます。各カテゴリーや基準につきましては<a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">BeastSaber公式サイト</a>をご確認ください。昨年からの変更点もここからご確認いただけます。また、 <a class="bio" href="#counts">このページの一番下</a>では各カテゴリーの現在の推薦数を確認することもできます。
             <!--<br><br>
             For more information, visit the <a class="bio" href="https://bsaber.com/the-beastsaber-mapping-awards">Beasties page on the BeastSaber Website</a>.
             <br><br>!-->
@@ -400,7 +400,7 @@
                     song.
                 </p>
             </i>
-            <b><label class="FORMbsr" for="bsrId">BSRキー(例： "3de68", "3bbb0", "39624")</label></b>
+            <b><label class="FORMbsr" for="bsrId">BSRキー(例： "43a1f", "48f0f", "48912")</label></b>
             <input class="FORMbsr" type="text" id="bsrId" name="bsrId" maxlength=5 minlength=5
                 pattern="[0123456789abcdefABCDEFxX]{5}" onchange="onBSRInput()">
 
@@ -435,7 +435,7 @@
                 <option value="ExpertPlus">Expert+</option>
                 <option value="Other" style="display: none;">全て</option>
             </select>
-
+            <input type="hidden" id="language" name="language" value="jp">
             <input type="submit" value="Submit" formenctype="application/x-www-form-urlencoded">
         </form>
         <div class="beatmaps-container" id="beatmaps-container">
@@ -599,7 +599,7 @@
         timeRemaining();
         const NominationCategory = {
             MapOfTheYear: [`OTY-Map`, "マップ・オブ・ザ・イヤー(Map of the Year)"],
-            ModdedMapOfTheYear: [`OTY-ModdedMap`, "Modded Map of the Year"],
+            ModdedMapOfTheYear: [`OTY-ModdedMap`, "モデッド・マップ・オブ・ザ・イヤー(Modded Map of the Year)"],
             MapperOfTheYear: [`OTY-Mapper`, "マッパー・オブ・ザ・イヤー(Mapper of the Year)"],
             LighterOfTheYear: [`OTY-Lighter`, "ライター・オブ・ザ・イヤー(Lighter of the Year)"],
             RookieMapperOfTheYear: [`OTY-RookieMapper`, "ルーキー・マッパー・オブ・ザ・イヤー(Rookie Mapper of the Year)"],
@@ -610,7 +610,7 @@
             NonStandardMap: [`Gen-NonStandard`, "ノンスタンダードマップ(Non-Standard)"],
             RankedMap: [`Ranked-RankedMap`, "ランクマップ(Ranked)"],
             Lightshow: [`Mods-Lightshow`, "ライティング（Lightshow)"],
-            Modchart: [`Mods-GameplayModchart`, "Gameplay Modchart"],
+            Modchart: [`Mods-GameplayModchart`, "ゲームプレイ・モッドチャート (Gameplay Modchart)"],
             //ArtMap: [`Mods-ArtMap`, "アートマップ(Artmap)"],
             BalancedMap: [`Style-Balanced`, "バランスマップ(Balanced)"],
             TechMap: [`Style-Tech`, "テック(Tech)"],
@@ -620,7 +620,7 @@
             ChallengeMap: [`Style-Challenge`, "チャレンジ(Challenge)"],
             AccMap: [`Style-Acc`, "精度(Acc)"],
             PoodleMap: [`Style-Poodle`, "プードル(Poodle)"],
-            GimmickMap: [`Style-Wildcard`, "Wildcard"],
+            GimmickMap: [`Style-Wildcard`, "ワイルドカード (Wildcard)"],
         };
 
         const OSTMaps = [
@@ -688,10 +688,10 @@
                     element.innerText = `今年最高の譜面。表現、強調、フロー、すべてが揃っており、曲に合わせた素晴らしいプレイ体験を実現します。※Noodle Extensionsによりノーツを操作している譜面は対象外`;
                     break;
                 case "OTY-ModdedMap":
-                    element.innerText = `The best modded map of the year. Full stop. Combining the full power of Vivify, Noodle Extensions, Chroma, or any other gameplay or visual mods; this map using mods to truly capture and convey the music and/or alter the gameplay in mind-blowing ways.`;
+                    element.innerText = `今年最高のモデッド(modded)譜面。以上。Vivify、Noodle Extensions、Chromaなどのゲームプレイ/ビジュアルModをフル活用して音楽やゲームプレイを表現し、想像を超えるプレイ体験を実現した譜面。`;
                     break;
                 case "Gen-OST":
-                    element.innerText = `最高の公式譜面。コミュニティとして公式マッパーの作品も見て、今年最高の公式譜面も祝いましょう。`;
+                    element.innerText = `2025年に公開された最高の公式譜面。コミュニティとして公式マッパーの作品も見て、今年最高の公式譜面も祝いましょう。`;
                     break;
                 case "OTY-Pack":
                     element.innerText = `しっかりとしたテーマがあり、高品質な譜面、あらゆる難易度での素晴らしい表現、全てが揃ったマップPack。推薦対象期間内にプレイリストが作成されたPackが対象。`;
@@ -710,10 +710,10 @@
                     element.innerText = `ライターの頂点。バニラやChromaのライティング技術に優れているだけでなく、時には経験・知識を共有し、コミュニティを先導するようなライター。`;
                     break;
                 case "OTY-RookieMapper":
-                    element.innerText = `The best up-and-coming mapper whose first map was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2024). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2024-Dec 1st 2024.`;
+                    element.innerText = `初譜面のリリースが推薦対象期間内である最も将来有望な新人マッパー。今年から推薦対象期間までの６カ月の猶予期間が追加されました（２０２４年６月１日から）。削除済みの譜面でも初譜面にカウントされます。また、猶予期間（２０２４年６月１日から２０２５年１２月１日）にリリースされた譜面は最大５つまでです。`;
                     break;
                 case "OTY-RookieLighter":
-                    element.innerText = `The best up-and-coming lighter whose first map/lightshow was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2024). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2024-Dec 1st 2025.`;
+                    element.innerText = `初譜面・ライトショーのリリースが推薦対象期間内である最も将来有望な新人ライター。今年から推薦対象期間までの６カ月の猶予期間が追加されました（２０２４年６月１日から）。削除済みの譜面でも初譜面にカウントされます。また、猶予期間（２０２４年６月１日から２０２５年１２月１日）にリリースされた譜面は最大５つまでです。`;
                     break;
                 //style awards
                 case "Style-Dance":
@@ -741,7 +741,7 @@
                     element.innerText = `プードル、及びポールが対象。優れたフローを備えており、長くホールドさせるノーツで適切な強調・表現を行っている譜面。スパイラル、スイッチバック、その他多様なプードルパターンも対象です。`;
                     break;
                 case "Style-Wildcard":
-                    element.innerText = `This category shines a light on maps that explore beyond "normal" mapping. Cult classics, bending of mechanics, and different ways of thinking can be found here. This is the catch all category. Have something that is unique and doesn’t fit a category? Nominate it here!`;
+                    element.innerText = `「普通」のマッピングの範囲を超え、それ以上を模索し、超えた譜面に焦点を当てた譜面。カルトクラシック、メカニクスの改変をはじめ、様々な譜面への考え方を集めたカテゴリー。包括的なカテゴリーなので、「ユニークで斬新な譜面だが、ここまでのとのジャンルにも当てはまらない！」と言う譜面はここで推薦してください！`;
                     break;
                 // ranked
                 case "Ranked-RankedMap":
@@ -749,14 +749,14 @@
                     break;
                 // mods
                 case "Mods-GameplayModchart":
-                    element.innerText = `Here? There? Where is the next note coming from?! This category includes maps that feature solid mapping AND alter the gameplay in mind-blowing ways through animation and manipulation of notes and obstacles.`;
-                    break;
-                case "Mods-Modchart":
                     element.innerText = `ノーツが動く！跳ねる！消える！この部門では、しっかりとしたマッピングを前提とし、Noodle Extensionsを使用してノーツや壁・ボム、時にはプレーヤーを操作し、ゲームプレイを驚くほど変化させるModchart譜面が対象です。`;
                     break;
+                // case "Mods-Modchart":
+                //     element.innerText = `ノーツが動く！跳ねる！消える！この部門では、しっかりとしたマッピングを前提とし、Noodle Extensionsを使用してノーツや壁・ボム、時にはプレーヤーを操作し、ゲームプレイを驚くほど変化させるModchart譜面が対象です。`;
+                //     break;
                 //lightshow
                 case "Mods-Lightshow":
-                    element.innerText = `最高のライトショーは目と耳へのご褒美。この部門ではユーザーが各部門の細かな違いを気にすることなく自由に「素晴らしいライティング」を推薦しやすくするため、集計後に運営が適切な部門に振り分けます。`;
+                    element.innerText = `最高のライトショーは視覚と聴覚へのご褒美。この部門ではユーザーが各部門の細かな違いを気にすることなく自由に「素晴らしいライティング」を推薦しやすくするため、集計後に運営が適切な部門に振り分けます。`;
                     break;
             }
         }

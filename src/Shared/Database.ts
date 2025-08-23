@@ -6,7 +6,7 @@ import { Logger } from "./Logger";
 
 export class DatabaseManager {
     public sequelize: Sequelize;
-    public nominations: ModelStatic<NominationAttributes>;
+    public submissions: ModelStatic<SubmissionAttributes>;
     public sortedSubmissions: ModelStatic<SortedSubmission>;
     public judges: ModelStatic<Judge>;
     public judgeVotes: ModelStatic<JudgeVote>;
@@ -46,7 +46,7 @@ export class DatabaseManager {
     }
 
     private loadTables() {
-        this.nominations = this.sequelize.define<NominationAttributes>(`nominations`, {
+        this.submissions = this.sequelize.define<SubmissionAttributes>(`submissions`, {
             nominationId: {
                 type: DataTypes.INTEGER,
                 primaryKey: true,
@@ -258,7 +258,7 @@ export class DatabaseManager {
 }
 
 
-export class NominationAttributes extends Model<InferAttributes<NominationAttributes>, InferCreationAttributes<NominationAttributes>> {
+export class SubmissionAttributes extends Model<InferAttributes<SubmissionAttributes>, InferCreationAttributes<SubmissionAttributes>> {
     public nominationId: number;
     public submitterId: string;
     public service: `beatleader` | `beatsaver` | `judgeId`;
@@ -297,7 +297,7 @@ export enum CharacteristicEnum {
     All = `All`,
 }
 
-export enum NominationCategory {
+export enum SubmissionCategory {
     OST = `Gen-OST`,
     NonStandardMap = `Gen-NonStandard`, //360,90,one saber, na
     FullSpreadMap = `Gen-FullSpread`,
@@ -333,24 +333,24 @@ export class DatabaseHelper {
         DatabaseHelper.database = db;
     }
 
-    public static async addNomination(submitterId: string, service:`beatleader`|`beatsaver`|`judgeId`, category: string, content: {
+    public static async addSubmission(submitterId: string, service:`beatleader`|`beatsaver`|`judgeId`, category: string, content: {
         bsrId?: string,
         name?: string,
         difficulty?: Difficulty,
         characteristic?: Characteristic,
     }): Promise<NominationStatusResponse> {
         let existingRecords;
-        let sortedrecord: NominationAttributes;
+        let sortedrecord: SubmissionAttributes;
         if (this.isNameRequired(category)) {
-            existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, name: content.name, category: category } });
-            sortedrecord = await DatabaseHelper.database.nominations.findOne({where: { category: category, name: content.name, filterStatus: {[Op.not]: null}}});
+            existingRecords = await DatabaseHelper.database.submissions.findAndCountAll({ where: { submitterId: submitterId, name: content.name, category: category } });
+            sortedrecord = await DatabaseHelper.database.submissions.findOne({where: { category: category, name: content.name, filterStatus: {[Op.not]: null}}});
         } else {
             if (this.isDiffCharRequired(category)) {
-                existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category, difficulty: content.difficulty, characteristic: content.characteristic } });
-                sortedrecord = await DatabaseHelper.database.nominations.findOne({where: {bsrId: content.bsrId, category: category, characteristic: content.characteristic, difficulty: content.difficulty, filterStatus: {[Op.not]: null}}});
+                existingRecords = await DatabaseHelper.database.submissions.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category, difficulty: content.difficulty, characteristic: content.characteristic } });
+                sortedrecord = await DatabaseHelper.database.submissions.findOne({where: {bsrId: content.bsrId, category: category, characteristic: content.characteristic, difficulty: content.difficulty, filterStatus: {[Op.not]: null}}});
             } else {
-                existingRecords = await DatabaseHelper.database.nominations.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
-                sortedrecord = await DatabaseHelper.database.nominations.findOne({where: { bsrId: content.bsrId, category: category, filterStatus: {[Op.not]: null} }});
+                existingRecords = await DatabaseHelper.database.submissions.findAndCountAll({ where: { submitterId: submitterId, bsrId: content.bsrId, category: category } });
+                sortedrecord = await DatabaseHelper.database.submissions.findOne({where: { bsrId: content.bsrId, category: category, filterStatus: {[Op.not]: null} }});
             }
         }
 
@@ -358,7 +358,7 @@ export class DatabaseHelper {
             return NominationStatusResponse.AlreadyVoted;
         }
 
-        if (!validateEnumValue(category, NominationCategory)) {
+        if (!validateEnumValue(category, SubmissionCategory)) {
             return NominationStatusResponse.InvalidCategory;
         }
 
@@ -389,7 +389,7 @@ export class DatabaseHelper {
         }
 
         if (this.isNameRequired(category)) {
-            await DatabaseHelper.database.nominations.create({
+            await DatabaseHelper.database.submissions.create({
                 submitterId: submitterId,
                 category: category,
                 name: content.name,
@@ -398,7 +398,7 @@ export class DatabaseHelper {
             });
         } else {
             if (this.isDiffCharRequired(category)) {
-                await DatabaseHelper.database.nominations.create({
+                await DatabaseHelper.database.submissions.create({
                     submitterId: submitterId,
                     service: service,
                     category: category,
@@ -410,7 +410,7 @@ export class DatabaseHelper {
                     filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : undefined
                 });
             } else {
-                await DatabaseHelper.database.nominations.create({
+                await DatabaseHelper.database.submissions.create({
                     submitterId: submitterId,
                     service: service,
                     category: category,
@@ -428,55 +428,55 @@ export class DatabaseHelper {
 
     public static async getNominationCount() : Promise<NominationCount[]> {
         const counts = {
-            Total: await DatabaseHelper.database.nominations.count(),
-            MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapOfTheYear } }),
-            MapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.MapperOfTheYear } }),
-            LighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.LighterOfTheYear } }),
-            RookieMapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RookieMapperOfTheYear } }),
-            RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RookieLighterOfTheYear } }),
-            PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PackOfTheYear } }),
-            OSTMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.OST } }),
-            NonStandardMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.NonStandardMap } }),
-            FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FullSpreadMap } }),
-            Lightshow: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.Lightshow } }),
-            GameplayModchart: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.GameplayModchart } }),
-            RankedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.RankedMap } }),
-            BalancedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.BalancedMap } }),
-            TechMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.TechMap } }),
-            SpeedMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.SpeedMap } }),
-            DanceMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.DanceMap } }),
-            FitnessMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.FitnessMap } }),
-            ChallengeMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ChallengeMap } }),
-            AccMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.AccMap } }),
-            PoodleMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.PoodleMap } }),
-            WildcardMap: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.WildcardMap } }),
-            ModdedMapOfTheYear: await DatabaseHelper.database.nominations.count({ where: { category: NominationCategory.ModdedMapOfTheYear } }),
+            Total: await DatabaseHelper.database.submissions.count(),
+            MapOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.MapOfTheYear } }),
+            MapperOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.MapperOfTheYear } }),
+            LighterOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.LighterOfTheYear } }),
+            RookieMapperOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.RookieMapperOfTheYear } }),
+            RookieLighterOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.RookieLighterOfTheYear } }),
+            PackOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.PackOfTheYear } }),
+            OSTMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.OST } }),
+            NonStandardMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.NonStandardMap } }),
+            FullSpreadMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.FullSpreadMap } }),
+            Lightshow: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.Lightshow } }),
+            GameplayModchart: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.GameplayModchart } }),
+            RankedMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.RankedMap } }),
+            BalancedMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.BalancedMap } }),
+            TechMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.TechMap } }),
+            SpeedMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.SpeedMap } }),
+            DanceMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.DanceMap } }),
+            FitnessMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.FitnessMap } }),
+            ChallengeMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.ChallengeMap } }),
+            AccMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.AccMap } }),
+            PoodleMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.PoodleMap } }),
+            WildcardMap: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.WildcardMap } }),
+            ModdedMapOfTheYear: await DatabaseHelper.database.submissions.count({ where: { category: SubmissionCategory.ModdedMapOfTheYear } }),
         };
 
         const uniqueCategories = {
-            MapOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.MapOfTheYear}, distinct: true, col: `bsrId` }),
-            MapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.MapperOfTheYear}, distinct: true, col: `name` }),
-            LighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.LighterOfTheYear}, distinct: true, col: `name` }),
-            RookieMapperOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RookieMapperOfTheYear}, distinct: true, col: `name` }),
-            RookieLighterOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RookieLighterOfTheYear}, distinct: true, col: `name` }),
-            PackOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PackOfTheYear}, distinct: true, col: `name` }),
-            OSTMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.OST}, distinct: true, col: `name` }),
-            NonStandardMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.NonStandardMap}, distinct: true, col: `bsrId` }),
-            FullSpreadMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.FullSpreadMap}, distinct: true, col: `bsrId` }),
-            Lightshow: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.Lightshow}, distinct: true, col: `bsrId` }),
-            GameplayModchart: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.GameplayModchart}, distinct: true, col: `bsrId` }),
-            RankedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.RankedMap}, distinct: true, col: `bsrId` }),
-            BalancedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.BalancedMap}, distinct: true, col: `bsrId` }),
-            TechMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.TechMap}, distinct: true, col: `bsrId` }),
-            SpeedMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.SpeedMap}, distinct: true, col: `bsrId` }),
-            DanceMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.DanceMap}, distinct: true, col: `bsrId` }),
-            FitnessMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.FitnessMap}, distinct: true, col: `bsrId` }),
-            ChallengeMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ChallengeMap}, distinct: true, col: `bsrId` }),
-            AccMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.AccMap}, distinct: true, col: `bsrId` }),
-            PoodleMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.PoodleMap}, distinct: true, col: `bsrId` }),
-            WildcardMap: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.WildcardMap}, distinct: true, col: `bsrId` }),
-            ModdedMapOfTheYear: await DatabaseHelper.database.nominations.count({ where: {category: NominationCategory.ModdedMapOfTheYear}, distinct: true, col: `bsrId` }),
-            Total: await DatabaseHelper.database.nominations.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.nominations.count({ distinct: true, col: `name` }),
+            MapOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.MapOfTheYear}, distinct: true, col: `bsrId` }),
+            MapperOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.MapperOfTheYear}, distinct: true, col: `name` }),
+            LighterOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.LighterOfTheYear}, distinct: true, col: `name` }),
+            RookieMapperOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.RookieMapperOfTheYear}, distinct: true, col: `name` }),
+            RookieLighterOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.RookieLighterOfTheYear}, distinct: true, col: `name` }),
+            PackOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.PackOfTheYear}, distinct: true, col: `name` }),
+            OSTMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.OST}, distinct: true, col: `name` }),
+            NonStandardMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.NonStandardMap}, distinct: true, col: `bsrId` }),
+            FullSpreadMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.FullSpreadMap}, distinct: true, col: `bsrId` }),
+            Lightshow: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.Lightshow}, distinct: true, col: `bsrId` }),
+            GameplayModchart: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.GameplayModchart}, distinct: true, col: `bsrId` }),
+            RankedMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.RankedMap}, distinct: true, col: `bsrId` }),
+            BalancedMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.BalancedMap}, distinct: true, col: `bsrId` }),
+            TechMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.TechMap}, distinct: true, col: `bsrId` }),
+            SpeedMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.SpeedMap}, distinct: true, col: `bsrId` }),
+            DanceMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.DanceMap}, distinct: true, col: `bsrId` }),
+            FitnessMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.FitnessMap}, distinct: true, col: `bsrId` }),
+            ChallengeMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.ChallengeMap}, distinct: true, col: `bsrId` }),
+            AccMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.AccMap}, distinct: true, col: `bsrId` }),
+            PoodleMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.PoodleMap}, distinct: true, col: `bsrId` }),
+            WildcardMap: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.WildcardMap}, distinct: true, col: `bsrId` }),
+            ModdedMapOfTheYear: await DatabaseHelper.database.submissions.count({ where: {category: SubmissionCategory.ModdedMapOfTheYear}, distinct: true, col: `bsrId` }),
+            Total: await DatabaseHelper.database.submissions.count({ distinct: true, col: `bsrId` }) + await DatabaseHelper.database.submissions.count({ distinct: true, col: `name` }),
         };
 
         // console.log(counts, uniqueCategories);
@@ -484,11 +484,11 @@ export class DatabaseHelper {
     }
 
     public static isNameRequired(category: string): boolean {
-        return category == NominationCategory.PackOfTheYear || category == NominationCategory.MapperOfTheYear || category == NominationCategory.LighterOfTheYear || category == NominationCategory.RookieMapperOfTheYear || category == NominationCategory.RookieLighterOfTheYear || category == NominationCategory.OST;
+        return category == SubmissionCategory.PackOfTheYear || category == SubmissionCategory.MapperOfTheYear || category == SubmissionCategory.LighterOfTheYear || category == SubmissionCategory.RookieMapperOfTheYear || category == SubmissionCategory.RookieLighterOfTheYear || category == SubmissionCategory.OST;
     }
 
     public static isDiffCharRequired(category: string): boolean {
-        return category != NominationCategory.PackOfTheYear && category != NominationCategory.MapperOfTheYear && category != NominationCategory.LighterOfTheYear && category != NominationCategory.RookieMapperOfTheYear && category != NominationCategory.RookieLighterOfTheYear && category != NominationCategory.FullSpreadMap;
+        return category != SubmissionCategory.PackOfTheYear && category != SubmissionCategory.MapperOfTheYear && category != SubmissionCategory.LighterOfTheYear && category != SubmissionCategory.RookieMapperOfTheYear && category != SubmissionCategory.RookieLighterOfTheYear && category != SubmissionCategory.FullSpreadMap;
     }
 
     public static isNameRequiredSortedSubmission(category: string): boolean {
