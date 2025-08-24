@@ -399,12 +399,12 @@
                 const data = await auth.json();
                 if (data.service == `beatleader`) {
                     if (data.beatSaverId) {
-                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
+                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
                     } else {
-                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username"  href="https://beatleader.xyz/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
+                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username"  href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
                     }
                 } else if (data.service == `beatsaver`) {
-                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatsaver.xyz/profile/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
+                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
                 } else {
                     element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
                 }

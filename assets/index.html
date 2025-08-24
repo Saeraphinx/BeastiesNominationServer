@@ -568,7 +568,7 @@
     <footer>
         <p class="footer"><a class="footer" href="https://saeraphinx.dev">Created by Saeraphinx</a> • <a class="footer"
                 href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a
-                class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer"
+                class="footer" href="https://beatleader.com">BeatLeader</a> & <a class="footer"
                 href="https://beatsaver.com">BeatSaver!</a></p>
     </footer>
     <script>
@@ -593,7 +593,7 @@
                 const element = document.getElementById('username');
                 document.getElementById('nominationForm').style.display = null;
                 if (data.service == `beatleader`) {
-                    element.innerHTML = `Logged in as <a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
+                    element.innerHTML = `Logged in as <a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
                 } else if (data.service == `beatsaver`) {
                     element.innerHTML = `Logged in as <a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a> • <a class="username" href="api/auth/logout">Log Out</a>`;
                 } else {

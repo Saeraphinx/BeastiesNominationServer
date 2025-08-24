@@ -53,22 +53,22 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     private static readonly callbackUrl = `${server.url}/api/auth/beatleader/callback`;
     
     public static getUrl(state:string): string {
-        return `https://api.beatleader.xyz/oauth2/authorize?client_id=${auth.beatleader.clientId}&response_type=code&scope=profile&redirect_uri=${BeatLeaderAuthHelper.callbackUrl}&state=${state}`;
+        return `https://api.beatleader.com/oauth2/authorize?client_id=${auth.beatleader.clientId}&response_type=code&scope=profile&redirect_uri=${BeatLeaderAuthHelper.callbackUrl}&state=${state}`;
     }
 
     public static getToken(code:string): Promise<OAuth2Response> {
-        return super.getToken(`https://api.beatleader.xyz/oauth2/token`, code, auth.beatleader, this.callbackUrl);
+        return super.getToken(`https://api.beatleader.com/oauth2/token`, code, auth.beatleader, this.callbackUrl);
     }
 
     public static async getUser(token: string): Promise<BeatLeaderIdentify | null> {
-        const userIdRequest = await fetch(`https://api.beatleader.xyz/oauth2/identity`, super.getRequestData(token));
+        const userIdRequest = await fetch(`https://api.beatleader.com/oauth2/identity`, super.getRequestData(token));
         const Idjson: BeatLeaderIdentify = await userIdRequest.json() as BeatLeaderIdentify;
 
         if (!Idjson.id) {
             return null;
         } else {
             return Idjson;
-            //const userRequest = await fetch(`https://api.beatleader.xyz/player/${Idjson.id}?stats=false`, super.getRequestData(token));
+            //const userRequest = await fetch(`https://api.beatleader.com/player/${Idjson.id}?stats=false`, super.getRequestData(token));
             //const userJjson: BeatLeaderMinimalUser = await userRequest.json() as BeatLeaderMinimalUser;
             //if (!userJjson.id) {
             //    return null;
@@ -79,7 +79,7 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     }
 
     public static async getBeatSaverId(beatLeaderId: string): Promise<string|null> {
-        let req = await fetch(`https://api.beatleader.xyz/player/${beatLeaderId}?stats=false`, {
+        let req = await fetch(`https://api.beatleader.com/player/${beatLeaderId}?stats=false`, {
             method: `GET`
         });
 

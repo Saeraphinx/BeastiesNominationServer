@@ -549,7 +549,7 @@
         </span>
     </div>
     <footer>
-        <p class="footer"><a class="footer" href="https://saeraphinx.dev">作者：Saeraphinx</a> • <a class="footer" href="https://www.twitch.tv/mochichi72">翻訳：mochichi</a> • <a class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.xyz">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
+        <p class="footer"><a class="footer" href="https://saeraphinx.dev">作者：Saeraphinx</a> • <a class="footer" href="https://www.twitch.tv/mochichi72">翻訳：mochichi</a> • <a class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.com">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
     </footer>
     <script>
         // #region Beginning
@@ -573,7 +573,7 @@
                 const element = document.getElementById('username');
                 document.getElementById('nominationForm').style.display = null;
                 if (data.service == `beatleader`) {
-                    element.innerHTML = `<a class="username" href="https://beatleader.xyz/u/${data.userId}">${data.username}</a> としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
+                    element.innerHTML = `<a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a> としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
                 } else if (data.service == `beatsaver`) {
                     element.innerHTML = `<a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username} としてログイン中 • <a class="username" href="api/auth/logout">ログアウト</a>`;
                 } else {
