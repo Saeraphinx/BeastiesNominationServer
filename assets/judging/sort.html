@@ -25,6 +25,8 @@
                     <label for="category">Category:</label>
                     <select id="category" name="category">
                     </select>
+                    <label for="isDoubleRanked">Is Double Ranked:</label>
+                    <input type="checkbox" id="isDoubleRanked" name="isDoubleRanked" />
 
                     <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
                     <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
@@ -399,7 +401,7 @@
             buttonContainer.classList.add("buttonContainer");
             let infoButton = document.createElement("a");
             infoButton.innerText = "🛈"
-            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, `Nom ID: ${nomId}<br>${bsapi.description}`);
+            infoButton.onclick = (e) => openDescModal(e, `${bsapi.metadata.songAuthorName} - ${bsapi.metadata.songName}${bsapi.metadata.songSubName ? ` ${bsapi.metadata.songSubName}` : ``}`, `Nom ID: ${nomId}<br>${bsapi.description}<br><br><br>${JSON.stringify(bsapi.metadata, null, 2)}`);
             buttonContainer.appendChild(infoButton);
             let viewButton = document.createElement("a");
             viewButton.innerText = "▶";
@@ -620,6 +622,7 @@
             let category = data.get("category");
             let bsr = data.get("bsrId");
             let name = data.get("name");
+            let isDoubleRanked = data.get("isDoubleRanked");
             let char = data.get("char");
             let diff = data.get("diff");
             fetch(`/api/sort/approveSubmission`, {
@@ -631,6 +634,7 @@
                     nominationId: nomId,
                     bsrId: bsr,
                     category: category,
+                    isDoubleRanked: isDoubleRanked ? true : false,
                     characteristic: char,
                     difficulty: diff,
                     name: name.toString().trim()
