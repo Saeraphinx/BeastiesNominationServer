@@ -2,15 +2,16 @@
 const categories = {
     OST: [`Gen-OST`, `OST`],
     FullSpreadMap: [`Gen-FullSpread`, `Full Spread`],
-    AlternativeMap: [`Gen-Alternative`, `Non-Standard`],
+    AlternativeMap: [`Gen-NonStandard`, `Non-Standard`],
 
     LightshowVanilla: [`Lightshow-Vanilla`, `Lightshow Vanilla`],
     LightshowVanillaPlus: [`Lightshow-VanillaPlus`, `Lightshow Vanilla+`],
     LightshowChroma: [`Lightshow-Chroma`, `Lightshow Chroma`],
     LightshowChromaPlus: [`Lightshow-ChromaPlus`, `Lightshow Chroma+`],
+    LightshowVivify: [`Lightshow-Vivify`, `Lightshow Vivify`],
 
-    Modchart: [`Mods-Modchart`, `Modchart`],
-    ArtMap: [`Mods-ArtMap`, `Art Map`],
+    Modchart: [`Mods-GameplayModchart`, `Gameplay Modchart`],
+    //ArtMap: [`Mods-ArtMap`, `Art Map`],
 
     RankedMapBLLessThan8: [`Ranked-BLLessThan8`, `BL Ranked Less than 8*`],
     RankedMapBL8To12: [`Ranked-BL8To12`, `BL Ranked 8* to 12*`],
@@ -28,9 +29,10 @@ const categories = {
     ChallengeMap: [`Style-Challenge`, `Challenge`],
     AccMap: [`Style-Acc`, `Acc`],
     PoodleMap: [`Style-Poodle`, `Poodle`],
-    GimmickMap: [`Style-Gimmick`, `Gimmick`],
+    WildcardMap: [`Style-Wildcard`, `Wildcard`],
 
     MapOfTheYear: [`OTY-Map`, `Map of the Year`],
+    ModdedMapOfTheYear: [`OTY-ModdedMap`, `Modded Map of the Year`],
     MapperOfTheYear: [`OTY-Mapper`, `Mapper of the Year`],
     LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
     RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],

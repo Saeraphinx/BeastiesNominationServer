@@ -53,7 +53,7 @@ export class SortingRoutes {
         });
 
         this.app.post(`/api/sort/approveSubmission`, async (req, res) => {
-            let { name, bsrId, difficulty, characteristic, category, nominationId } = req.body;
+            let { name, bsrId, difficulty, characteristic, category, nominationId, isDoubleRanked } = req.body;
             if (!req.session.id || req.session.service !== `judgeId`) {
                 return res.status(401).send({ message: `Not logged in.` });
             }
@@ -130,6 +130,27 @@ export class SortingRoutes {
             if (!sortedSubmission || sortedSubmission instanceof BaseError) {
                 Logger.warn(`Failed to add submission`);
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
+            }
+
+            if (isDoubleRanked) {
+                let otherCategory: SortedSubmissionsCategory;
+                if ((category as string).includes(`BL`)) {
+                    otherCategory = (category as string).replace(`BL`, `SS`) as SortedSubmissionsCategory;
+                } else if ((category as string).includes(`SS`)) {
+                    otherCategory = (category as string).replace(`SS`, `BL`) as SortedSubmissionsCategory;
+                } else {
+                    return res.status(400).send({ message: `Category is not double ranked.` });
+                }
+
+                await DatabaseHelper.database.sortedSubmissions.create({
+                    name: name,
+                    bsrId: bsrId,
+                    difficulty: difficulty,
+                    characteristic: characteristic,
+                    category: otherCategory,
+                    hash: hash,
+                    involvedMappers: (involvedMappers as string[]),
+                });
             }
 
             await submission.update({
