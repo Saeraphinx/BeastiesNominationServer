@@ -155,7 +155,7 @@ export class JudgeingRoutes {
 
             let submissions = await DatabaseHelper.database.sortedSubmissions.findAll({ where: { category: category } });
             const playlist: { playlistTitle: string, playlistAuthor: string, playlistDescription:string, image:string, syncURL: string, songs: {key:string, hash:string, difficulties?:{characteristic:string, name:string}[]}[] } = {
-                playlistTitle: `${category} - 2024 Beasties`,
+                playlistTitle: `${category} - 2025 Beasties`,
                 playlistAuthor: `BeastiesNominationServer`,
                 playlistDescription: ``,
                 image: `${server.url}/cdn/beastsaber.jpg`,

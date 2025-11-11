@@ -283,7 +283,7 @@ export enum DifficultyEnum {
     Other = `Other`,
 }
 export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other` | `All`;
-export type FilterStatus = `Accepted` | `Rejected` | `Duplicate` | `RejectedDuplicate`;
+export type FilterStatus = `Accepted` | `Rejected` | `Duplicate` | `RejectedDuplicate` | `Ignored`;
 
 export enum CharacteristicEnum {
     Standard = `Standard`,
@@ -381,6 +381,7 @@ export class DatabaseHelper {
                     filtererId: sortedrecord.filtererId
                 };
                 break;
+            case `Ignored`:
             default:
                 sortedRecordInfo = {
                     isSorted: false
