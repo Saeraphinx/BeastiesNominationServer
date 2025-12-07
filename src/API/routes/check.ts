@@ -382,8 +382,8 @@ export class SubmissionRoutes {
                     return RequestSubmissionStatus.Invalid;
                 }
 
-                // from 270436 (43a1c) to 331775 (50fff) are eligible, except for RankedMap which has no restrictions
-                if ((bsrIdNoHex <= 270435 || bsrIdNoHex >= 331776) && category != SubmissionCategory.RankedMap) {
+                // from 270436 (42063) to 313841 (4c9f1) are eligible, except for RankedMap which has no restrictions
+                if ((bsrIdNoHex <= 270435 || bsrIdNoHex >= 313841) && category != SubmissionCategory.RankedMap) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }
