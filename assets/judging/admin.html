@@ -24,28 +24,44 @@
     </div>
     <div class="header">
         <h2>Admin Panel</h2>
-        <p>Various Admin tools that realistcally should've been the first things i added.<br>Please note, your IP has been logged for security reasons.</p>
+        <p>Various Admin tools that realistcally should've been the first things i added.</p>
         <p style="color: red; font-weight: 900;">DO NOT TOUCH ANYTHING IF YOU DON'T KNOW EXACTLY WHAT IT DOES. THIS PAGE CAN AND WILL AND HAS BROKEN THINGS.<br><br>ASSUME THERE ARE NO BACKUPS.</p>
     </div>
     <div class="header-row">
         <div class="header">
             <h2>One Shot</h2>
-            <div class="header-row">
-                <button id="updateNullValues">updateNullValues</button> 
-                <button id="runInvolvedCheck">runInvolvedCheck</button>
-            </div>
+            <h3>updateNullValues</h3>
+            <p>Goes through all submissions and sorted submissions, and updates any null values (such as hash or mappers) to their defaults. Only runs on maps with a missing hash.</p>
+            <button id="updateNullValues">updateNullValues</button>
+            <h3>runInvolvedCheck</h3>
+            <p>Goes through all submissions and sorted submissions, and checks if any users involved with the submission (mappers, contributors, etc) have judging roles. If they do, it automatically votes "involved" for them if they haven't already voted.</p>
+            <button id="runInvolvedCheck">runInvolvedCheck</button>
+            <h3>checkDuplicateVotes</h3>
+            <p>Checks for any votes that have been duplicated & reports them. They are not automatically fixed.</p>
+            <button id="checkDuplicateVotes">checkDuplicateVotes</button>
         </div>
         <div class="header">
             <h2>Per Category</h2>
+            <p>These below actions will only apply to the selected category.</p>
             <select id="category1" placeholder="Category"></select>
+            <p>Adds maps that have been marked as accepts but are not in the sortedSubmissions table.</p>
             <button id="repopulateSortedSubmissions">repopulateSortedSubmissions</button>
+            <h3>Cut Submissions</h3>
+            <p>Two Cutting Methods: The endpoint has two primary ways to "cut" submissions:<br>
+            By Amount: If an amount is provided, the endpoint sorts all submissions in the category by their total vote score in descending order. It then removes all submissions that fall outside the top amount. For example, if amount is 10, it keeps the top 10 and deletes the rest.<br>
+            By "No" Vote Threshold: If a noThreshold is provided, the endpoint goes through each submission and counts how many judges gave it a "no" vote (a score of 0). If a submission has received a number of "no" votes equal to or greater than the noThreshold, it is removed.<br>
+            Fake Run: The fakeRun boolean parameter is a safety feature. If set to true, the endpoint will perform all the calculations and identify which submissions would be cut, but it won't actually delete them from the database. This allows for a "dry run" to see the impact of a cut before committing to it.</p>
             <input type="text" id="amount" placeholder="amount to keep">
             <input type="text" id="noThreshold" placeholder="amount of nos">
             <input type="checkbox" id="fakeRun" name="fakeRun" checked />
             <label for="fakeRun">fakeRun</label>
             <button id="cutSubmissions">cutSubmissions</button>
+            <h3>Reset Votes</h3>
+            <p>Resets all "yes" votes for a specific user in the selected category.</p>
             <input type="text" id="userIdToRun" placeholder="userIdToRun">
             <button id="resetCategoryVotes">resetCategoryVotes</button>
+            <h3>Get Final Votes</h3>
+            <p>Generates a file with all of the final vote data for the judges to decide upon.</p>
             <button id="getFinalVotes">getFinalVotes</button>
             <div class="header-row">
                 <input type="checkbox" id="total" name="total" checked />
@@ -78,6 +94,10 @@
             <div class="header-row">
                 <button id="loadSortedSubmission">Load</button>
                 <button id="deleteSortedSubmission">Delete</button>
+            </div>
+            <select id="category3" placeholder="Category"></select>
+            <div class="header-row">
+                <button id="recategorizeSortedSubmission">Change Category</button>
             </div>
             <input type="text" id="sortedSubmissionBsr" placeholder="Sorted Submission Bsr (d00c)" >
             <div class="header-row">

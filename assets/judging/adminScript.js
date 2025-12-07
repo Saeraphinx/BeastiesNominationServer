@@ -42,6 +42,7 @@ const categories = {
 
 let categorySelect = document.getElementById(`category1`);
 let categorySelect2 = document.getElementById(`category2`);
+let categorySelect3 = document.getElementById(`category3`);
 for (let key in categories) {
     let option = document.createElement(`option`);
     option.classList.add(`categoryOption`);
@@ -54,6 +55,12 @@ for (let key in categories) {
     option2.value = categories[key][0];
     option2.innerText = categories[key][1];
     categorySelect2.appendChild(option2);
+
+    let option3 = document.createElement(`option`);
+    option3.classList.add(`categoryOption`);
+    option3.value = categories[key][0];
+    option3.innerText = categories[key][1];
+    categorySelect3.appendChild(option3);
 }
 // #endregion
 
@@ -68,6 +75,14 @@ document.getElementById(`updateNullValues`).addEventListener(`click`, () => {
 
 document.getElementById(`runInvolvedCheck`).addEventListener(`click`, () => {
     fetch(`/api/admin/runInvolvedCheck`, { method: `POST` }).then(response => {
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
+document.getElementById(`checkDuplicateVotes`).addEventListener(`click`, () => {
+    fetch(`/api/admin/checkDuplicateVotes`, { method: `GET` }).then(response => {
         response.json().then(data => {
             alert(data.message);
         });
@@ -269,7 +284,6 @@ document.getElementById(`deleteSortedSubmission`).addEventListener(`click`, () =
     });
 });
 
-
 document.getElementById(`loadSubmissionBsr`).addEventListener(`click`, () => {
     let searchValue = document.getElementById(`submissionBsr`).value;
     fetch(`/api/admin/database/data/submissions?bsr=${encodeURIComponent(searchValue)}`).then(response => {
@@ -292,6 +306,21 @@ document.getElementById(`loadSortedSubmissionBsr`).addEventListener(`click`, () 
                 return;
             }
             loadTable(data);
+        });
+    });
+});
+
+document.getElementById(`recategorizeSortedSubmission`).addEventListener(`click`, () => {
+    let id = document.getElementById(`sortedSubmissionId`).value;
+    let newCategory = document.getElementById(`category3`).value;
+    fetch(`/api/admin/database/recategorizeSortedSubmission`, {
+        method: `POST`,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ sortedSubmissionId: id, toCategory: newCategory })
+    }).then(response => {
+        console.log(response);
+        response.json().then(data => {
+            alert(data.message);
         });
     });
 });

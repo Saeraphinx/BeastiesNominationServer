@@ -2,7 +2,6 @@
 import { Express } from 'express';
 import { DatabaseHelper, Judge, JudgeVote, SortedSubmission, SortedSubmissionsCategory, validateEnumValue } from '../../Shared/Database';
 import { Logger } from '../../Shared/Logger';
-import { ModelStatic } from 'sequelize';
 
 export class AdminRoutes {
     private app: Express;
@@ -324,6 +323,31 @@ export class AdminRoutes {
             await results.destroy();
             Logger.log(`Deleted record ${record.id} from ${table} - ${JSON.stringify(record)}`, `Admin`);
             res.send({ message: `Deleted record ${record.id} from ${table}`, record });
+        });
+
+        this.app.post(`/api/admin/database/recategorizeSortedSubmission`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+
+            let toCategory = req.body.toCategory as string;
+            let sortedSubmissionId = req.body.sortedSubmissionId as string;
+            if (!toCategory || !sortedSubmissionId) {
+                return res.status(400).send({ message: `Missing toCategory, or sortedSubmissionId.` });
+            }
+
+            let sortedSubmission = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: sortedSubmissionId } });
+            if (!sortedSubmission) {
+                return res.status(404).send({ message: `Sorted submission not found in fromCategory.` });
+            }
+
+            sortedSubmission.category = toCategory as SortedSubmissionsCategory;
+            await sortedSubmission.save();
+            Logger.log(`Recategorized sorted submission ${sortedSubmission.id} from ${sortedSubmission.category} to ${toCategory}`, `Admin`);
+
+            // Also need to update all related judge votes to reflect new category
+            let relatedVotes = await DatabaseHelper.database.judgeVotes.update({score: -1}, { where: { submissionId: sortedSubmission.id } });
+            Logger.log(`Reset ${relatedVotes[0]} related judge votes for sorted submission ${sortedSubmission.id} due to recategorization.`, `Admin`);
+            res.send({ message: `Recategorized sorted submission ${sortedSubmission.id} from ${sortedSubmission.category} to ${toCategory}` });
         });
         // #endregion Database
 
