@@ -53,7 +53,7 @@ export class SortingRoutes {
         });
 
         this.app.post(`/api/sort/approveSubmission`, async (req, res) => {
-            let { name, bsrId, difficulty, characteristic, category, nominationId, isDoubleRanked, overrideDoubleRanked } = req.body;
+            let { name, bsrId, difficulty, characteristic, category, nominationId, isDoubleRanked, overrideDoubleRankedCategory } = req.body;
             if (!req.session.id || req.session.service !== `judgeId`) {
                 return res.status(401).send({ message: `Not logged in.` });
             }
@@ -132,10 +132,10 @@ export class SortingRoutes {
                 return res.status(500).send({ message: `Failed to add submission. Maybe it already exists?` });
             }
 
+            let otherCategory: SortedSubmissionsCategory;
             if (isDoubleRanked) {
-                let otherCategory: SortedSubmissionsCategory;
-                if (overrideDoubleRanked && typeof overrideDoubleRanked === `string` && validateEnumValue(overrideDoubleRanked, SortedSubmissionsCategory)) {
-                    otherCategory = overrideDoubleRanked as SortedSubmissionsCategory;
+                if (overrideDoubleRankedCategory && typeof overrideDoubleRankedCategory === `string` && validateEnumValue(overrideDoubleRankedCategory, SortedSubmissionsCategory)) {
+                    otherCategory = overrideDoubleRankedCategory as SortedSubmissionsCategory;
                 } else {
                     if ((category as string).includes(`BL`)) {
                         otherCategory = (category as string).replace(`BL`, `SS`) as SortedSubmissionsCategory;
@@ -182,7 +182,14 @@ export class SortingRoutes {
             }
 
             Logger.log(`User ${req.session.userId} accepted submission ${submission.nominationId} to ${submission.category} with ${otherSubmissions.length} duplicates. Sorted submission ID: ${sortedSubmission.id}`);
-            return res.status(200).send({ message: `Submission added successfully`, duplicates: otherSubmissions.length, submission: sortedSubmission });
+            if (isDoubleRanked) {
+                Logger.log(`Also added to ${otherCategory}`);
+            }
+            if (isDoubleRanked) {
+                return res.status(200).send({ message: `Submission added successfully to ${category} & ${otherCategory}`, duplicates: otherSubmissions.length, submission: sortedSubmission, alsoAddedTo: otherCategory });
+            } else {
+                return res.status(200).send({ message: `Submission added successfully to ${category}`, duplicates: otherSubmissions.length, submission: sortedSubmission });
+            }
         });
 
         this.app.post(`/api/sort/rejectSubmission`, async (req, res) => {
