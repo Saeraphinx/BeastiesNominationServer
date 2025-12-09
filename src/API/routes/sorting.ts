@@ -30,7 +30,7 @@ export class SortingRoutes {
             }
 
             const judge = await DatabaseHelper.database.judges.findOne({ where: { id: req.session.userId } });
-            
+
             if (!judge.roles.includes(`sort`)) {
                 return res.status(403).send({ message: `You do not have permission to sort this category` });
             }
@@ -48,12 +48,12 @@ export class SortingRoutes {
             let start = pageSizeInt * (pageInt - 1);
 
             console.log(`Sending submissions to user ${req.session.userId} (${start} to ${start + pageSizeInt} of ${response.length})`);
-            return res.send({data: response.slice(start, start + pageSizeInt), page: pageInt, pageSize: pageSizeInt, totalPages: Math.ceil(response.length / pageSizeInt)});
+            return res.send({ data: response.slice(start, start + pageSizeInt), page: pageInt, pageSize: pageSizeInt, totalPages: Math.ceil(response.length / pageSizeInt) });
 
         });
 
         this.app.post(`/api/sort/approveSubmission`, async (req, res) => {
-            let { name, bsrId, difficulty, characteristic, category, nominationId, isDoubleRanked } = req.body;
+            let { name, bsrId, difficulty, characteristic, category, nominationId, isDoubleRanked, overrideDoubleRanked } = req.body;
             if (!req.session.id || req.session.service !== `judgeId`) {
                 return res.status(401).send({ message: `Not logged in.` });
             }
@@ -63,7 +63,7 @@ export class SortingRoutes {
             if (!judge.roles.includes(`sort`)) {
                 return res.status(403).send({ message: `You do not have permission to sort.` });
             }
-            
+
             if (!category && typeof category !== `string` && validateEnumValue(category, SortedSubmissionsCategory)) {
                 return res.status(400).send({ message: `Category is required` });
             }
@@ -87,7 +87,7 @@ export class SortingRoutes {
                 return res.status(400).send({ message: `Nomination not found` });
             }
 
-            let involvedMappers:any[] = [];
+            let involvedMappers: any[] = [];
             let hash = null;
 
             if (!DatabaseHelper.isNameRequiredSortedSubmission(category)) {
@@ -104,7 +104,7 @@ export class SortingRoutes {
                     hash = json.versions[0].hash;
                     involvedMappers.push(json.uploader.id as string);
                     if (json.collaborators) {
-                        json.collaborators.forEach((collab:any) => {
+                        json.collaborators.forEach((collab: any) => {
                             involvedMappers.push(collab.id as string);
                         });
                     }
@@ -134,12 +134,16 @@ export class SortingRoutes {
 
             if (isDoubleRanked) {
                 let otherCategory: SortedSubmissionsCategory;
-                if ((category as string).includes(`BL`)) {
-                    otherCategory = (category as string).replace(`BL`, `SS`) as SortedSubmissionsCategory;
-                } else if ((category as string).includes(`SS`)) {
-                    otherCategory = (category as string).replace(`SS`, `BL`) as SortedSubmissionsCategory;
+                if (overrideDoubleRanked && typeof overrideDoubleRanked === `string` && validateEnumValue(overrideDoubleRanked, SortedSubmissionsCategory)) {
+                    otherCategory = overrideDoubleRanked as SortedSubmissionsCategory;
                 } else {
-                    return res.status(400).send({ message: `Category is not double ranked.` });
+                    if ((category as string).includes(`BL`)) {
+                        otherCategory = (category as string).replace(`BL`, `SS`) as SortedSubmissionsCategory;
+                    } else if ((category as string).includes(`SS`)) {
+                        otherCategory = (category as string).replace(`SS`, `BL`) as SortedSubmissionsCategory;
+                    } else {
+                        return res.status(400).send({ message: `Category is not double ranked.` });
+                    }
                 }
 
                 await DatabaseHelper.database.sortedSubmissions.create({

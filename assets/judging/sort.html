@@ -27,6 +27,9 @@
                     </select>
                     <label for="isDoubleRanked">Is Double Ranked:</label>
                     <input type="checkbox" id="isDoubleRanked" name="isDoubleRanked" />
+                    <label for="category2">Override Double Ranked (if applicable):</label>
+                    <select id="category2" name="category2">
+                    </select>
 
                     <label class="bsr" for="bsrId">BSR Key (e.g. "3de68", "3bbb0", "39624")</label></b>
                     <input class="bsr" type="text" id="bsrId" name="bsrId" maxlength=4 minlength=5>
@@ -185,6 +188,14 @@
             option.value = categories[key][0];
             option.innerText = categories[key][1];
             categorySelect.appendChild(option);
+        }
+        let categorySelect2 = document.getElementById("category2");
+        for (let key in categories) {
+            let option = document.createElement("option");
+            option.classList.add("categoryOption");
+            option.value = categories[key][0];
+            option.innerText = categories[key][1];
+            categorySelect2.appendChild(option);
         }
         let submissionCategorySelect = document.getElementById("submissionCategories");
         for (let key2 in submissionCategories) {
@@ -623,6 +634,7 @@
             let bsr = data.get("bsrId");
             let name = data.get("name");
             let isDoubleRanked = data.get("isDoubleRanked");
+            let overrideDoubleRanked = data.get("category2");
             let char = data.get("char");
             let diff = data.get("diff");
             fetch(`/api/sort/approveSubmission`, {
@@ -635,6 +647,7 @@
                     bsrId: bsr,
                     category: category,
                     isDoubleRanked: isDoubleRanked ? true : false,
+                    overrideDoubleRankedCategory: isDoubleRanked ? overrideDoubleRanked : null,
                     characteristic: char,
                     difficulty: diff,
                     name: name.toString().trim()
