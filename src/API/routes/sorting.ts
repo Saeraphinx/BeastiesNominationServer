@@ -64,8 +64,10 @@ export class SortingRoutes {
                 return res.status(403).send({ message: `You do not have permission to sort.` });
             }
 
-            if (!category && typeof category !== `string` && validateEnumValue(category, SortedSubmissionsCategory)) {
+            if (!category || typeof category !== `string` || !validateEnumValue(category, SortedSubmissionsCategory)) {
                 return res.status(400).send({ message: `Category is required` });
+            } else {
+                category = category as SortedSubmissionsCategory;
             }
 
             if (DatabaseHelper.isNameRequiredSortedSubmission(category) && !name && typeof name !== `string`) {
