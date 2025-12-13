@@ -373,9 +373,10 @@ export class AdminRoutes {
                 return res.status(404).send({ message: `Sorted submission not found in fromCategory.` });
             }
 
+            let oldCategory = sortedSubmission.category;
             sortedSubmission.category = toCategory as SortedSubmissionsCategory;
             await sortedSubmission.save();
-            Logger.log(`Recategorized sorted submission ${sortedSubmission.id} from ${sortedSubmission.category} to ${toCategory}`, `Admin`);
+            Logger.log(`Recategorized sorted submission ${sortedSubmission.id} from ${oldCategory} to ${toCategory}`, `Admin`);
 
             // Also need to update all related judge votes to reflect new category
             let relatedVotes = await DatabaseHelper.database.judgeVotes.update({score: -1}, { where: { submissionId: sortedSubmission.id } });
