@@ -182,11 +182,6 @@ function loadTable(data) {
 
         for (let obj of data) {
             let tableBody = document.createElement(`tr`);
-            Object.keys(obj).forEach(key => {
-                let header = document.createElement(`th`);
-                header.innerText = key;
-                tableHeaders.appendChild(header);
-            });
 
             Object.values(obj).forEach(value => {
                 let cell = document.createElement(`td`);
@@ -324,6 +319,26 @@ document.getElementById(`recategorizeSortedSubmission`).addEventListener(`click`
         });
     });
 });
+document.getElementById(`bulkRecategorizeSortedSubmission`).addEventListener(`click`, () => {
+    let idStr = document.getElementById(`sortedSubmissionIdArray`).value;
+    let idArr = idStr.split(`,`).map(x => x.trim()).filter(x => x.length > 0).map(x => parseInt(x));
+    if (idArr.some(isNaN)) {
+        alert(`Please enter a valid list of sorted submission IDs.`);
+        return;
+    }
+    let newCategory = document.getElementById(`category3`).value;
+    fetch(`/api/admin/bulkChangeCategory`, {
+        method: `POST`,
+        headers: { 'Content-Type': `application/json` },
+        body: JSON.stringify({ sortedSubmissionIds: idArr, toCategory: newCategory })
+    }).then(response => {
+        console.log(response);
+        response.json().then(data => {
+            alert(data.message);
+        });
+    });
+});
+
 // #endregion
 
 // #region updateJudge

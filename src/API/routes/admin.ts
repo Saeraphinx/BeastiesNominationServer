@@ -103,6 +103,39 @@ export class AdminRoutes {
             });
 
         });
+
+        this.app.post(`/api/admin/bulkChangeCategory`, async (req, res) => {
+            let user = await isAuthroizedSession(req, res);
+            if (!user) { return; }
+            
+            let toCategory = req.body.toCategory as string;
+            let submissionIds = req.body.sortedSubmissionIds as any[];
+
+            if (!toCategory || !validateEnumValue(toCategory, SortedSubmissionsCategory)) {
+                return res.status(400).send({ message: `Missing or invalid toCategory.` });
+            }
+
+            if (!submissionIds ||
+                !Array.isArray(submissionIds) ||
+                submissionIds.length === 0 ||
+                submissionIds.some(id => typeof id !== `number` || isNaN(id))
+            ) {
+                return res.status(400).send({ message: `Missing or invalid submissionIds.` });
+            }
+
+            let updatedCount = 0;
+            for (let submissionId of submissionIds) {
+                let sortedSubmission = await DatabaseHelper.database.sortedSubmissions.findOne({ where: { id: submissionId } });
+                if (sortedSubmission) {
+                    sortedSubmission.category = toCategory as SortedSubmissionsCategory;
+                    await sortedSubmission.save();
+                    updatedCount++;
+                }
+            }
+
+            Logger.log(`Bulk changed category to ${toCategory} for ${updatedCount} submissions.`, `Admin`);
+            res.send({ message: `Bulk changed category to ${toCategory} for ${updatedCount} submissions.` });
+        });
         // #endregion One Shot
         // #region Per Category
         this.app.post(`/api/admin/repopulateSortedSubmissions`, async (req, res) => {
