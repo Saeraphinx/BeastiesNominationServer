@@ -31,7 +31,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            if (new Date(Date.now()) >= new Date(`15 Dec 2025 00:00:00 UTC`)) {
+            if (new Date(Date.now()) >= new Date(`16 Dec 2025 00:00:00 UTC`)) {
                 res.status(400).send({ message: `Submissions are now closed. Thank you for participating!` });
                 return;
             }
@@ -133,7 +133,7 @@ export class SubmissionRoutes {
                 return;
             }
 
-            if (new Date(Date.now()) >= new Date(`15 Dec 2025 00:00:00 UTC`)) {
+            if (new Date(Date.now()) >= new Date(`16 Dec 2025 00:00:00 UTC`)) {
                 res.status(400).send(this.getErrorResponseString(ErrorMessages.SubmissionsClosed, language));
                 return;
             }
@@ -227,7 +227,7 @@ export class SubmissionRoutes {
         });
 
         this.app.post(`/api/beatleader/submitmap`, async (req, res) => {
-            if (new Date(Date.now()) >= new Date(`15 Dec 2025 00:00:00 UTC`)) {
+            if (new Date(Date.now()) >= new Date(`16 Dec 2025 00:00:00 UTC`)) {
                 res.status(400).send({ message: `Submissions are now closed. Thank you for participating!` });
                 return;
             }
