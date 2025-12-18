@@ -3,6 +3,7 @@ import { exit } from "process";
 import { DataTypes, InferAttributes, InferCreationAttributes, Model, ModelStatic, Op, Sequelize } from "sequelize";
 import { storage } from '../../storage/config.json';
 import { Logger } from "./Logger";
+import { create } from "domain";
 
 export class DatabaseManager {
     public sequelize: Sequelize;
@@ -221,6 +222,8 @@ export class DatabaseManager {
                 type: DataTypes.STRING,
                 allowNull: true,
             },
+            createdAt: DataTypes.DATE,
+            updatedAt: DataTypes.DATE,
         }, {
             paranoid: true,
         });
@@ -572,6 +575,8 @@ export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAt
     public submissionId:number;
     public score:number;
     public notes?:string;
+    declare readonly createdAt:string;
+    declare readonly updatedAt:string;
 }
 
 export class PublicVote extends Model<InferAttributes<PublicVote>, InferCreationAttributes<PublicVote>> {

@@ -699,19 +699,38 @@ export class AdminRoutes {
             let user = await isAuthroizedSession(req, res);
             if (!user) { return; }
 
+            let shouldRemove = req.query.remove === `true` ? true : false;
+
             let votes = await DatabaseHelper.database.judgeVotes.findAll();
             let duplicates: JudgeVote[] = [];
+            let toRemove: JudgeVote[] = [];
             let count = 0;
             for (let vote of votes) {
                 let duplicate = votes.find((v) => v.id !== vote.id && v.submissionId == vote.submissionId && v.judgeId == vote.judgeId);
                 if (duplicate) {
                     duplicates.push(vote);
                     count++;
+                    if (Date.parse(vote.updatedAt) < Date.parse(duplicate.updatedAt)) {
+                        toRemove.push(vote);
+                    } else {
+                        toRemove.push(duplicate);
+                    }
                 }
+                toRemove = Array.from(new Set(toRemove));
+                toRemove.forEach(async (v) => {
+                    if (shouldRemove) {
+                        await v.destroy().catch((err) => {
+                            Logger.error(`Error removing duplicate vote ${v.id}: ${err}`, `Admin`);
+                        });
+                    }
+                });
             }
 
             Logger.log(`Found ${count} duplicate votes.`, `Admin`);
-            res.send({ message: `Found ${count} duplicate votes.`, duplicates });
+            res.send({ message: `Found ${count} duplicate votes.`, duplicates, toRemoved: shouldRemove ? toRemove : [] });
+            if (shouldRemove) {
+                Logger.log(`Removed ${toRemove.length} duplicate votes.`, `Admin`);
+            }
         });
 
         this.app.get(`/api/admin/getFinalVotes`, async (req, res) => {
