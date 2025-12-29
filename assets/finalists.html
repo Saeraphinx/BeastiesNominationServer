@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>2024 BeastSaber Mapping Awards Submission Form</title>
+    <title>2025 BeastSaber Mapping Awards</title>
     <link rel="icon" type="image/x-icon" href="/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -127,6 +127,7 @@
             justify-content: center;
             align-items: center;
         }
+
         /* #endregion */
         /* #region card text & main divs */
         div.card {
@@ -187,6 +188,18 @@
             cursor: pointer;
         }
 
+        div.active-1 {
+            box-shadow: 0 0 5px 2px #EFBF04 !important;
+        }
+
+        div.active-2 {
+            box-shadow: 0 0 5px 2px #C4C4C4 !important;
+        }
+
+        div.active-3 {
+            box-shadow: 0 0 5px 2px #CE8946 !important;
+        }
+
         div.active {
             box-shadow: 0 0 5px 2px rgb(2, 255, 2) !important;
         }
@@ -194,6 +207,7 @@
         div.active:hover {
             box-shadow: 0 0 10px 2px rgb(2, 255, 2) !important;
         }
+
         /* #endregion */
 
         /* #region map card text & specifics */
@@ -261,18 +275,25 @@
             align-items: center;
             width: 28px;
             margin-left: auto;
-            background-color: rgba(255,255,255,0.08);
-            border-radius: 0 10px 10px 0;
+            background-color: rgba(255, 255, 255, 0.08);
+            border-radius: 0;
             padding-top: 8px;
             padding-bottom: 6px;
         }
 
-        .mapLinks a, .mapLinks abutnot {
+        div.mapLinks:last-child {
+            margin-left: 0;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .mapLinks a,
+        .mapLinks abutnot {
             align-content: center;
             height: 50%;
         }
 
-        .mapLinks a img, .mapLinks abutnot img {
+        .mapLinks a img,
+        .mapLinks abutnot img {
             width: 20px;
             height: 20px;
             margin: 4px;
@@ -299,6 +320,7 @@
             box-shadow: 0 0 2px 2px rgba(0, 157, 255, 0.5);
             cursor: pointer;
         }
+
         /* #endregion */
         @media screen and (max-width: 950px) {
             div.map-card {
@@ -315,7 +337,8 @@
                 font-size: 1em;
             }
 
-            div.map-card p.map-author, div.map-card p.map-artist {
+            div.map-card p.map-author,
+            div.map-card p.map-artist {
                 font-size: 0.8em;
             }
 
@@ -342,35 +365,41 @@
         <h2 id="tl-subtitle">Voting Open Now!</h2>
         <p id="tl-desc">
             Over 2000 total submissions. 300+ mappers. 30 categories. 1 community.<br><br>
-            It's time to vote for the best of the best in the Beat Saber mapping community. You can only vote for one mapper/map per category, so choose wisely!<br><br>
+            It's time to vote for the best of the best in the Beat Saber mapping community. You can only vote for one
+            mapper/map per category, so choose wisely!<br><br>
             Voting will close on <b>January 14st, 2025</b>. Check out the BeastSaber website for more information.
         </p>
 
         <a class="lang" id="lang-en" onclick="setLanguage(`en`)">English</a>
         <a class="lang" id="lang-jp" onclick="setLanguage(`jp`)">日本語</a>
         <p id="username"><a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png" width="300px"
-            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
-    <a href="/api/auth/beatsaver"><img src="/cdn/loginbs.png" width="300px"
-            style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatSaver Login Button" /></a><br>Not
-    currently logged in.
-    </p>
+                    style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
+            <a href="/api/auth/beatsaver"><img src="/cdn/loginbs.png" width="300px"
+                    style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatSaver Login Button" /></a><br>Not
+            currently logged in.
+        </p>
     </div>
     <span id="finalists">
         <!-- Finalists will be loaded here -->
     </span>
     <footer>
-        <p class="footer"><a class="footer" id="tl-creator" href="https://saeraphinx.dev">作者：Saeraphinx</a> • <a class="footer" id="tl-translator" href="https://www.twitch.tv/mochichi72">翻訳：mochichi</a> • <a class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks to <a class="footer" href="https://beatleader.com">BeatLeader</a> & <a class="footer" href="https://beatsaver.com">BeatSaver!</a></p>
+        <p class="footer"><a class="footer" id="tl-creator" href="https://saeraphinx.dev">作者：Saeraphinx</a> • <a
+                class="footer" id="tl-translator" href="https://www.twitch.tv/mochichi72">翻訳：mochichi</a> • <a
+                class="footer" href="https://github.com/Saeraphinx/BeastiesNominationServer">Source</a> • Special thanks
+            to <a class="footer" href="https://beatleader.com">BeatLeader</a> & <a class="footer"
+                href="https://beatsaver.com">BeatSaver!</a></p>
     </footer>
     <script>
         let enableSubmit = false;
-        
+        let isVerified = false;
+
         window.onload = async function loadMaps() {
             let lang = localStorage.getItem(`language`);
             if (lang === null) {
                 localStorage.setItem(`language`, `en`);
             }
 
-            if(lang === `jp`) {
+            if (lang === `jp`) {
                 document.getElementById(`lang-jp`).classList.add(`active`);
             } else {
                 document.getElementById(`lang-en`).classList.add(`active`);
@@ -390,7 +419,7 @@
             });
             const element = document.getElementById('username');
             if (auth.status === 200) {
-                if (new Date(Date.now()) >= new Date(`January 15, 2025 00:00:00 UTC`)) {
+                if (new Date(Date.now()) >= new Date(`January 15, 2026 00:00:00 UTC`)) {
                     enableSubmit = false;
                     alert(`Voting is now closed. Thank you for participating!\n\n投票は終了いたしました。ご参加ありがとうございました！`);
                 } else {
@@ -398,16 +427,14 @@
                 }
                 const data = await auth.json();
                 if (data.service == `beatleader`) {
-                    if (data.beatSaverId) {
-                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
-                    } else {
-                        element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username"  href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
-                    }
+                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>${data.beatSaverId ? ` • Verified BeatSaver ID` : ``}`;
                 } else if (data.service == `beatsaver`) {
-                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a> • Verified BeatSaver ID`;
+                    element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatsaver.com/profile/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>${data.beatSaverId ? ` • Verified BeatSaver ID` : ``}`;
                 } else {
+                    enableSubmit = false;
                     element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>`;
                 }
+                isVerified = data.isVerified;
             } else {
                 element.innerHTML = `<a href="/api/auth/beatleader"><img src="/cdn/loginbltrans.png" width="300px"
             style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatLeader Login Button" /></a>
@@ -415,7 +442,7 @@
             style="max-width: 300px; min-width: 100px; width: 100%;" alt="BeatSaver Login Button" /></a><br>${getHardcodedStringLang(`notloggedin`)}`;
             }
 
-            doInitWebReqs();       
+            doInitWebReqs();
         }
 
         // #region Webpage logic
@@ -460,7 +487,7 @@
             maps.id = "maps";
             maps.classList.add("row");
             for (let map of mapData) {
-                let markVoted = voteData?.some(vote => vote.voteRecord == map.id);
+                let markVoted = voteData?.find(vote => vote.voteRecord == map.id);
                 let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted);
                 maps.appendChild(mapCard);
             }
@@ -470,7 +497,7 @@
             return card;
         }
 
-        function generateMapCard(intCatName, id, mapName, mapAuthor, mapArtist, iconHash, diff=null, char=null, type = 0, markVoted = false) {
+        function generateMapCard(intCatName, id, mapName, mapAuthor, mapArtist, iconHash, diff = null, char = null, type = 0, markVoted = {}) {
             let card = document.createElement("div");
             card.classList.add("map-card");
             if (enableSubmit) {
@@ -519,8 +546,56 @@
             column.appendChild(author);
             card.appendChild(column);
 
+            let voteLinks = document.createElement("div");
+            voteLinks.classList.add("mapLinks");
+            voteLinks.id = "voteLinks";
+            let voteOne = document.createElement("a");
+            let voteOneImg = document.createElement("img");
+            let voteTwo = document.createElement("a");
+            let voteTwoImg = document.createElement("img");
+            let voteThree = document.createElement("a");
+            let voteThreeImg = document.createElement("img");
+            voteOneImg.alt = getHardcodedStringLang("voteonealt");
+            voteOneImg.title = getHardcodedStringLang("voteonetitle");
+            voteOneImg.src = "/cdn/icons/1-award.svg";
+            voteOneImg.color = "gold";
+            voteTwoImg.alt = getHardcodedStringLang("votetwoalt");
+            voteTwoImg.title = getHardcodedStringLang("votetwotitle");
+            voteTwoImg.src = "/cdn/icons/2-award.svg";
+            voteThreeImg.alt = getHardcodedStringLang("votethreealt");
+            voteThreeImg.title = getHardcodedStringLang("votethreetitle");
+            voteThreeImg.color = "silver";
+            voteThreeImg.src = "/cdn/icons/3-award.svg";
+            voteThreeImg.color = "bronze";
+            voteOne.appendChild(voteOneImg);
+            voteTwo.appendChild(voteTwoImg);
+            voteThree.appendChild(voteThreeImg);
+            voteLinks.appendChild(voteOne);
+            voteLinks.appendChild(voteTwo);
+            voteLinks.appendChild(voteThree);
+            voteOne.href = "#";
+            voteTwo.href = "#";
+            voteThree.href = "#";
+            voteOne.onclick = function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                vote(intCatName, id, 1);
+            };
+            voteTwo.onclick = function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                vote(intCatName, id, 2);
+            };
+            voteThree.onclick = function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                vote(intCatName, id, 3);
+            };
+
+
             let mapLinks = document.createElement("div");
             mapLinks.classList.add("mapLinks");
+            mapLinks.id = "mapLinks";
             let openInNew = document.createElement("a");
             openInNew.href = `https://beatsaver.com/maps/${id}`;
             openInNew.target = "_blank";
@@ -565,53 +640,57 @@
                     break;
             }
 
-            if (markVoted) {
-                let voted = document.createElement("abutnot");
-                //voted.href = `#`;
-                voted.id = "removeVoteButton";
-                voted.onclick = function (ev) {
-                    ev.preventDefault();
-                    ev.stopPropagation();
-                    vote(intCatName, null);
-                };
-                let votedImg = document.createElement("img");
-                votedImg.src = "/cdn/icons/heart-remove-outline.svg";
-                votedImg.alt = getHardcodedStringLang("removevotealt");
-                votedImg.title = getHardcodedStringLang("removevotetitle");
-                voted.appendChild(votedImg);
-                mapLinks.appendChild(voted);
-                card.classList.add("active");
+            if (markVoted && markVoted.id) {
+                let voted = generateRemoveButton(intCatName, id);
+                if (markVoted.score) {
+                    if (markVoted.score !== -1 || markVoted.score === null) {
+                        card.classList.add(`active-${markVoted.score}`);
+                        mapLinks.appendChild(voted);
+                    }
+                } else {
+                    if (!isVerified) {
+                        card.classList.add("active");
+                        mapLinks.appendChild(voted);
+                    }
+                }
             }
 
             mapLinks.onclick = function click(ev) {
                 ev.stopPropagation();
             };
+            if (isVerified) {
+                card.appendChild(voteLinks);
+            }
             card.appendChild(mapLinks);
 
-            card.onclick = function () {
-                vote(intCatName, id);
-            };
+            if (!isVerified) {
+                card.onclick = function () {
+                    vote(intCatName, id);
+                };
+            }
 
             card.id = id;
 
             return card;
         }
 
-        async function vote(category, map) {
+        async function vote(category, map, score = -1) {
             if (!enableSubmit) {
                 return;
             }
 
-            let voteResponse = await fetch(`/api/voting/vote`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        category: category,
-                        id: map
-                    })
-                });
+            let voteUrl = isVerified ? `/api/voting/verifiedvote` : `/api/voting/vote`;
+            let voteResponse = await fetch(voteUrl, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    category: category,
+                    id: map,
+                    score: isVerified ? score : null
+                })
+            });
 
             let data = await voteResponse.json();
             if (voteResponse.status === 200) {
@@ -622,40 +701,66 @@
             }
 
             let cards = document.getElementById(category).querySelectorAll(".map-card");
-            if (map === null) {
-                cards.forEach(card => {
-                    card.classList.remove("active");
-                    card.querySelectorAll("#removeVoteButton").forEach(button => {
-                        button.remove();
-                    });
+            cards.forEach(card => {
+                card.classList.remove("active");
+                card.classList.remove("active-1");
+                card.classList.remove("active-2");
+                card.classList.remove("active-3");
+                card.querySelectorAll("#removeVoteButton").forEach(button => {
+                    button.remove();
                 });
-                return;
-            }
+            });
 
             cards.forEach(card => {
-                if (card.id == map) {
-                    card.classList.add("active");
-                    let voted = document.createElement("abutnot");
-                    voted.href = `#`;
-                    voted.id = "removeVoteButton";
-                    voted.onclick = function () {
-                        vote(category, null);
-                    };
-                    let votedImg = document.createElement("img");
-                    votedImg.src = "/cdn/icons/heart-remove-outline.svg";
-                    voted.appendChild(votedImg);
-                    
-                    let mapLinks = card.querySelector(".mapLinks");
-                    if (mapLinks.childElementCount <= 2) {
-                        mapLinks.appendChild(voted);
+                let voteForThisCard = data.allVotes.find(vote => vote.voteRecord == card.id);
+                // if a vote is found, check if the voter is a verified voter
+                // if so, check if the score is valid
+                // if not verified, just mark as active
+                if (voteForThisCard) {
+                    let mapLinks = card.querySelector("#mapLinks");
+                
+                    if (isVerified) {
+                        if (voteForThisCard.score !== -1 && voteForThisCard.score !== null) {
+                            card.classList.add(`active-${voteForThisCard.score}`);
+                            if (mapLinks.childElementCount <= 2) {
+                                mapLinks.appendChild(generateRemoveButton(category, card.id));
+                            }
+                        }
+                    } else {
+                        card.classList.add("active");
+                        if (mapLinks.childElementCount <= 2) {
+                            mapLinks.appendChild(generateRemoveButton(category, card.id));
+                        }
                     }
                 } else {
                     card.classList.remove("active");
+                    card.classList.remove(`active-1`);
+                    card.classList.remove(`active-2`);
+                    card.classList.remove(`active-3`);
                     card.querySelectorAll("#removeVoteButton").forEach(button => {
                         button.remove();
                     });
                 }
             });
+        }
+
+        function generateRemoveButton(category, id) {
+            let removeVote = document.createElement("a");
+            removeVote.href = `#`;
+            removeVote.id = "removeVoteButton";
+            removeVote.onclick = function (ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                if (isVerified) {
+                    vote(category, id, -1);
+                } else {
+                    vote(category, null);
+                }
+            };
+            let removeVoteImg = document.createElement("img");
+            removeVoteImg.src = "/cdn/icons/heart-remove-outline.svg";
+            removeVote.appendChild(removeVoteImg);
+            return removeVote;
         }
 
         function generateDifficultyIcon(chara, diffi) {
@@ -736,13 +841,13 @@
         function getStringPerLang(langObj) {
             let lang = localStorage.getItem(`language`);
             if (lang === `jp`) {
-                return langObj.jp.replaceAll(`(`,`<br>(`);
+                return langObj.jp.replaceAll(`(`, `<br>(`);
             } else {
                 return langObj.en;
             }
         }
 
-        function getHardcodedStringLang(stringName, username="") {
+        function getHardcodedStringLang(stringName, username = "") {
             let lang = localStorage.getItem(`language`);
             switch (stringName) {
                 case "title":
@@ -842,11 +947,36 @@
                     } else {
                         return "Remove Vote";
                     }
+                case "voteone":
+                case "voteonealt":
+                case "voteonetitle":
+                    if (lang === `jp`) {
+                        return "1位に投票";
+                    } else {
+                        return "Vote 1st Place";
+                    }
+                case "votetwo":
+                case "votetwoalt":
+                case "votetwotitle":
+                    if (lang === `jp`) {
+                        return "2位に投票";
+                    } else {
+                        return "Vote 2nd Place";
+                    }
+                case "votethree":
+                case "votethreealt":
+                case "votethreetitle":
+                    if (lang === `jp`) {
+                        return "3位に投票";
+                    } else {
+                        return "Vote 3rd Place";
+                    }
                 default:
                     return stringName;
             }
         }
         // #endregion
-   </script>
+    </script>
 </body>
+
 </html>

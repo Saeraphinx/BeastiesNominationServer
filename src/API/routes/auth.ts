@@ -17,7 +17,14 @@ export class AuthRoutes {
     private async loadRoutes() {
         this.app.get(`/api/auth`, async (req, res) => {
             if (req.session.userId) {
-                return res.status(200).send({ message: `Hello, ${req.session.username}!`, username: req.session.username, userId: req.session.userId, service: req.session.service, beatSaverId: req.session.beatSaverId });
+                return res.status(200).send({ 
+                    message: `Hello, ${req.session.username}!`,
+                    username: req.session.username,
+                    userId: req.session.userId,
+                    service: req.session.service,
+                    beatSaverId: req.session.beatSaverId,
+                    isVerified: req.session.isVerified
+                });
             } else {
                 return res.status(401).send({ error: `Not logged in.` });
             }
@@ -76,6 +83,7 @@ export class AuthRoutes {
             req.session.username = user.name;
             req.session.service = `beatleader`;
             req.session.beatSaverId = await BeatLeaderAuthHelper.getBeatSaverId(user.id);
+            req.session.isVerified = await checkIfVerifiedMapper(user.id);
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
@@ -115,6 +123,7 @@ export class AuthRoutes {
             req.session.username = user.name;
             req.session.service = `beatsaver`;
             req.session.beatSaverId = user.id;
+            req.session.isVerified = await checkIfVerifiedMapper(user.id);
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
@@ -178,4 +187,20 @@ export class AuthRoutes {
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}/judging" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}/judging">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
     }
+}
+
+async function checkIfVerifiedMapper(id: string): Promise<boolean> {
+    return true; //debug line
+    return await fetch(`https://api.beatsaver.com/users/id/${id}`)
+        .then(async (res) => {
+            const userData = await res.json() as any;
+            if (!userData || !(`verifiedMapper` in userData)) {
+                return false;
+            }
+            return userData.verifiedMapper === true;
+        })
+        .catch((err) => {
+            console.error(`Failed to check if user ${id} is a verified mapper:`, err);
+            return false;
+        });
 }

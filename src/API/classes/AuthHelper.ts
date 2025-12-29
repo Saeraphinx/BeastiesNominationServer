@@ -214,5 +214,6 @@ declare module 'express-session' {
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
         beatSaverId: string;
+        isVerified: boolean;
     }
 }

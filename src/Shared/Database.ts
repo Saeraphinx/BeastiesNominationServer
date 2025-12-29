@@ -216,7 +216,7 @@ export class DatabaseManager {
             },
             score: {
                 type: DataTypes.INTEGER,
-                allowNull: false,
+                allowNull: true,
             },
             notes: {
                 type: DataTypes.STRING,
@@ -244,6 +244,10 @@ export class DatabaseManager {
             },
             voteRecord: {
                 type: DataTypes.STRING,
+                allowNull: true,
+            },
+            score: {
+                type: DataTypes.INTEGER,
                 allowNull: true,
             },
             category: {
@@ -583,6 +587,7 @@ export class PublicVote extends Model<InferAttributes<PublicVote>, InferCreation
     declare readonly id:number;
     declare service:string;
     declare userId:string;
+    declare score: number|null;
     declare voteRecord:string|null;
     declare category:SortedSubmissionsCategory;
     declare linkedId:string|null;
