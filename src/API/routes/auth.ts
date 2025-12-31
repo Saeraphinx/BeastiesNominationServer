@@ -190,7 +190,7 @@ export class AuthRoutes {
 }
 
 async function checkIfVerifiedMapper(id: string): Promise<boolean> {
-    return true; //debug line
+    //return true; //debug line
     return await fetch(`https://api.beatsaver.com/users/id/${id}`)
         .then(async (res) => {
             const userData = await res.json() as any;

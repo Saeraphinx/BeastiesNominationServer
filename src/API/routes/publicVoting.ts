@@ -231,7 +231,7 @@ export class PublicVotingRoutes {
                 }
             });
 
-            console.log(`Vote saved for ${sessionId} in category ${category} with id ${id}.`);
+            console.log(`Vote saved for ${sessionId} in category ${category} with id ${id}. (score: ${score})`);
             res.status(200).send({ message: `Vote saved!`, vote: existingVoteById, allVotes: allVotes });
         });
     }
