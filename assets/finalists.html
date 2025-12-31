@@ -393,6 +393,7 @@
     <script>
         let enableSubmit = false;
         let isVerified = false;
+        let userId = 1;
 
         window.onload = async function loadMaps() {
             let lang = localStorage.getItem(`language`);
@@ -427,6 +428,7 @@
                     enableSubmit = true;
                 }
                 const data = await auth.json();
+                userId = data.userId;
                 if (data.service == `beatleader`) {
                     element.innerHTML = `${getHardcodedStringLang(`username`, `<a class="username" href="https://beatleader.com/u/${data.userId}">${data.username}</a>`)}<a class="username" href="api/auth/logout">${getHardcodedStringLang(`logout`)}</a>${data.beatSaverId ? ` • Verified BeatSaver ID` : ``}`;
                 } else if (data.service == `beatsaver`) {
@@ -487,7 +489,10 @@
             let maps = document.createElement("div");
             maps.id = "maps";
             maps.classList.add("row");
-            for (let map of mapData) {
+
+            let randomizedMapData = noRandomShuffle(userId, mapData);
+
+            for (let map of randomizedMapData) {
                 let markVoted = voteData?.find(vote => vote.voteRecord == map.id);
                 let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted);
                 maps.appendChild(mapCard);
@@ -724,7 +729,7 @@
                 // if not verified, just mark as active
                 if (voteForThisCard) {
                     let mapLinks = card.querySelector("#mapLinks");
-                
+
                     if (isVerified) {
                         if (voteForThisCard.score !== -1 && voteForThisCard.score !== null) {
                             card.classList.add(`active-${voteForThisCard.score}`);
@@ -835,6 +840,21 @@
                     break;
             }
             return returnObj;
+        }
+
+        function noRandomShuffle(userId, array) {
+            let seed = parseInt(userId);
+            let m = array.length, t, i;
+            while (m) {
+                seed = (seed * 9301 + 49297) % 233280;
+                let rand = seed / 233280;
+                i = Math.floor(rand * m--);
+
+                t = array[m];
+                array[m] = array[i];
+                array[i] = t;
+            }
+            return array;
         }
         // #endregion
 
