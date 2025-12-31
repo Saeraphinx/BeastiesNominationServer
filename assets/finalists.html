@@ -209,7 +209,6 @@
         }
 
         /* #endregion */
-
         /* #region map card text & specifics */
         div.map-card img {
             border-radius: 10px;
@@ -284,6 +283,10 @@
 
         div.mapLinks#voteLinks {
             margin-left: auto;
+            border-radius: 0;
+        }
+
+        .mapLinks a img {
             border-radius: 0;
         }
 
@@ -494,7 +497,7 @@
 
             for (let map of randomizedMapData) {
                 let markVoted = voteData?.find(vote => vote.voteRecord == map.id);
-                let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted);
+                let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted, map.preview);
                 maps.appendChild(mapCard);
             }
             card.id = internalName;
@@ -503,7 +506,7 @@
             return card;
         }
 
-        function generateMapCard(intCatName, id, mapName, mapAuthor, mapArtist, iconHash, diff = null, char = null, type = 0, markVoted = {}) {
+        function generateMapCard(intCatName, id, mapName, mapAuthor, mapArtist, iconHash, diff = null, char = null, type = 0, markVoted = {}, preview = null) {
             let card = document.createElement("div");
             card.classList.add("map-card");
             if (enableSubmit) {
@@ -613,14 +616,23 @@
             openInNew.appendChild(openInNewImg);
 
             let oneclick = document.createElement("a");
-            oneclick.href = `beatsaver://${id}`;
+            let oneclickImg = document.createElement("img");
+
+            if (preview && preview.length == 5) {
+                oneclick.href = `https://beatsaver.com/maps/${preview}`
+                oneclickImg.src = "/cdn/icons/spotlight.svg";
+            } else if (preview && preview.length > 8 && preview.startsWith("https")) {
+                oneclick.href = preview;
+                oneclickImg.src = "/cdn/icons/tv-minimal-play.svg";
+            } else {
+                oneclick.href = `beatsaver://${id}`;
+                oneclickImg.src = "/cdn/icons/cloud-arrow-down-outline.svg";
+                oneclickImg.alt = getHardcodedStringLang("oneclickalt");
+                oneclickImg.title = getHardcodedStringLang("oneclicktitle");
+            }
             oneclick.target = "_blank";
             oneclick.rel = "noopener noreferrer";
             oneclick.id = "oneclick";
-            let oneclickImg = document.createElement("img");
-            oneclickImg.src = "/cdn/icons/cloud-arrow-down-outline.svg";
-            oneclickImg.alt = getHardcodedStringLang("oneclickalt");
-            oneclickImg.title = getHardcodedStringLang("oneclicktitle");
             oneclick.appendChild(oneclickImg);
 
             switch (type) {
@@ -633,14 +645,12 @@
                 case "1":
                     openInNew.href = `https://beatsaver.com/profile/${id}`;
                     mapLinks.appendChild(openInNew);
-                    oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/users/id/${id}/playlist/beatsaver-user-${id}.bplist`;
                     mapLinks.appendChild(oneclick);
                     break;
                 case 2:
                 case "2":
                     openInNew.href = `https://beatsaver.com/playlists/${id}`;
                     mapLinks.appendChild(openInNew);
-                    oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/playlists/id/${id}/playlist/${id}.bplist`;
                     mapLinks.appendChild(oneclick);
                     break;
                 case 3:
