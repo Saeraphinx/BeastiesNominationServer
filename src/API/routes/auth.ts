@@ -83,7 +83,7 @@ export class AuthRoutes {
             req.session.username = user.name;
             req.session.service = `beatleader`;
             req.session.beatSaverId = await BeatLeaderAuthHelper.getBeatSaverId(user.id);
-            req.session.isVerified = await checkIfVerifiedMapper(user.id);
+            req.session.isVerified = await checkIfVerifiedMapper(req.session.beatSaverId);
             req.session.save();
             return res.status(200).send(`<head><meta http-equiv="refresh" content="0; url=${server.url}" /></head><body style="background-color: black;"><a style="color:white;" href="${server.url}">Click here if you are not redirected...</a></body>`); // i need to double check that this is the correct way to redirect
         });
