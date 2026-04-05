@@ -650,7 +650,7 @@
             maps.classList.add("row");
             for (let map of mapData) {
                 let markVoted = voteData?.some(vote => vote.voteRecord == map.id);
-                let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type, markVoted);
+                let mapCard = generateMapCard(internalName, map.id, map.name, map.mapper, map.artist, map.iconHash, map.diff, map.char, map.type);
                 mapCard.style.margin = `0`;
                 maps.appendChild(mapCard);
                 let button = document.createElement(`button`);
@@ -690,7 +690,7 @@
             img.classList.add("map-icon");
             img.src = `/cdn/mapIcons/${encodeURIComponent(iconHash)}`;
             img.alt = mapName;
-            if (type === 1) {
+            if (type == 1) {
                 img.style.borderRadius = "50%";
             }
             if (diff && char) {
@@ -733,7 +733,7 @@
             if (type == 2) {
                 author.textContent = "Organized by " + mapAuthor;
                 author.title = "Organized by " + mapAuthor;
-            } else if (type === 0 || type === 3) {
+            } else if (type == 0 || type == 3) {
                 author.textContent = "Nominee(s): " + mapAuthor;
                 author.title = "Nominee(s): " + mapAuthor;
             }
@@ -764,23 +764,23 @@
             oneclick.appendChild(oneclickImg);
 
             switch (type) {
-                case 0:
+                case "0":
                     mapLinks.appendChild(openInNew);
                     mapLinks.appendChild(oneclick);
                     break;
-                case 1:
+                case "1":
                     openInNew.href = `https://beatsaver.com/profile/${id}`;
                     mapLinks.appendChild(openInNew);
                     oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/users/id/${id}/playlist/beatsaver-user-${id}.bplist`;
                     mapLinks.appendChild(oneclick);
                     break;
-                case 2:
+                case "2":
                     openInNew.href = `https://beatsaver.com/playlists/${id}`;
                     mapLinks.appendChild(openInNew);
                     oneclick.href = `bsplaylist://playlist/https://api.beatsaver.com/playlists/id/${id}/playlist/${id}.bplist`;
                     mapLinks.appendChild(oneclick);
                     break;
-                case 3:
+                case "3":
                     mapLinks.style.display = "none";
                 default:
                     break;
