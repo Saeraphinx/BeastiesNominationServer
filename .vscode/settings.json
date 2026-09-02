@@ -1,6 +1,8 @@
 {
-    "discord.enabled": true,
-    "eslint.workingDirectories": [
-        "./src", 
-    ],
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "files.associations": {
+        "*.css": "tailwindcss"
+    }
 }
