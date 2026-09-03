@@ -11,6 +11,7 @@
 </script>
 
 <svelte:head>
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet'>
     <link rel="icon" href={favicon} />
       {#if page.data.pageMetadata?.title && page.data.pageMetadata?.title.includes(" - ")}
         <title>{page.data.pageMetadata.title}</title>
@@ -34,7 +35,7 @@
 
 </svelte:head>
 
-<div>
+<div class="basebody">
     {@render children()}
 </div>
 
@@ -43,3 +44,17 @@
         <a href={resolve(localizeHref(page.url.pathname, { locale }) as Pathname)}>{locale}</a>
     {/each}
 </div>
+
+<style>
+    .basebody {
+        background-image: linear-gradient(120deg, #b52a1c -49%, #454088 27.08%, #454088 70%, #1268a1);
+        background: linear-gradient(127deg, #f708d4, #4808f7, #a24aff, #8f18f7, #f708e9);
+        background-size: 1000% 1000%;
+        animation: bg 90s ease infinite;
+        font-family: "Lato", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+</style>

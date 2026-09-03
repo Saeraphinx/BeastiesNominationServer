@@ -5,9 +5,9 @@
         "title": "The BeastSaber Mapping Awards",
         "subtitle": "AKA: The Beasties - By Mappers, For Mappers",
         "descriptionNoLinks": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations.",
-        "description": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations. <br><br>Using the form below, you can submit your favorite maps for consideration in the 2025 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a href=\"{bSaberUrl}\">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a href=\"{countId}\">the bottom of this page</a>.",
+        "description": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations. <br><br>Using the form below, you can submit your favorite maps for consideration in the 2026 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a href=\"{bSaberUrl}\">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a href=\"{countId}\">the bottom of this page</a>.",
         "form": {
-            "title": "2025 Map Submission Form",
+            "title": "2026 Map Submission Form",
             "category": "Category",
             "bsrKey": "BSR Key (e.g. \"43a1f\", \"48f0f\", \"48912\")",
             "name": "Pack/Mapper Name or BeatSaver URL",
@@ -60,7 +60,8 @@
             },
             "OTY-Pack": {
                 "title": "Pack of the Year",
-                "dropdown": "Pack of the Year"
+                "dropdown": "Pack of the Year",
+                "description": "The map pack that has it all: a tight theme, new high-quality maps, and a great presentation across all difficulties, all wrapped up in a beautiful \".bplist\" bow."
             },
             "OTY-RookieMapper": {
                 "title": "Rookie Mapper of the Year",

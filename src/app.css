@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+@layer base {
+
+  html {
+    @apply text-white;
+  }
+
+  input, select {
+    height: 36px;
+    @apply bg-white text-black border-white px-2 py-1 rounded;
+  }
+}

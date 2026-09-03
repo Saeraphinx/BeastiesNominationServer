@@ -15,6 +15,14 @@ const config: Config = {
                 tabWidth: 2,
                 useTabs: false,
             }
+        },
+        {
+            files: "*.css",
+            options: {
+                parser: "css",
+                tabWidth: 2,
+                useTabs: false,
+            }
         }
     ],
     tailwindStylesheet: "./src/routes/layout.css",
