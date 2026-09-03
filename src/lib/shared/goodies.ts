@@ -1,4 +1,7 @@
-import { randomBytes } from "crypto";
+
+export const submissionEndDate = new Date(`16 Dec 2026 00:00:00 UTC`);
+export const votingEndDate = new Date(`31 Dec 2026 00:00:00 UTC`);
+
 
 export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus` | `All`;
 export enum DifficultyEnum {
@@ -7,8 +10,7 @@ export enum DifficultyEnum {
     Hard = `Hard`,
     Expert = `Expert`,
     ExpertPlus = `ExpertPlus`,
-    All = `All`,
-    Other = `Other`
+    All = `All`
 }
 export type Characteristic =
     | `Standard`
@@ -139,6 +141,15 @@ export enum SortedSubmissionsCategory {
     RookieMapperOfTheYear = `OTY-RookieMapper`
 }
 
+export enum RequestSubmissionStatus {
+	Invalid,
+	InvalidCategory,
+	RateLimited,
+	OldKey,
+	AlreadyVoted,
+	Success
+}
+
 // yoink thankies bstoday
 export function validateEnumValue<T extends object>(value: any, enumType: T): value is T[keyof T] {
     if (Object.values(enumType).includes(value)) {
@@ -190,10 +201,5 @@ export function isDiffCharRequiredSortedSubmission(category: string): boolean {
         category != SortedSubmissionsCategory.FullSpreadMap &&
         category != SortedSubmissionsCategory.OST
     );
-}
-
-export function createRandomString(byteCount: number): string {
-    let key = randomBytes(byteCount).toString(`base64url`);
-    return key;
 }
     

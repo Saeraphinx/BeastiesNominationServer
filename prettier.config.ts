@@ -5,9 +5,18 @@ const config: Config = {
     useTabs: false,
     tabWidth: 4,
     semi: true,
-    printWidth: 100,
+    printWidth: 256,
     plugins: ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
-    overrides: [{ files: "*.svelte", options: { parser: "svelte" } }],
+    overrides: [
+        {
+            files: "*.svelte",
+            options: {
+                parser: "svelte",
+                tabWidth: 2,
+                useTabs: false,
+            }
+        }
+    ],
     tailwindStylesheet: "./src/routes/layout.css",
 };
 

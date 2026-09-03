@@ -1,10 +1,10 @@
-import { DiscordAuthHelper, SessionHelper } from '$lib/server/auth';
-import { SESSION_COOKIE_NAME } from '$app/env/private';
+import { BeatSaverAuthHelper, DiscordAuthHelper, SessionHelper } from '$lib/server/auth';
 import { error, redirect } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 import { Judge } from '../../../../../lib/server/database';
 import { Logger } from '../../../../../lib/server/logger';
 import { PUBLIC_BASE_URL } from '$app/env/public';
+import { SESSION_COOKIE_NAME } from '$app/env/private';
 
 export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
     const state = url.searchParams.get('state');
@@ -20,43 +20,19 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         SessionHelper.states = SessionHelper.states.filter((s) => s !== state + getClientAddress());
     }
 
-    const token = await DiscordAuthHelper.getToken(code);
+    const token = await BeatSaverAuthHelper.getToken(code);
     if (!token) {
         throw error(400, `Invalid code.`);
     }
 
-    const user = await DiscordAuthHelper.getUser(token.access_token);
+    const user = await BeatSaverAuthHelper.getUser(token.access_token);
     if (!user) {
         throw error(500, `Internal server error.`);
     }
 
-    let judge = await Judge.findOne({ where: { discordId: user.id } });
-
-    if (!judge) {
-        let discordGuildMemberInfo = await DiscordAuthHelper.getGuildMemberData(
-            token.access_token,
-            `452928402203344908`,
-            user.id
-        );
-        if (!discordGuildMemberInfo) {
-            Logger.warn(`Failed to get guild member data for ${user.username}.`, `Auth`);
-            throw error(500, `Internal server error.`);
-        }
-        if (!discordGuildMemberInfo.roles.includes(`933458558408884244`)) {
-            console.log(`id ${user.id} is not a judge`);
-            throw error(403, `You are not involved with The Beasties.`);
-        }
-
-        judge = await Judge.create({
-            discordId: user.id,
-            name: user.username,
-            avatarUrl: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
-        });
-    }
-
     const authSession = await SessionHelper.createAuthSession(user.id, {
-        username: judge.name,
-        service: `judgeId`,
+        username: user.name,
+        service: `beatsaver`,
         isVerified: true
     });
 

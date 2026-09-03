@@ -5,6 +5,148 @@
         "title": "The BeastSaber Mapping Awards",
         "subtitle": "AKA: The Beasties - By Mappers, For Mappers",
         "descriptionNoLinks": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations.",
-        "description": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations. <br><br>Using the form below, you can submit your favorite maps for consideration in the 2025 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a href=\"{bSaberUrl}\">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a href=\"{countId}\">the bottom of this page</a>."
+        "description": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations. <br><br>Using the form below, you can submit your favorite maps for consideration in the 2025 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a href=\"{bSaberUrl}\">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a href=\"{countId}\">the bottom of this page</a>.",
+        "form": {
+            "title": "2025 Map Submission Form",
+            "category": "Category",
+            "bsrKey": "BSR Key (e.g. \"43a1f\", \"48f0f\", \"48912\")",
+            "name": "Pack/Mapper Name or BeatSaver URL",
+            "ostName": "OST Map",
+            "difficulty": "Difficulty",
+            "characteristic": "Characteristic",
+            "submit": "Submit"
+        }
+    },
+    "common": {
+        "characteristic": {
+            "Standard": "Standard",
+            "OneSaber": "One Saber",
+            "NoArrows": "No Arrows",
+            "360Degree": "360 Degree",
+            "90Degree": "90 Degree",
+            "Lightshow": "Lightshow",
+            "Lawless": "Lawless",
+            "All": "All",
+            "Other": "All"
+        },
+        "difficulty": {
+            "Easy": "Easy",
+            "Normal": "Normal",
+            "Hard": "Hard",
+            "Expert": "Expert",
+            "ExpertPlus": "Expert+",
+            "All": "All"
+        },
+        "category": {
+            "OTY-Map": {
+                "title": "Map of the Year",
+                "dropdown": "Map of the Year",
+                "description": "The best unmodded map of the year. Full stop. It has it all - representation, emphasis, flow - everything coming together for an incredible playing experience to go with the song."
+            },
+            "OTY-ModdedMap": {
+                "title": "Modded Map of the Year",
+                "dropdown": "Modded Map of the Year",
+                "description": "The best modded map of the year. Full stop. Combining the full power of Vivify, Noodle Extensions, Chroma, or any other gameplay or visual mods; this map using mods to truly capture and convey the music and/or alter the gameplay in mind-blowing ways."
+            },
+            "OTY-Mapper": {
+                "title": "Mapper of the Year",
+                "dropdown": "Mapper of the Year",
+                "description": "A mapper who not only excels in their art but also shares their experience, leads, and mentors as they are able."
+            },
+            "OTY-Lighter": {
+                "title": "Lighter of the Year",
+                "dropdown": "Lighter of the Year",
+                "description": "A lighter, vanilla or chroma, who not only excels in their art but also shares their experience, leads, and mentors as they are able."
+            },
+            "OTY-Pack": {
+                "title": "Pack of the Year",
+                "dropdown": "Pack of the Year"
+            },
+            "OTY-RookieMapper": {
+                "title": "Rookie Mapper of the Year",
+                "dropdown": "Rookie Mapper of the Year",
+                "description": "The best up-and-coming mapper whose first map was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2026). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2025-Dec 1st 2026."
+            },
+            "OTY-RookieLighter": {
+                "title": "Rookie Lighter of the Year",
+                "dropdown": "Rookie Lighter of the Year",
+                "description": "The best up-and-coming lighter whose first map/lightshow was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2025). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2025-Dec 1st 2026."
+            },
+            "Gen-OST": {
+                "title": "Best OST Map",
+                "dropdown": "OST",
+                "description": "Let's take a moment to shine some light on the great work that our community-turned-official mappers have done and celebrate the best official map made in 2026."
+            },
+            "Gen-FullSpread": {
+                "title": "Best Full Spread Map",
+                "dropdown": "Full Spread",
+                "description": "This map has something for players at every level and does it with style and masterful mapping. To qualify, the map must have all five difficulties — Easy, Normal, Hard, Expert, ExpertPlus."
+            },
+            "Gen-NonStandard": {
+                "title": "Best Non-Standard Map",
+                "dropdown": "Non-Standard",
+                "description": "This category celebrates the best of non-standard characteristics: One Saber, No Arrows, and 360/90-Degree maps."
+            },
+            "Ranked-RankedMap": {
+                "title": "Best Ranked Map",
+                "dropdown": "Ranked",
+                "description": "Nominate your favorite ranked map diff and our team will sort it into the appropriate category. Nominate BeatLeader or ScoreSaber ranked maps."
+            },
+            "Mods-Lightshow": {
+                "title": "Best Lightshow",
+                "dropdown": "Lightshow",
+                "description": "The best lightshow is a feast for the eyes and ears, with a focus on the visuals and the music. Lighting nominations only have one \"funnel\" on the form. The Beasties team will separate maps into the right categories based on their construction."
+            },
+            "Mods-GameplayModchart": {
+                "title": "Best Gameplay Modchart",
+                "dropdown": "Gameplay Modchart",
+                "description": "Here? There? Where is the next note coming from?! This category includes maps that feature solid mapping AND alter the gameplay in mind-blowing ways through animation and manipulation of notes and obstacles."
+            },
+            "Style-Balanced": {
+                "title": "Best Balanced Map",
+                "dropdown": "Balanced",
+                "description": "Build strength to the beat. The best fitness map forces constant natural movement in all dimensions with walls and bloqs that keep the flow until your legs give out."
+            },
+            "Style-Tech": {
+                "title": "Best Tech Map",
+                "dropdown": "Tech",
+                "description": "With more angles than a dodecahedron, the best map in the \"Tech\" category bends the concept of parity to its will to create a challenging sight-read that retains great flow."
+            },
+            "Style-Speed": {
+                "title": "Best Speed Map",
+                "dropdown": "Speed",
+                "description": "Nothing screams \"speed\" more than that feeling of lactic acid setting in after tackling thousands of notes at mind-blowing BPMs, and the best map in the \"Speed\" category delivers an extra helping."
+            },
+            "Style-Dance": {
+                "title": "Best Dance Map",
+                "dropdown": "Dance",
+                "description": "With a blend of big arm swings, high movement, and a bit lower density, the best map in the \"Dance\" category gets players of all ages grooving to the beat and sweating up a storm."
+            },
+            "Style-Fitness": {
+                "title": "Best Fitness Map",
+                "dropdown": "Fitness",
+                "description": "Build strength to the beat. The best fitness map forces constant natural movement in all dimensions with walls and bloqs that keep the flow until your legs give out."
+            },
+            "Style-Challenge": {
+                "title": "Best Challenge Map",
+                "dropdown": "Challenge",
+                "description": "Ranking Criteria? Curation? Mapping fundamentals? These are but chains to restrict the seemingly endless and wild imagination of challenge mappers. The best map in the \"Challenge\" category pushes the limits in every way."
+            },
+            "Style-Acc": {
+                "title": "Best Accuracy Map",
+                "dropdown": "Accuracy",
+                "description": "Chase that sweet high accuracy in a very, very careful dance. The best map in the Accuracy category has excellent rhythmic choice and well-placed emphasis with the fewest amount of notes."
+            },
+            "Style-Poodle": {
+                "title": "Best Poodle Map",
+                "dropdown": "Poodle",
+                "description": "Poodles and Pauls. The best map in the Poodle category has excellent flow and well-placed emphasis with the long hold note swing style. Spirals, Switch-backs, and more!"
+            },
+            "Style-Wildcard": {
+                "title": "Best Wildcard Map",
+                "dropdown": "Wildcard",
+                "description": "This category shines a light on maps that explore beyond \"normal\" mapping. Cult classics, bending of mechanics, and different ways of thinking can be found here. This is the catch all category. Have something that is unique and doesn't fit a category? Nominate it here!"
+            }
+        }
     }
 }

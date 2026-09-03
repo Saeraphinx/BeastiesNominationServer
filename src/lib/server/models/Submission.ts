@@ -1,6 +1,6 @@
-import { Op, type CreationOptional, type InferAttributes, type InferCreationAttributes } from "sequelize";
+import { Op, type CreationOptional, type InferAttributes, type InferCreationAttributes, type NonAttribute } from "sequelize";
 import { AllowNull, Column, CreatedAt, DataType, Default, DeletedAt, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
-import { type Characteristic, type Difficulty, SubmissionCategory, type FilterStatus, isNameRequired, validateEnumValue, isDiffCharRequired, NominationStatusResponse } from "../../shared/goodies";
+import { type Characteristic, type Difficulty, SubmissionCategory, type FilterStatus, isNameRequired, validateEnumValue, isDiffCharRequired, NominationStatusResponse, RequestSubmissionStatus, CharacteristicEnum } from "../../shared/goodies";
 
 @Table({
     tableName: "submissions",
@@ -15,13 +15,13 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         primaryKey: true,
     })
     declare nominationId: CreationOptional<number>;
-    
-    @Column(DataType.STRING)
+
     @AllowNull(false)
+    @Column(DataType.STRING)
     declare submitterId: string;
 
-    @Column(DataType.STRING)
     @AllowNull(true)
+    @Column(DataType.STRING)
     declare service: `beatleader` | `beatsaver` | `judgeId`;
 
     @AllowNull(true)
@@ -44,8 +44,8 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
     @Column(DataType.STRING)
     declare characteristic: CreationOptional<Characteristic | null>;
 
-    @Column(DataType.STRING)
     @AllowNull(false)
+    @Column(DataType.STRING)
     declare category: SubmissionCategory;
 
     @AllowNull(true)
@@ -65,132 +65,239 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
     @DeletedAt
     declare deletedAt: CreationOptional<Date | null>;
 
-    public static async addSubmission(
-		submitterId: string,
-		service: `beatleader` | `beatsaver` | `judgeId`,
-		category: string,
-		content: {
-			bsrId?: string;
-			name?: string;
-			difficulty?: Difficulty;
-			characteristic?: Characteristic;
-		}
-	): Promise<NominationStatusResponse> {
-		let existingRecords;
-		let sortedrecord: Submission | null;
-		if (isNameRequired(category)) {
-			existingRecords = await this.findAndCountAll({
-				where: { submitterId: submitterId, name: content.name, category: category }
-			});
-			sortedrecord = await this.findOne({
-				where: { category: category, name: content.name, filterStatus: { [Op.not]: null } }
-			});
-		} else {
-			if (isDiffCharRequired(category)) {
-				existingRecords = await this.findAndCountAll({
-					where: {
-						submitterId: submitterId,
-						bsrId: content.bsrId,
-						category: category,
-						difficulty: content.difficulty,
-						characteristic: content.characteristic
-					}
-				});
-				sortedrecord = await this.findOne({
-					where: {
-						bsrId: content.bsrId,
-						category: category,
-						characteristic: content.characteristic,
-						difficulty: content.difficulty,
-						filterStatus: { [Op.not]: null }
-					}
-				});
-			} else {
-				existingRecords = await this.findAndCountAll({
-					where: { submitterId: submitterId, bsrId: content.bsrId, category: category }
-				});
-				sortedrecord = await this.findOne({
-					where: { bsrId: content.bsrId, category: category, filterStatus: { [Op.not]: null } }
-				});
-			}
-		}
+    private static recentSubmissions: NonAttribute<string[]> = [];
 
-		if (existingRecords.count > 0) {
-			return NominationStatusResponse.AlreadyVoted;
-		}
+    public static validateSubmission(
+        content: {
+            category: SubmissionCategory,
+            bsrId?: string;
+            name?: string;
+            difficulty?: Difficulty;
+            characteristic?: Characteristic;
+        }
+    ): RequestSubmissionStatus {
+        let isName = isNameRequired(content.category)
+        let isDiffChar = isDiffCharRequired(content.category);
 
-		if (!validateEnumValue(category, SubmissionCategory)) {
-			return NominationStatusResponse.InvalidCategory;
-		}
+        if (isName) {
+            if (content.bsrId || !content.name) {
+                return RequestSubmissionStatus.Invalid;
+            }
 
-		let sortedRecordInfo: { isSorted: boolean; status?: FilterStatus; filtererId?: string | null };
-		sortedRecordInfo = { isSorted: false };
-		switch (sortedrecord?.filterStatus) {
-			case `Accepted`:
-			case `Duplicate`:
-				sortedRecordInfo = {
-					isSorted: true,
-					status: `Duplicate`,
-					filtererId: sortedrecord.filtererId
-				};
-				break;
-			case `Rejected`:
-			case `RejectedDuplicate`:
-				sortedRecordInfo = {
-					isSorted: true,
-					status: `RejectedDuplicate`,
-					filtererId: sortedrecord.filtererId
-				};
-				break;
-			case `Ignored`:
-			default:
-				sortedRecordInfo = {
-					isSorted: false
-				};
-				break;
-		}
+            if (content.characteristic || content.difficulty) {
+                return RequestSubmissionStatus.Invalid;
+            }
 
-		if (isNameRequired(category)) {
+            if (!content.name || content.name.length == 0 || content.name.length > 100) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (content.name.match(/[a-zA-Z:\-_/0-9. ]{1,100}/) == null) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            this.recentSubmissions.push(content.name);
+            if (this.recentSubmissions.filter((id) => id == content.name).length > 10) {
+                return RequestSubmissionStatus.RateLimited;
+            }
+        } else {
+            if (!content.bsrId || content.name) {
+                return RequestSubmissionStatus.Invalid;
+            }
+            if (content.bsrId.length != 5) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (content.bsrId.match(/[0-9a-fA-FxX]{5}/) == null) {
+                return RequestSubmissionStatus.Invalid;
+            }
+
+            if (content.bsrId.toLowerCase().includes(`x`) && content.category == SubmissionCategory.RankedMap) {
+                content.bsrId = content.bsrId.toLowerCase().replaceAll(`x`, ``);
+            } else {
+                let bsrIdNoHex = parseInt(content.bsrId, 16);
+
+                if (isNaN(bsrIdNoHex)) {
+                    return RequestSubmissionStatus.Invalid;
+                }
+
+                // from 270436 (42063) to 313841 (4c9f1) are eligible, except for RankedMap which has no restrictions
+                if (
+                    (bsrIdNoHex <= 270435 || bsrIdNoHex >= 313841) &&
+                    content.category != SubmissionCategory.RankedMap
+                ) {
+                    return RequestSubmissionStatus.OldKey;
+                }
+            }
+
+            
+            this.recentSubmissions.push(content.bsrId);
+            if (this.recentSubmissions.filter((id) => id == content.bsrId).length > 10) {
+                return RequestSubmissionStatus.RateLimited;
+            }
+
+            if (isDiffChar) {
+                if (!content.difficulty || !content.characteristic) {
+                    return RequestSubmissionStatus.Invalid;
+                }
+            }
+        }
+
+        return RequestSubmissionStatus.Success;
+    }
+
+    public static async sendSubmission(
+        id: string,
+        service: `beatleader` | `beatsaver` | `judgeId`,
+        content: {
+            category: string,
+            bsrId?: string;
+            name?: string;
+            difficulty?: Difficulty;
+            characteristic?: Characteristic;
+        }
+    ): Promise<RequestSubmissionStatus> {
+        let status = await this.addSubmission(id, service, content);
+        switch (status) {
+            case NominationStatusResponse.Invalid:
+                return RequestSubmissionStatus.Invalid;
+            case NominationStatusResponse.InvalidCategory:
+                return RequestSubmissionStatus.InvalidCategory;
+            case NominationStatusResponse.AlreadyVoted:
+                return RequestSubmissionStatus.AlreadyVoted;
+            case NominationStatusResponse.Accepted:
+                return RequestSubmissionStatus.Success;
+        }
+        // jsut in case
+        return RequestSubmissionStatus.Invalid;
+    }
+
+    private static async addSubmission(
+        submitterId: string,
+        service: `beatleader` | `beatsaver` | `judgeId`,
+        content: {
+            category: string,
+            bsrId?: string;
+            name?: string;
+            difficulty?: Difficulty;
+            characteristic?: Characteristic;
+        }
+    ): Promise<NominationStatusResponse> {
+        let existingRecords;
+        let sortedrecord: Submission | null;
+        if (isNameRequired(content.category)) {
+            existingRecords = await this.findAndCountAll({
+                where: { submitterId: submitterId, name: content.name, category: content.category }
+            });
+            sortedrecord = await this.findOne({
+                where: { category: content.category, name: content.name, filterStatus: { [Op.not]: null } }
+            });
+        } else {
+            if (isDiffCharRequired(content.category)) {
+                existingRecords = await this.findAndCountAll({
+                    where: {
+                        submitterId: submitterId,
+                        bsrId: content.bsrId,
+                        category: content.category,
+                        difficulty: content.difficulty,
+                        characteristic: content.characteristic
+                    }
+                });
+                sortedrecord = await this.findOne({
+                    where: {
+                        bsrId: content.bsrId,
+                        category: content.category,
+                        characteristic: content.characteristic,
+                        difficulty: content.difficulty,
+                        filterStatus: { [Op.not]: null }
+                    }
+                });
+            } else {
+                existingRecords = await this.findAndCountAll({
+                    where: { submitterId: submitterId, bsrId: content.bsrId, category: content.category }
+                });
+                sortedrecord = await this.findOne({
+                    where: { bsrId: content.bsrId, category: content.category, filterStatus: { [Op.not]: null } }
+                });
+            }
+        }
+
+        if (existingRecords.count > 0) {
+            return NominationStatusResponse.AlreadyVoted;
+        }
+
+        if (!validateEnumValue(content.category, SubmissionCategory)) {
+            return NominationStatusResponse.InvalidCategory;
+        }
+
+        let sortedRecordInfo: { isSorted: boolean; status?: FilterStatus; filtererId?: string | null };
+        sortedRecordInfo = { isSorted: false };
+        switch (sortedrecord?.filterStatus) {
+            case `Accepted`:
+            case `Duplicate`:
+                sortedRecordInfo = {
+                    isSorted: true,
+                    status: `Duplicate`,
+                    filtererId: sortedrecord.filtererId
+                };
+                break;
+            case `Rejected`:
+            case `RejectedDuplicate`:
+                sortedRecordInfo = {
+                    isSorted: true,
+                    status: `RejectedDuplicate`,
+                    filtererId: sortedrecord.filtererId
+                };
+                break;
+            case `Ignored`:
+            default:
+                sortedRecordInfo = {
+                    isSorted: false
+                };
+                break;
+        }
+
+        if (isNameRequired(content.category)) {
             if (!content.name) {
                 return NominationStatusResponse.Invalid;
             }
-			await this.create({
-				submitterId: submitterId,
-				category: category,
-				name: content.name,
+            await this.create({
+                submitterId: submitterId,
+                category: content.category,
+                name: content.name,
                 service: service,
-				filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-				filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
-			});
-		} else {
-			if (isDiffCharRequired(category)) {
-				await this.create({
-					submitterId: submitterId,
-					service: service,
-					category: category,
-					bsrId: content.bsrId,
-					name: content.name,
-					difficulty: content.difficulty,
-					characteristic: content.characteristic,
-					filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-					filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
-				});
-			} else {
-				await this.create({
-					submitterId: submitterId,
-					service: service,
-					category: category,
-					bsrId: content.bsrId,
-					name: content.name,
-					filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-					filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
-				});
-			}
-		}
-		console.log(`Added nomination from ${submitterId} in category ${category}`);
-		console.log(content);
-		return NominationStatusResponse.Accepted;
-	}
+                filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
+                filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+            });
+        } else {
+            if (isDiffCharRequired(content.category)) {
+                await this.create({
+                    submitterId: submitterId,
+                    service: service,
+                    category: content.category,
+                    bsrId: content.bsrId,
+                    name: content.name,
+                    difficulty: content.difficulty,
+                    characteristic: content.characteristic,
+                    filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+                });
+            } else {
+                await this.create({
+                    submitterId: submitterId,
+                    service: service,
+                    category: content.category,
+                    bsrId: content.bsrId,
+                    name: content.name,
+                    filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+                });
+            }
+        }
+        console.log(`Added nomination from ${submitterId} in category ${content.category}`);
+        console.log(content);
+        return NominationStatusResponse.Accepted;
+    }
 
     public static async getNominationCount() {
         const counts = {

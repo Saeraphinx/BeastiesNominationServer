@@ -19,9 +19,17 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
     @Column(DataType.STRING)
     declare name: string;
 
-    @AllowNull(false)
-    @Default([])
-    @Column(DataType.ARRAY(DataType.STRING))
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        defaultValue: `[]`,
+        get: function() {
+            return JSON.parse(this.getDataValue(`roles`) || `[]`);
+        },
+        set: function(value: string[]) {
+            this.setDataValue(`roles`, JSON.stringify(value));
+        }
+    })
     declare roles: CreationOptional<string[]>;
 
     @AllowNull(false)
@@ -32,14 +40,30 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
     @Column(DataType.STRING)
     declare avatarUrl: string;
 
-    @AllowNull(false)
-    @Default([])
-    @Column(DataType.ARRAY(DataType.STRING))
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        defaultValue: `[]`,
+        get: function() {
+            return JSON.parse(this.getDataValue(`beatSaverIds`) || `[]`);
+        },
+        set: function(value: string[]) {
+            this.setDataValue(`beatSaverIds`, JSON.stringify(value));
+        }
+    })
     declare beatSaverIds: CreationOptional<string[]>;
 
-    @AllowNull(false)
-    @Default([])
-    @Column(DataType.ARRAY(DataType.STRING))
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        defaultValue: `[]`,
+        get: function() {
+            return JSON.parse(this.getDataValue(`permittedCategories`) || `[]`);
+        },
+        set: function(value: string[]) {
+            this.setDataValue(`permittedCategories`, JSON.stringify(value));
+        }
+    })
     declare permittedCategories: CreationOptional<string[]>;
 
     @CreatedAt

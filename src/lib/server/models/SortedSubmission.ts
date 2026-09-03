@@ -40,9 +40,17 @@ export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, I
     @Column(DataType.STRING)
     declare hash: CreationOptional<string | null>;
 
-    @AllowNull(false)
-    @Default([])
-    @Column(DataType.ARRAY(DataType.STRING))
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        defaultValue: `[]`,
+        get: function() {
+            return JSON.parse(this.getDataValue(`submitterIds`) || `[]`);
+        },
+        set: function(value: string[]) {
+            this.setDataValue(`submitterIds`, JSON.stringify(value));
+        }
+    })
     declare submitterIds: string[];
 
     @CreatedAt

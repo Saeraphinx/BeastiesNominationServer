@@ -2,12 +2,12 @@ import { defineEnvVars } from '@sveltejs/kit/env';
 import { z } from 'zod';
 
 export const variables = defineEnvVars({
-	AUTH_DISCORD_CLIENT_ID: { static: true },
-    AUTH_DISCORD_CLIENT_SECRET: { static: true },
-    AUTH_BEATSAVER_CLIENT_ID: { static: true },
-    AUTH_BEATSAVER_CLIENT_SECRET: { static: true },
-    AUTH_BEATLEADER_CLIENT_ID: { static: true },
-    AUTH_BEATLEADER_CLIENT_SECRET: { static: true },
+	AUTH_DISCORD_CLIENT_ID: { static: true, schema: z.string().optional() },
+    AUTH_DISCORD_CLIENT_SECRET: { static: true, schema: z.string().optional() },
+    AUTH_BEATSAVER_CLIENT_ID: { static: true, schema: z.string().optional() },
+    AUTH_BEATSAVER_CLIENT_SECRET: { static: true, schema: z.string().optional() },
+    AUTH_BEATLEADER_CLIENT_ID: { static: true, schema: z.string().optional() },
+    AUTH_BEATLEADER_CLIENT_SECRET: { static: true, schema: z.string().optional() },
 
     DATABASE_LOCATION: { 
         static: true,
@@ -25,5 +25,5 @@ export const variables = defineEnvVars({
 
     LOGGER_URL: { static: true, schema: z.url().optional() },
 
-    PUBLIC_BASE_URL: { static: true, public: true },
+    PUBLIC_BASE_URL: { static: true, public: true, schema: z.string().default(`http://localhost:5173`) },
 });

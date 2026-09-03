@@ -4,5 +4,7 @@
     "editor.tabSize": 4,
     "files.associations": {
         "*.css": "tailwindcss"
-    }
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.configPath": "prettier.config.ts"
 }

@@ -1,15 +1,20 @@
 import * as env from '$app/env/private';
 import { PUBLIC_BASE_URL } from '$app/env/public';
-import { timingSafeEqual, subtle } from 'crypto';
+import { timingSafeEqual, subtle, randomBytes } from 'crypto';
 import path from 'path';
 import { Column, DataType, Model, Sequelize, Table } from 'sequelize-typescript';
 import type { InferAttributes, InferCreationAttributes } from 'sequelize/lib/model';
+
+export function createRandomString(byteCount: number): string {
+    let key = randomBytes(byteCount).toString(`base64url`);
+    return key;
+}
 
 class OAuth2Helper {
     public static async getToken(
         url: string,
         code: string,
-        oAuth2Data: { clientId: string; clientSecret: string },
+        oAuth2Data: { clientId?: string; clientSecret?: string },
         callbackUrl: string
     ): Promise<OAuth2Response | null> {
         if (!code || !oAuth2Data.clientId || !oAuth2Data.clientSecret || !callbackUrl || !url) {
@@ -325,8 +330,12 @@ export class SessionHelper {
         return authSessionAndAuthSessionToken;
     }
 
-    public static async validateAuthSessionToken(authSessionToken: string): Promise<AuthSession | null> {
+    public static async validateAuthSessionToken(authSessionToken: string | undefined): Promise<AuthSession | null> {
         const now = new Date();
+
+        if (!authSessionToken) {
+            return null;
+        }
 
         const tokenParts = authSessionToken.split(".");
         if (tokenParts.length !== 2) {
