@@ -14,7 +14,7 @@ const config: Config = {
                 parser: "svelte",
                 tabWidth: 2,
                 useTabs: false,
-            }
+            },
         },
         {
             files: "*.css",
@@ -22,10 +22,10 @@ const config: Config = {
                 parser: "css",
                 tabWidth: 2,
                 useTabs: false,
-            }
-        }
+            },
+        },
     ],
-    tailwindStylesheet: "./src/routes/layout.css",
+    tailwindStylesheet: "./src/app.css",
 };
 
 export default config;

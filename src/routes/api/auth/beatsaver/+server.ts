@@ -1,8 +1,7 @@
-import type { RequestHandler } from './$types';
-import { SESSION_COOKIE_NAME } from '$app/env/private';
-import { BeatSaverAuthHelper, SessionHelper } from '$lib/server/auth';
-import { error, redirect } from '@sveltejs/kit';
-import { createRandomString } from '$lib/shared/goodies';
+import type { RequestHandler } from "./$types";
+import { SESSION_COOKIE_NAME } from "$app/env/private";
+import { BeatSaverAuthHelper, SessionHelper, createRandomString } from "$lib/server/auth";
+import { error, redirect } from "@sveltejs/kit";
 
 export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
     let state = createRandomString(16);
@@ -12,7 +11,7 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         if (session) {
             throw error(400, `You are already logged in.`);
         } else {
-            cookies.delete(SESSION_COOKIE_NAME, { path: '/' });
+            cookies.delete(SESSION_COOKIE_NAME, { path: "/" });
         }
     }
     state = createRandomString(16);

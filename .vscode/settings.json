@@ -6,5 +6,8 @@
         "*.css": "tailwindcss"
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
-    "prettier.configPath": "prettier.config.ts"
+    "prettier.configPath": "prettier.config.ts",
+    "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode"
+    }
 }

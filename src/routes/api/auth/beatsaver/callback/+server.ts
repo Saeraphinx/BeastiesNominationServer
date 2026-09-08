@@ -1,14 +1,14 @@
-import { BeatSaverAuthHelper, DiscordAuthHelper, SessionHelper } from '$lib/server/auth';
-import { error, redirect } from '@sveltejs/kit';
-import type { RequestHandler } from './$types';
-import { Judge } from '../../../../../lib/server/database';
-import { Logger } from '../../../../../lib/server/logger';
-import { PUBLIC_BASE_URL } from '$app/env/public';
-import { SESSION_COOKIE_NAME } from '$app/env/private';
+import { BeatSaverAuthHelper, DiscordAuthHelper, SessionHelper } from "$lib/server/auth";
+import { error, redirect } from "@sveltejs/kit";
+import type { RequestHandler } from "./$types";
+import { Judge } from "../../../../../lib/server/database";
+import { Logger } from "../../../../../lib/server/logger";
+import { PUBLIC_BASE_URL } from "$app/env/public";
+import { SESSION_COOKIE_NAME } from "$app/env/private";
 
 export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) => {
-    const state = url.searchParams.get('state');
-    const code = url.searchParams.get('code');
+    const state = url.searchParams.get("state");
+    const code = url.searchParams.get("code");
 
     if (!state || !code) {
         throw error(400, `Missing state or code.`);
@@ -33,15 +33,15 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
     const authSession = await SessionHelper.createAuthSession(user.id, {
         username: user.name,
         service: `beatsaver`,
-        isVerified: true
+        isVerified: true,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'strict',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 7 // 1 week
+        sameSite: "strict",
+        path: "/",
+        maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
     throw redirect(307, `${PUBLIC_BASE_URL}/judge`);

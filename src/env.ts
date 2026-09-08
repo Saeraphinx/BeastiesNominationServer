@@ -1,26 +1,26 @@
-import { defineEnvVars } from '@sveltejs/kit/env';
-import { z } from 'zod';
+import { defineEnvVars } from "@sveltejs/kit/env";
+import { z } from "zod";
 
 export const variables = defineEnvVars({
-	AUTH_DISCORD_CLIENT_ID: { static: true, schema: z.string().optional() },
+    AUTH_DISCORD_CLIENT_ID: { static: true, schema: z.string().optional() },
     AUTH_DISCORD_CLIENT_SECRET: { static: true, schema: z.string().optional() },
     AUTH_BEATSAVER_CLIENT_ID: { static: true, schema: z.string().optional() },
     AUTH_BEATSAVER_CLIENT_SECRET: { static: true, schema: z.string().optional() },
     AUTH_BEATLEADER_CLIENT_ID: { static: true, schema: z.string().optional() },
     AUTH_BEATLEADER_CLIENT_SECRET: { static: true, schema: z.string().optional() },
 
-    DATABASE_LOCATION: { 
+    DATABASE_LOCATION: {
         static: true,
-        schema: z.string().default(`./storage/database.sqlite`)
+        schema: z.string().default(`./storage/database.sqlite`),
     },
-    DATABASE_SESSIONS_LOCATION: { 
+    DATABASE_SESSIONS_LOCATION: {
         static: true,
-        schema: z.string().default(`./storage/sessions.sqlite`)
+        schema: z.string().default(`./storage/sessions.sqlite`),
     },
 
-    SESSION_COOKIE_NAME: { 
-        static: true, 
-        schema: z.string().default(`bns_session`) 
+    SESSION_COOKIE_NAME: {
+        static: true,
+        schema: z.string().default(`bns_session`),
     },
 
     LOGGER_URL: { static: true, schema: z.url().optional() },

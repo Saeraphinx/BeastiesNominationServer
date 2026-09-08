@@ -67,16 +67,8 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
 
     private static recentSubmissions: NonAttribute<string[]> = [];
 
-    public static validateSubmission(
-        content: {
-            category: SubmissionCategory,
-            bsrId?: string;
-            name?: string;
-            difficulty?: Difficulty;
-            characteristic?: Characteristic;
-        }
-    ): RequestSubmissionStatus {
-        let isName = isNameRequired(content.category)
+    public static validateSubmission(content: { category: SubmissionCategory; bsrId?: string; name?: string; difficulty?: Difficulty; characteristic?: Characteristic }): RequestSubmissionStatus {
+        let isName = isNameRequired(content.category);
         let isDiffChar = isDiffCharRequired(content.category);
 
         if (isName) {
@@ -122,15 +114,11 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 }
 
                 // from 270436 (42063) to 313841 (4c9f1) are eligible, except for RankedMap which has no restrictions
-                if (
-                    (bsrIdNoHex <= 270435 || bsrIdNoHex >= 313841) &&
-                    content.category != SubmissionCategory.RankedMap
-                ) {
+                if ((bsrIdNoHex <= 270435 || bsrIdNoHex >= 313841) && content.category != SubmissionCategory.RankedMap) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }
 
-            
             this.recentSubmissions.push(content.bsrId);
             if (this.recentSubmissions.filter((id) => id == content.bsrId).length > 10) {
                 return RequestSubmissionStatus.RateLimited;
@@ -150,7 +138,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         id: string,
         service: `beatleader` | `beatsaver` | `judgeId`,
         content: {
-            category: string,
+            category: string;
             bsrId?: string;
             name?: string;
             difficulty?: Difficulty;
@@ -176,7 +164,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         submitterId: string,
         service: `beatleader` | `beatsaver` | `judgeId`,
         content: {
-            category: string,
+            category: string;
             bsrId?: string;
             name?: string;
             difficulty?: Difficulty;
@@ -187,10 +175,10 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         let sortedrecord: Submission | null;
         if (isNameRequired(content.category)) {
             existingRecords = await this.findAndCountAll({
-                where: { submitterId: submitterId, name: content.name, category: content.category }
+                where: { submitterId: submitterId, name: content.name, category: content.category },
             });
             sortedrecord = await this.findOne({
-                where: { category: content.category, name: content.name, filterStatus: { [Op.not]: null } }
+                where: { category: content.category, name: content.name, filterStatus: { [Op.not]: null } },
             });
         } else {
             if (isDiffCharRequired(content.category)) {
@@ -200,8 +188,8 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                         bsrId: content.bsrId,
                         category: content.category,
                         difficulty: content.difficulty,
-                        characteristic: content.characteristic
-                    }
+                        characteristic: content.characteristic,
+                    },
                 });
                 sortedrecord = await this.findOne({
                     where: {
@@ -209,15 +197,15 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                         category: content.category,
                         characteristic: content.characteristic,
                         difficulty: content.difficulty,
-                        filterStatus: { [Op.not]: null }
-                    }
+                        filterStatus: { [Op.not]: null },
+                    },
                 });
             } else {
                 existingRecords = await this.findAndCountAll({
-                    where: { submitterId: submitterId, bsrId: content.bsrId, category: content.category }
+                    where: { submitterId: submitterId, bsrId: content.bsrId, category: content.category },
                 });
                 sortedrecord = await this.findOne({
-                    where: { bsrId: content.bsrId, category: content.category, filterStatus: { [Op.not]: null } }
+                    where: { bsrId: content.bsrId, category: content.category, filterStatus: { [Op.not]: null } },
                 });
             }
         }
@@ -238,7 +226,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 sortedRecordInfo = {
                     isSorted: true,
                     status: `Duplicate`,
-                    filtererId: sortedrecord.filtererId
+                    filtererId: sortedrecord.filtererId,
                 };
                 break;
             case `Rejected`:
@@ -246,13 +234,13 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 sortedRecordInfo = {
                     isSorted: true,
                     status: `RejectedDuplicate`,
-                    filtererId: sortedrecord.filtererId
+                    filtererId: sortedrecord.filtererId,
                 };
                 break;
             case `Ignored`:
             default:
                 sortedRecordInfo = {
-                    isSorted: false
+                    isSorted: false,
                 };
                 break;
         }
@@ -267,7 +255,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 name: content.name,
                 service: service,
                 filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-                filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+                filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null,
             });
         } else {
             if (isDiffCharRequired(content.category)) {
@@ -280,7 +268,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                     difficulty: content.difficulty,
                     characteristic: content.characteristic,
                     filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null,
                 });
             } else {
                 await this.create({
@@ -290,7 +278,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                     bsrId: content.bsrId,
                     name: content.name,
                     filterStatus: sortedRecordInfo.isSorted ? sortedRecordInfo.status : null,
-                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null
+                    filtererId: sortedRecordInfo.isSorted ? sortedRecordInfo.filtererId : null,
                 });
             }
         }
@@ -303,187 +291,185 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         const counts = {
             Total: await this.count(),
             MapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapOfTheYear }
+                where: { category: SubmissionCategory.MapOfTheYear },
             }),
             MapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapperOfTheYear }
+                where: { category: SubmissionCategory.MapperOfTheYear },
             }),
             LighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.LighterOfTheYear }
+                where: { category: SubmissionCategory.LighterOfTheYear },
             }),
             RookieMapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieMapperOfTheYear }
+                where: { category: SubmissionCategory.RookieMapperOfTheYear },
             }),
             RookieLighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieLighterOfTheYear }
+                where: { category: SubmissionCategory.RookieLighterOfTheYear },
             }),
             PackOfTheYear: await this.count({
-                where: { category: SubmissionCategory.PackOfTheYear }
+                where: { category: SubmissionCategory.PackOfTheYear },
             }),
             OSTMap: await this.count({
-                where: { category: SubmissionCategory.OST }
+                where: { category: SubmissionCategory.OST },
             }),
             NonStandardMap: await this.count({
-                where: { category: SubmissionCategory.NonStandardMap }
+                where: { category: SubmissionCategory.NonStandardMap },
             }),
             FullSpreadMap: await this.count({
-                where: { category: SubmissionCategory.FullSpreadMap }
+                where: { category: SubmissionCategory.FullSpreadMap },
             }),
             Lightshow: await this.count({
-                where: { category: SubmissionCategory.Lightshow }
+                where: { category: SubmissionCategory.Lightshow },
             }),
             GameplayModchart: await this.count({
-                where: { category: SubmissionCategory.GameplayModchart }
+                where: { category: SubmissionCategory.GameplayModchart },
             }),
             RankedMap: await this.count({
-                where: { category: SubmissionCategory.RankedMap }
+                where: { category: SubmissionCategory.RankedMap },
             }),
             BalancedMap: await this.count({
-                where: { category: SubmissionCategory.BalancedMap }
+                where: { category: SubmissionCategory.BalancedMap },
             }),
             TechMap: await this.count({
-                where: { category: SubmissionCategory.TechMap }
+                where: { category: SubmissionCategory.TechMap },
             }),
             SpeedMap: await this.count({
-                where: { category: SubmissionCategory.SpeedMap }
+                where: { category: SubmissionCategory.SpeedMap },
             }),
             DanceMap: await this.count({
-                where: { category: SubmissionCategory.DanceMap }
+                where: { category: SubmissionCategory.DanceMap },
             }),
             FitnessMap: await this.count({
-                where: { category: SubmissionCategory.FitnessMap }
+                where: { category: SubmissionCategory.FitnessMap },
             }),
             ChallengeMap: await this.count({
-                where: { category: SubmissionCategory.ChallengeMap }
+                where: { category: SubmissionCategory.ChallengeMap },
             }),
             AccMap: await this.count({
-                where: { category: SubmissionCategory.AccMap }
+                where: { category: SubmissionCategory.AccMap },
             }),
             PoodleMap: await this.count({
-                where: { category: SubmissionCategory.PoodleMap }
+                where: { category: SubmissionCategory.PoodleMap },
             }),
             WildcardMap: await this.count({
-                where: { category: SubmissionCategory.WildcardMap }
+                where: { category: SubmissionCategory.WildcardMap },
             }),
             ModdedMapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.ModdedMapOfTheYear }
-            })
+                where: { category: SubmissionCategory.ModdedMapOfTheYear },
+            }),
         };
 
         const uniqueCategories = {
             MapOfTheYear: await this.count({
                 where: { category: SubmissionCategory.MapOfTheYear },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             MapperOfTheYear: await this.count({
                 where: { category: SubmissionCategory.MapperOfTheYear },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             LighterOfTheYear: await this.count({
                 where: { category: SubmissionCategory.LighterOfTheYear },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             RookieMapperOfTheYear: await this.count({
                 where: { category: SubmissionCategory.RookieMapperOfTheYear },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             RookieLighterOfTheYear: await this.count({
                 where: { category: SubmissionCategory.RookieLighterOfTheYear },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             PackOfTheYear: await this.count({
                 where: { category: SubmissionCategory.PackOfTheYear },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             OSTMap: await this.count({
                 where: { category: SubmissionCategory.OST },
                 distinct: true,
-                col: `name`
+                col: `name`,
             }),
             NonStandardMap: await this.count({
                 where: { category: SubmissionCategory.NonStandardMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             FullSpreadMap: await this.count({
                 where: { category: SubmissionCategory.FullSpreadMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             Lightshow: await this.count({
                 where: { category: SubmissionCategory.Lightshow },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             GameplayModchart: await this.count({
                 where: { category: SubmissionCategory.GameplayModchart },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             RankedMap: await this.count({
                 where: { category: SubmissionCategory.RankedMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             BalancedMap: await this.count({
                 where: { category: SubmissionCategory.BalancedMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             TechMap: await this.count({
                 where: { category: SubmissionCategory.TechMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             SpeedMap: await this.count({
                 where: { category: SubmissionCategory.SpeedMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             DanceMap: await this.count({
                 where: { category: SubmissionCategory.DanceMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             FitnessMap: await this.count({
                 where: { category: SubmissionCategory.FitnessMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             ChallengeMap: await this.count({
                 where: { category: SubmissionCategory.ChallengeMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             AccMap: await this.count({
                 where: { category: SubmissionCategory.AccMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             PoodleMap: await this.count({
                 where: { category: SubmissionCategory.PoodleMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             WildcardMap: await this.count({
                 where: { category: SubmissionCategory.WildcardMap },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
             ModdedMapOfTheYear: await this.count({
                 where: { category: SubmissionCategory.ModdedMapOfTheYear },
                 distinct: true,
-                col: `bsrId`
+                col: `bsrId`,
             }),
-            Total:
-                (await this.count({ distinct: true, col: `bsrId` })) +
-                (await this.count({ distinct: true, col: `name` }))
+            Total: (await this.count({ distinct: true, col: `bsrId` })) + (await this.count({ distinct: true, col: `name` })),
         };
 
         // console.log(counts, uniqueCategories);

@@ -1,7 +1,5 @@
-
 export const submissionEndDate = new Date(`16 Dec 2026 00:00:00 UTC`);
 export const votingEndDate = new Date(`31 Dec 2026 00:00:00 UTC`);
-
 
 export type Difficulty = `Easy` | `Normal` | `Hard` | `Expert` | `ExpertPlus` | `All`;
 export enum DifficultyEnum {
@@ -10,18 +8,9 @@ export enum DifficultyEnum {
     Hard = `Hard`,
     Expert = `Expert`,
     ExpertPlus = `ExpertPlus`,
-    All = `All`
+    All = `All`,
 }
-export type Characteristic =
-    | `Standard`
-    | `OneSaber`
-    | `NoArrows`
-    | `90Degree`
-    | `360Degree`
-    | `Lightshow`
-    | `Lawless`
-    | `Other`
-    | `All`;
+export type Characteristic = `Standard` | `OneSaber` | `NoArrows` | `90Degree` | `360Degree` | `Lightshow` | `Lawless` | `Other` | `All`;
 export type FilterStatus = `Accepted` | `Rejected` | `Duplicate` | `RejectedDuplicate` | `Ignored`;
 
 export enum CharacteristicEnum {
@@ -33,7 +22,7 @@ export enum CharacteristicEnum {
     Lightshow = `Lightshow`,
     Lawless = `Lawless`,
     Other = `Other`,
-    All = `All`
+    All = `All`,
 }
 
 export enum SubmissionCategory {
@@ -62,7 +51,7 @@ export enum SubmissionCategory {
     MapperOfTheYear = `OTY-Mapper`,
     LighterOfTheYear = `OTY-Lighter`,
     RookieLighterOfTheYear = `OTY-RookieLighter`,
-    RookieMapperOfTheYear = `OTY-RookieMapper`
+    RookieMapperOfTheYear = `OTY-RookieMapper`,
 }
 
 export type NominationCount = {
@@ -96,7 +85,7 @@ export enum NominationStatusResponse {
     Accepted,
     AlreadyVoted,
     InvalidCategory,
-    Invalid
+    Invalid,
 }
 // #endregion
 
@@ -138,16 +127,16 @@ export enum SortedSubmissionsCategory {
     MapperOfTheYear = `OTY-Mapper`,
     LighterOfTheYear = `OTY-Lighter`,
     RookieLighterOfTheYear = `OTY-RookieLighter`,
-    RookieMapperOfTheYear = `OTY-RookieMapper`
+    RookieMapperOfTheYear = `OTY-RookieMapper`,
 }
 
 export enum RequestSubmissionStatus {
-	Invalid,
-	InvalidCategory,
-	RateLimited,
-	OldKey,
-	AlreadyVoted,
-	Success
+    Invalid,
+    InvalidCategory,
+    RateLimited,
+    OldKey,
+    AlreadyVoted,
+    Success,
 }
 
 // yoink thankies bstoday
@@ -202,4 +191,3 @@ export function isDiffCharRequiredSortedSubmission(category: string): boolean {
         category != SortedSubmissionsCategory.OST
     );
 }
-    

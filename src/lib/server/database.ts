@@ -1,20 +1,20 @@
-import path from 'path';
-import { exit } from 'process';
-import { Sequelize } from 'sequelize-typescript';
-import * as env from '$app/env/private';
-import { Logger } from '$lib/server/logger';
+import path from "path";
+import { exit } from "process";
+import { Sequelize } from "sequelize-typescript";
+import * as env from "$app/env/private";
+import { Logger } from "$lib/server/logger";
 
-import { SortedSubmission } from './models/SortedSubmission';
-import { Submission } from './models/Submission';
-import { PublicVote } from './models/PublicVote';
-import { JudgeVote } from './models/JudgeVote';
-import { Judge } from './models/Judge';
+import { SortedSubmission } from "./models/SortedSubmission";
+import { Submission } from "./models/Submission";
+import { PublicVote } from "./models/PublicVote";
+import { JudgeVote } from "./models/JudgeVote";
+import { Judge } from "./models/Judge";
 
-export * from './models/SortedSubmission';
-export * from './models/Submission';
-export * from './models/PublicVote';
-export * from './models/JudgeVote';
-export * from './models/Judge';
+export * from "./models/SortedSubmission";
+export * from "./models/Submission";
+export * from "./models/PublicVote";
+export * from "./models/JudgeVote";
+export * from "./models/Judge";
 
 export class DatabaseManager {
     public sequelize: Sequelize;
@@ -24,7 +24,7 @@ export class DatabaseManager {
             host: `localhost`,
             dialect: `sqlite`,
             logging: false,
-            storage: path.resolve(env.DATABASE_LOCATION)
+            storage: path.resolve(env.DATABASE_LOCATION),
         });
 
         Logger.log(`Loading Database...`);
@@ -64,13 +64,7 @@ export class DatabaseManager {
     }
 
     private loadTables() {
-        this.sequelize.addModels([
-            Judge,
-            JudgeVote,
-            PublicVote,
-            Submission,
-            SortedSubmission    
-        ]);
+        this.sequelize.addModels([Judge, JudgeVote, PublicVote, Submission, SortedSubmission]);
     }
 }
 
@@ -112,7 +106,7 @@ const SortedSubmissionsCategoryEnglish = {
     LighterOfTheYear: [`OTY-Lighter`, `Lighter of the Year`],
     RookieMapperOfTheYear: [`OTY-RookieMapper`, `Rookie Mapper of the Year`],
     RookieLighterOfTheYear: [`OTY-RookieLighter`, `Rookie Lighter of the Year`],
-    PackOfTheYear: [`OTY-Pack`, `Pack of the Year`]
+    PackOfTheYear: [`OTY-Pack`, `Pack of the Year`],
 };
 /*
     Beasties Admin will go through the nominations and sort them into the correct categories & clean up data (if applicable) [NominationAttributes -> SortedSubmission]

@@ -1,6 +1,6 @@
 import { AllowNull, Column, CreatedAt, DataType, Default, DeletedAt, Model, UpdatedAt } from "sequelize-typescript";
 import type { Characteristic, Difficulty, SortedSubmissionsCategory } from "../../shared/goodies";
-import type { InferAttributes,CreationOptional, InferCreationAttributes } from "sequelize";
+import type { InferAttributes, CreationOptional, InferCreationAttributes } from "sequelize";
 
 export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, InferCreationAttributes<SortedSubmission>> {
     @Column({
@@ -44,12 +44,12 @@ export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, I
         type: DataType.STRING,
         allowNull: false,
         defaultValue: `[]`,
-        get: function() {
+        get: function () {
             return JSON.parse(this.getDataValue(`submitterIds`) || `[]`);
         },
-        set: function(value: string[]) {
+        set: function (value: string[]) {
             this.setDataValue(`submitterIds`, JSON.stringify(value));
-        }
+        },
     })
     declare submitterIds: string[];
 

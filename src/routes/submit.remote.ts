@@ -5,13 +5,15 @@ import { SessionHelper } from "../lib/server/auth";
 import { SESSION_COOKIE_NAME } from "$app/env/private";
 import { Submission } from "../lib/server/database";
 
-export const submitMap = form(z.object({
+export const submitMap = form(
+    z.object({
         category: z.enum(SubmissionCategory),
         name: z.string().min(1).max(100),
         bsrId: z.string().optional(),
         characteristic: z.enum(CharacteristicEnum).optional(),
         difficulty: z.enum(DifficultyEnum).optional(),
-    }), async (data) => {
+    }),
+    async (data) => {
         const event = getRequestEvent();
         const cookie = event.cookies.get(SESSION_COOKIE_NAME);
         const user = await SessionHelper.validateAuthSessionToken(cookie);
@@ -59,5 +61,5 @@ enum ErrorStringKeys {
     OldKey = "submission.error.oldKey",
     InvalidSubmission = "submission.error.invalidSubmission",
     AlreadyVoted = "submission.error.alreadyVoted",
-    Success = "submission.success"
+    Success = "submission.success",
 }

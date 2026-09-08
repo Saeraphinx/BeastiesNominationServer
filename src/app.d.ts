@@ -9,7 +9,7 @@ declare global {
                 username: string;
                 service: `beatleader` | `beatsaver` | `judgeId`;
                 isVerified?: boolean;
-            }
+            };
         }
         interface PageData {
             pageMetadata?: {
@@ -25,4 +25,4 @@ declare global {
     }
 }
 
-export { };
+export {};

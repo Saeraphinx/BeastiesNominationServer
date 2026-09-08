@@ -1,31 +1,41 @@
-import type { RequestHandler } from './$types';
-import { SubmissionCategory, submissionEndDate, CharacteristicEnum, DifficultyEnum, RequestSubmissionStatus } from '$lib/shared/goodies';
-import { error, json } from '@sveltejs/kit';
-import { z } from 'zod';
-import { createHash, timingSafeEqual } from 'crypto';
-import { Submission } from '../../../../lib/server/database';
+import type { RequestHandler } from "./$types";
+import { SubmissionCategory, submissionEndDate, CharacteristicEnum, DifficultyEnum, RequestSubmissionStatus } from "$lib/shared/goodies";
+import { error, json } from "@sveltejs/kit";
+import { z } from "zod";
+import { createHash, timingSafeEqual } from "crypto";
+import { Submission } from "../../../../lib/server/database";
 
 export const POST: RequestHandler = async ({ request }) => {
     if (new Date() > submissionEndDate) {
         return json({ message: `Submissions are now closed. Thank you for participating!` }, { status: 403 });
     }
 
-    const input = z.object({
-        category: z.enum(SubmissionCategory),
-        bsrId: z.string().optional(),
-        characteristic: z.enum(CharacteristicEnum).optional(),
-        difficulty: z.enum(DifficultyEnum).optional(),
-        userId: z.string(),
-    }).safeParse(await request.json());
+    const input = z
+        .object({
+            category: z.enum(SubmissionCategory),
+            bsrId: z.string().optional(),
+            characteristic: z.enum(CharacteristicEnum).optional(),
+            difficulty: z.enum(DifficultyEnum).optional(),
+            userId: z.string(),
+        })
+        .safeParse(await request.json());
 
     if (!input.success) {
         return json({ message: `Invalid input: ${input.error.message}`, error: input.error }, { status: 400 });
     }
 
-    const apiKey = request.headers.get('Authorization');
+    const apiKey = request.headers.get("Authorization");
     // make 2 equal length buffers to prevent timing attacks
-    const apiKeyBuffer = Buffer.from(createHash('sha256').update(apiKey || '').digest());
-    const submissionApiKeyBuffer = Buffer.from(createHash('sha256').update(`Bearer ${process.env.SUBMISSION_API_KEY}` || '').digest());
+    const apiKeyBuffer = Buffer.from(
+        createHash("sha256")
+            .update(apiKey || "")
+            .digest()
+    );
+    const submissionApiKeyBuffer = Buffer.from(
+        createHash("sha256")
+            .update(`Bearer ${process.env.SUBMISSION_API_KEY}` || "")
+            .digest()
+    );
 
     if (!apiKey || !process.env.SUBMISSION_API_KEY || !timingSafeEqual(apiKeyBuffer, submissionApiKeyBuffer)) {
         return json({ message: `Unauthorized` }, { status: 401 });
@@ -57,4 +67,4 @@ export const POST: RequestHandler = async ({ request }) => {
         case RequestSubmissionStatus.Success:
             return json({ message: `Submission successful.` }, { status: 200 });
     }
-}
+};

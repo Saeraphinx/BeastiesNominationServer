@@ -6,6 +6,10 @@
         "subtitle": "AKA: The Beasties - By Mappers, For Mappers",
         "descriptionNoLinks": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations.",
         "description": "The BeastSaber Mapping Awards, also called \"The Beasties,\" are annual awards that seek to celebrate the best of the best of Beat Saber mapping across multiple categories. Maps that were released between December 1, 2025 and November 30, 2026 are eligible for this year's nominations. <br><br>Using the form below, you can submit your favorite maps for consideration in the 2026 BeastSaber Mapping Awards. For information on the categories and criteria, please refer to the <a href=\"{bSaberUrl}\">BeastSaber Website</a>. Any changes from last year are also listed here. You can also view the current submission counts for each category at <a href=\"{countId}\">the bottom of this page</a>.",
+        "supportBeasties": {
+            "title": "Support BeastSaber",
+            "description": "If you would like to support BeastSaber and the BeastSaber Mapping Awards, consider becoming a BeastSaber Patron. Your support helps keep the BeastSaber site running and allows us to continue hosting events like the BeastSaber Mapping Awards. Thank you for your support!"
+        },
         "form": {
             "title": "2026 Map Submission Form",
             "category": "Category",
@@ -15,6 +19,17 @@
             "difficulty": "Difficulty",
             "characteristic": "Characteristic",
             "submit": "Submit"
+        }
+    },
+    "judging": {
+        "navigation": {
+            "submissionForm": "Submission Form",
+            "home": "Home",
+            "sort": "Sorting",
+            "judge": "Judging",
+            "finalists": "Finalists",
+            "renderer": "Renderer",
+            "admin": "Admin"
         }
     },
     "common": {
@@ -149,5 +164,6 @@
                 "description": "This category shines a light on maps that explore beyond \"normal\" mapping. Cult classics, bending of mechanics, and different ways of thinking can be found here. This is the catch all category. Have something that is unique and doesn't fit a category? Nominate it here!"
             }
         }
-    }
+    },
+    "footer": "<a href=\"https://saeraphinx.dev\">Created by Saeraphinx</a> • <a href=\"https://github.com/Saeraphinx/BeastiesNominationServer\">Source</a> • Special thanks to <a href=\"https://beatleader.com\">BeatLeader</a> &amp; <a href=\"https://beatsaver.com\">BeatSaver!</a>"
 }

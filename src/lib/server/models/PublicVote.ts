@@ -43,5 +43,4 @@ export class PublicVote extends Model<InferAttributes<PublicVote>, InferCreation
     declare updatedAt: CreationOptional<Date>;
     @DeletedAt
     declare deletedAt: CreationOptional<Date | null>;
-
 }

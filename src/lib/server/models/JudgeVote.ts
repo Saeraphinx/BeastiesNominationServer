@@ -25,7 +25,7 @@ export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAt
     @CreatedAt
     declare createdAt: CreationOptional<Date>;
     @UpdatedAt
-    declare updatedAt: CreationOptional<Date>
+    declare updatedAt: CreationOptional<Date>;
     @DeletedAt
     declare deletedAt: CreationOptional<Date | null>;
 }

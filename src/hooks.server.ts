@@ -9,18 +9,14 @@ import { building } from "$app/env";
 export const init: ServerInit = async () => {
     // Initialize the database
     let db = new DatabaseManager();
-
-}
+};
 
 const handleParaglide: Handle = ({ event, resolve }) =>
     paraglideMiddleware(event.request, ({ request, locale }) => {
         event.request = request;
 
         return resolve(event, {
-            transformPageChunk: ({ html }) =>
-                html
-                    .replace("%paraglide.lang%", locale)
-                    .replace("%paraglide.dir%", getTextDirection(locale)),
+            transformPageChunk: ({ html }) => html.replace("%paraglide.lang%", locale).replace("%paraglide.dir%", getTextDirection(locale)),
         });
     });
 
@@ -33,11 +29,11 @@ export const handle: Handle = async (input) => {
                 id: user.userId,
                 username: user.data.username,
                 service: user.data.service,
-                isVerified: user.data.isVerified
+                isVerified: user.data.isVerified,
             };
         } else {
-            input.event.cookies.delete(SESSION_COOKIE_NAME, { path: '/' });
+            input.event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" });
         }
     }
     return handleParaglide(input);
-}
+};

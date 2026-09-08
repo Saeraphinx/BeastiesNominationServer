@@ -23,12 +23,12 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
         type: DataType.STRING,
         allowNull: false,
         defaultValue: `[]`,
-        get: function() {
+        get: function () {
             return JSON.parse(this.getDataValue(`roles`) || `[]`);
         },
-        set: function(value: string[]) {
+        set: function (value: string[]) {
             this.setDataValue(`roles`, JSON.stringify(value));
-        }
+        },
     })
     declare roles: CreationOptional<string[]>;
 
@@ -44,12 +44,12 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
         type: DataType.STRING,
         allowNull: false,
         defaultValue: `[]`,
-        get: function() {
+        get: function () {
             return JSON.parse(this.getDataValue(`beatSaverIds`) || `[]`);
         },
-        set: function(value: string[]) {
+        set: function (value: string[]) {
             this.setDataValue(`beatSaverIds`, JSON.stringify(value));
-        }
+        },
     })
     declare beatSaverIds: CreationOptional<string[]>;
 
@@ -57,12 +57,12 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
         type: DataType.STRING,
         allowNull: false,
         defaultValue: `[]`,
-        get: function() {
+        get: function () {
             return JSON.parse(this.getDataValue(`permittedCategories`) || `[]`);
         },
-        set: function(value: string[]) {
+        set: function (value: string[]) {
             this.setDataValue(`permittedCategories`, JSON.stringify(value));
-        }
+        },
     })
     declare permittedCategories: CreationOptional<string[]>;
 

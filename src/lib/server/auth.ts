@@ -1,9 +1,9 @@
-import * as env from '$app/env/private';
-import { PUBLIC_BASE_URL } from '$app/env/public';
-import { timingSafeEqual, subtle, randomBytes } from 'crypto';
-import path from 'path';
-import { Column, DataType, Model, Sequelize, Table } from 'sequelize-typescript';
-import type { InferAttributes, InferCreationAttributes } from 'sequelize/lib/model';
+import * as env from "$app/env/private";
+import { PUBLIC_BASE_URL } from "$app/env/public";
+import { timingSafeEqual, subtle, randomBytes } from "crypto";
+import path from "path";
+import { Column, DataType, Model, Sequelize, Table } from "sequelize-typescript";
+import type { InferAttributes, InferCreationAttributes } from "sequelize/lib/model";
 
 export function createRandomString(byteCount: number): string {
     let key = randomBytes(byteCount).toString(`base64url`);
@@ -11,12 +11,7 @@ export function createRandomString(byteCount: number): string {
 }
 
 class OAuth2Helper {
-    public static async getToken(
-        url: string,
-        code: string,
-        oAuth2Data: { clientId?: string; clientSecret?: string },
-        callbackUrl: string
-    ): Promise<OAuth2Response | null> {
+    public static async getToken(url: string, code: string, oAuth2Data: { clientId?: string; clientSecret?: string }, callbackUrl: string): Promise<OAuth2Response | null> {
         if (!code || !oAuth2Data.clientId || !oAuth2Data.clientSecret || !callbackUrl || !url) {
             return null;
         }
@@ -27,11 +22,11 @@ class OAuth2Helper {
                 client_secret: oAuth2Data.clientSecret,
                 grant_type: `authorization_code`,
                 code: code,
-                redirect_uri: callbackUrl
+                redirect_uri: callbackUrl,
             }),
             headers: {
-                'Content-Type': `application/x-www-form-urlencoded`
-            }
+                "Content-Type": `application/x-www-form-urlencoded`,
+            },
         });
 
         const json: any = await tokenRequest.json();
@@ -47,8 +42,8 @@ class OAuth2Helper {
             method: `GET`,
             body: null as null,
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         };
     }
 }
@@ -65,7 +60,7 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     private static readonly callbackUrl = `${PUBLIC_BASE_URL}/api/auth/beatleader/callback`;
     private static readonly authData = {
         clientId: env.AUTH_BEATLEADER_CLIENT_ID,
-        clientSecret: env.AUTH_BEATLEADER_CLIENT_SECRET
+        clientSecret: env.AUTH_BEATLEADER_CLIENT_SECRET,
     };
 
     public static getUrl(state: string): string {
@@ -73,19 +68,11 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
     }
 
     public static getToken(code: string): Promise<OAuth2Response | null> {
-        return super.getToken(
-            `https://api.beatleader.com/oauth2/token`,
-            code,
-            this.authData,
-            this.callbackUrl
-        );
+        return super.getToken(`https://api.beatleader.com/oauth2/token`, code, this.authData, this.callbackUrl);
     }
 
     public static async getUser(token: string): Promise<BeatLeaderIdentify | null> {
-        const userIdRequest = await fetch(
-            `https://api.beatleader.com/oauth2/identity`,
-            super.getRequestData(token)
-        );
+        const userIdRequest = await fetch(`https://api.beatleader.com/oauth2/identity`, super.getRequestData(token));
         const Idjson: BeatLeaderIdentify = (await userIdRequest.json()) as BeatLeaderIdentify;
 
         if (!Idjson.id) {
@@ -104,7 +91,7 @@ export class BeatLeaderAuthHelper extends OAuth2Helper {
 
     public static async getBeatSaverId(beatLeaderId: string): Promise<string | null> {
         let req = await fetch(`https://api.beatleader.com/player/${beatLeaderId}?stats=false`, {
-            method: `GET`
+            method: `GET`,
         });
 
         if (req.status !== 200) {
@@ -151,7 +138,7 @@ export class BeatSaverAuthHelper extends OAuth2Helper {
     private static readonly callbackUrl = `${PUBLIC_BASE_URL}/api/auth/beatsaver/callback`;
     private static readonly authData = {
         clientId: env.AUTH_BEATSAVER_CLIENT_ID,
-        clientSecret: env.AUTH_BEATSAVER_CLIENT_SECRET
+        clientSecret: env.AUTH_BEATSAVER_CLIENT_SECRET,
     };
 
     public static getUrl(state: string): string {
@@ -159,19 +146,11 @@ export class BeatSaverAuthHelper extends OAuth2Helper {
     }
 
     public static getToken(code: string): Promise<OAuth2Response | null> {
-        return super.getToken(
-            `https://api.beatsaver.com/oauth2/token`,
-            code,
-            this.authData,
-            this.callbackUrl
-        );
+        return super.getToken(`https://api.beatsaver.com/oauth2/token`, code, this.authData, this.callbackUrl);
     }
 
     public static async getUser(token: string): Promise<BeatSaverIdentify | null> {
-        const userIdRequest = await fetch(
-            `https://api.beatsaver.com/oauth2/identity`,
-            super.getRequestData(token)
-        );
+        const userIdRequest = await fetch(`https://api.beatsaver.com/oauth2/identity`, super.getRequestData(token));
         const Idjson: BeatSaverIdentify = (await userIdRequest.json()) as BeatSaverIdentify;
 
         if (!Idjson.id) {
@@ -193,7 +172,7 @@ export class DiscordAuthHelper extends OAuth2Helper {
     private static readonly callbackUrl = `${PUBLIC_BASE_URL}/api/auth/discord/callback`;
     private static readonly authData = {
         clientId: env.AUTH_DISCORD_CLIENT_ID,
-        clientSecret: env.AUTH_DISCORD_CLIENT_SECRET
+        clientSecret: env.AUTH_DISCORD_CLIENT_SECRET,
     };
 
     public static getUrl(state: string): string {
@@ -201,19 +180,11 @@ export class DiscordAuthHelper extends OAuth2Helper {
     }
 
     public static getToken(code: string): Promise<OAuth2Response | null> {
-        return super.getToken(
-            `https://discord.com/api/v10/oauth2/token`,
-            code,
-            this.authData,
-            this.callbackUrl
-        );
+        return super.getToken(`https://discord.com/api/v10/oauth2/token`, code, this.authData, this.callbackUrl);
     }
 
     public static async getUser(token: string): Promise<DiscordIdentify | null> {
-        const userIdRequest = await fetch(
-            `https://discord.com/api/v10/users/@me`,
-            super.getRequestData(token)
-        );
+        const userIdRequest = await fetch(`https://discord.com/api/v10/users/@me`, super.getRequestData(token));
         const Idjson: DiscordIdentify = (await userIdRequest.json()) as DiscordIdentify;
 
         if (!Idjson.id) {
@@ -223,15 +194,8 @@ export class DiscordAuthHelper extends OAuth2Helper {
         }
     }
 
-    public static async getGuildMemberData(
-        token: string,
-        guildId: string,
-        userId: string
-    ): Promise<DiscordUserGuild | null> {
-        const userIdRequest = await fetch(
-            `https://discord.com/api/v10/users/@me/guilds/${guildId}/member`,
-            super.getRequestData(token)
-        );
+    public static async getGuildMemberData(token: string, guildId: string, userId: string): Promise<DiscordUserGuild | null> {
+        const userIdRequest = await fetch(`https://discord.com/api/v10/users/@me/guilds/${guildId}/member`, super.getRequestData(token));
         const Idjson: DiscordUserGuild = (await userIdRequest.json()) as DiscordUserGuild;
         if (!Idjson.roles) {
             return null;
@@ -282,7 +246,7 @@ interface AuthSession {
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
         isVerified: boolean;
-    }
+    };
     secretHash: Uint8Array;
     tokenLastVerifiedAt: Date;
     createdAt: Date;
@@ -294,7 +258,7 @@ const authSessionExpiresInSeconds = 60 * 60 * 24 * 7; // 7 days
 export class SessionHelper {
     public static states: string[] = [];
 
-    public static async createAuthSession(userId: string, data: { username: string; service: `beatleader` | `beatsaver` | `judgeId`; isVerified: boolean; }): Promise<AuthSessionAndAuthSessionToken> {
+    public static async createAuthSession(userId: string, data: { username: string; service: `beatleader` | `beatsaver` | `judgeId`; isVerified: boolean }): Promise<AuthSessionAndAuthSessionToken> {
         const now = new Date();
 
         const id = this.generateRandomId();
@@ -418,10 +382,10 @@ export class SessionDatabaseManager {
             host: `localhost`,
             dialect: `sqlite`,
             logging: false,
-            storage: path.resolve(env.DATABASE_SESSIONS_LOCATION)
+            storage: path.resolve(env.DATABASE_SESSIONS_LOCATION),
         });
 
-        this.sequelize.sync()
+        this.sequelize.sync();
     }
 }
 
@@ -451,7 +415,7 @@ class SessionTable extends Model<InferAttributes<SessionTable>, InferCreationAtt
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
         isVerified: boolean;
-    }
+    };
 
     @Column({
         type: DataType.BLOB,

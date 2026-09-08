@@ -1,6 +1,6 @@
-import { WebhookClient, EmbedBuilder, type ColorResolvable, time, TimestampStyles } from 'discord.js';
-import { LOGGER_URL } from '$app/env/private';
-import { dev } from '$app/env';
+import { WebhookClient, EmbedBuilder, type ColorResolvable, time, TimestampStyles } from "discord.js";
+import { LOGGER_URL } from "$app/env/private";
+import { dev } from "$app/env";
 
 export class Logger {
     //private static webhook:WebhookClient = new WebhookClient({id: logging.id, token: logging.token});
@@ -12,12 +12,8 @@ export class Logger {
     }
 
     public static log(message: any, moduleName?: string) {
-        console.log(
-            `[BNS${moduleName ? ` ${moduleName}` : ``}] ${new Date(Date.now()).toLocaleString()} > ${message}`
-        );
-        this.sendWebhookLog(
-            `[BNS${moduleName ? ` ${moduleName}` : ``}] ${time(new Date(Date.now()), TimestampStyles.LongTime)} > ${message}`
-        );
+        console.log(`[BNS${moduleName ? ` ${moduleName}` : ``}] ${new Date(Date.now()).toLocaleString()} > ${message}`);
+        this.sendWebhookLog(`[BNS${moduleName ? ` ${moduleName}` : ``}] ${time(new Date(Date.now()), TimestampStyles.LongTime)} > ${message}`);
     }
 
     public static warn(message: any, source?: string) {
@@ -43,18 +39,13 @@ export class Logger {
         Logger.error(message, source);
     }
 
-    private static sendWebhookEmbed(
-        title: string,
-        message: any,
-        color: ColorResolvable,
-        source?: string
-    ) {
+    private static sendWebhookEmbed(title: string, message: any, color: ColorResolvable, source?: string) {
         let loggingEmbed: EmbedBuilder = new EmbedBuilder()
             .setTitle(title)
             .setDescription(message.toString())
             .setColor(color)
             .setFooter({
-                text: `BNS - ${source}`
+                text: `BNS - ${source}`,
             })
             .setTimestamp();
 
@@ -64,7 +55,7 @@ export class Logger {
             }
             Logger.webhook.send({
                 embeds: [loggingEmbed],
-                allowedMentions: { users: [`213074932458979330`], roles: [] }
+                allowedMentions: { users: [`213074932458979330`], roles: [] },
             });
         }
     }
@@ -74,9 +65,7 @@ export class Logger {
                 if (!Logger.webhook) {
                     Logger.webhook = new WebhookClient({ url: LOGGER_URL });
                 }
-                Logger.webhook
-                    .send({ content: message, allowedMentions: { users: [], roles: [] } })
-                    .catch(console.error);
+                Logger.webhook.send({ content: message, allowedMentions: { users: [], roles: [] } }).catch(console.error);
             }
         }
     }
