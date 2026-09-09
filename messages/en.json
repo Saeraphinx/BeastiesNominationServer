@@ -18,7 +18,9 @@
             "ostName": "OST Map",
             "difficulty": "Difficulty",
             "characteristic": "Characteristic",
-            "submit": "Submit"
+            "submit": "Submit",
+            "loggedInAsJudge": "You are logged in as a judge. You cannot submit maps. Please sign out and log in with BeatLeader or BeatSaver to submit maps.",
+            "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps."
         }
     },
     "judging": {
@@ -33,6 +35,10 @@
         }
     },
     "common": {
+        "login": "Login",
+        "logout": "Logout",
+        "loggedInAs": "Logged in as {username}",
+        "verifiedMapper": "Verified Mapper",
         "characteristic": {
             "Standard": "Standard",
             "OneSaber": "One Saber",
@@ -165,5 +171,5 @@
             }
         }
     },
-    "footer": "<a href=\"https://saeraphinx.dev\">Created by Saeraphinx</a> • <a href=\"https://github.com/Saeraphinx/BeastiesNominationServer\">Source</a> • Special thanks to <a href=\"https://beatleader.com\">BeatLeader</a> &amp; <a href=\"https://beatsaver.com\">BeatSaver!</a>"
+    "footer": "<a href=\"https://saeraphinx.dev\">Created by Saeraphinx</a> • <a href=\"https://github.com/Saeraphinx/BeastiesNominationServer\">Source</a> • <a href=\"/judging\">Judging Panel</a> • Special thanks to <a href=\"https://beatleader.com\">BeatLeader</a> &amp; <a href=\"https://beatsaver.com\">BeatSaver!</a>"
 }

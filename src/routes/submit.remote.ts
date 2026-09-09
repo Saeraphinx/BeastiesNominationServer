@@ -15,8 +15,9 @@ export const submitMap = form(
     }),
     async (data) => {
         const event = getRequestEvent();
-        const cookie = event.cookies.get(SESSION_COOKIE_NAME);
-        const user = await SessionHelper.validateAuthSessionToken(cookie);
+        const user = event.locals.user;
+        // const cookie = event.cookies.get(SESSION_COOKIE_NAME);
+        // const user = await SessionHelper.validateAuthSessionToken(cookie);
 
         if (!user) {
             return { success: false, message: ErrorStringKeys.NotLoggedIn };
@@ -33,7 +34,7 @@ export const submitMap = form(
                 return { success: false, message: ErrorStringKeys.OldKey };
         }
 
-        const submissionResult = await Submission.sendSubmission(user.id, user.data.service, data);
+        const submissionResult = await Submission.sendSubmission(user.id, user.service, data);
         switch (submissionResult) {
             case RequestSubmissionStatus.Invalid:
                 return { success: false, message: ErrorStringKeys.InvalidSubmission };

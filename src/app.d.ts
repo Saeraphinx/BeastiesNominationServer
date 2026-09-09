@@ -9,7 +9,7 @@ declare global {
                 username: string;
                 service: `beatleader` | `beatsaver` | `judgeId`;
                 isVerified?: boolean;
-            };
+            }?;
         }
         interface PageData {
             pageMetadata?: {
@@ -17,9 +17,14 @@ declare global {
                 description?: string;
                 imageUrl?: string;
             };
-            pageData?: any; // This can be used to pass any additional data to the page
+            user: {
+                id: string;
+                username: string;
+                service: `beatleader` | `beatsaver` | `judgeId`;
+                isVerified?: boolean;
+            } | null;
+            pageData?: any; // This can be used to pass any additional props to the page
         }
-
         // interface PageState {}
         // interface Platform {}
     }
