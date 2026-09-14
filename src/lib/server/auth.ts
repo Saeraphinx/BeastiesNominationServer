@@ -272,7 +272,18 @@ export class SessionHelper {
         const secretHashBuffer = await crypto.subtle.digest("SHA-256", secret);
         const secretHash = new Uint8Array(secretHashBuffer);
 
-        const token = id + "." + secret.toBase64();
+        let secretBase64;
+        try {
+            secretBase64 = secret.toBase64();
+        } catch (error) {
+            secretBase64 = Array.from(secret.values()).map(b => b.toString(32)).join(""); 
+        }
+
+        if (!secretBase64 || secretBase64.length === 0) {
+            throw new Error("Failed to generate secretBase64");
+        }
+
+        const token = id + "." + secretBase64;
 
         const authSession: AuthSession = {
             id,
@@ -386,6 +397,7 @@ export class SessionDatabaseManager {
         });
 
         this.sequelize.sync();
+        this.sequelize.addModels([SessionTable]);
     }
 }
 

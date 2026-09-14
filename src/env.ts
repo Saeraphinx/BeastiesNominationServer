@@ -9,6 +9,8 @@ export const variables = defineEnvVars({
     AUTH_BEATLEADER_CLIENT_ID: { static: true, schema: z.string().optional() },
     AUTH_BEATLEADER_CLIENT_SECRET: { static: true, schema: z.string().optional() },
 
+    API_BEATLEADER_KEY: { static: true, schema: z.string().optional() },
+
     DATABASE_LOCATION: {
         static: true,
         schema: z.string().default(`./storage/database.sqlite`),

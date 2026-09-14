@@ -38,11 +38,11 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
-        secure: true,
-        sameSite: "strict",
+        secure: PUBLIC_BASE_URL.startsWith("https://"),
+        sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
-    throw redirect(307, `${PUBLIC_BASE_URL}/judge`);
+    throw redirect(307, `${PUBLIC_BASE_URL}`);
 };

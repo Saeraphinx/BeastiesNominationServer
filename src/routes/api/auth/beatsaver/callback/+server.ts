@@ -44,5 +44,5 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
-    throw redirect(307, `${PUBLIC_BASE_URL}/judge`);
+    throw redirect(307, `${PUBLIC_BASE_URL}`);
 };

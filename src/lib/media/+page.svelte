@@ -3,9 +3,7 @@
   import { m } from "$lib/paraglide/messages";
   import { CharacteristicEnum, DifficultyEnum, SubmissionCategory } from "../lib/shared/goodies";
   import { submitMap } from "./submit.remote";
-  import loginbl from "$lib/media/loginbl.png";
-  import loginbs from "$lib/media/loginbs.png";
-    
+
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
 
@@ -117,12 +115,8 @@
       <p class="text-center text-lg/snug italic">{m[`homepage.form.notLoggedIn`]()}</p>
       <div class="flex flex-row gap-2 justify-center items-center">
         <a href="/api/auth/beatleader">
-          <img src={loginbl} class="max-w-75 min-w-25 w-75" width="300px" alt="Login with BeatLeader" />
+          <img src={login}
         </a>
-        <a href="/api/auth/beatsaver">
-          <img src={loginbs} class="max-w-75 min-w-25 w-75" width="300px" alt="Login with BeatSaver" />
-        </a>
-      </div>
     {/if}
   </div>
 </div>

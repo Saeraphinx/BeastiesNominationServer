@@ -3,12 +3,13 @@ import { getTextDirection } from "$lib/paraglide/runtime";
 import { paraglideMiddleware } from "$lib/paraglide/server";
 import { DatabaseManager } from "./lib/server/database";
 import { SESSION_COOKIE_NAME } from "$app/env/private";
-import { SessionHelper } from "./lib/server/auth";
+import { SessionDatabaseManager, SessionHelper } from "./lib/server/auth";
 import { building } from "$app/env";
 
 export const init: ServerInit = async () => {
     // Initialize the database
     let db = new DatabaseManager();
+    let sessions = new SessionDatabaseManager();
 };
 
 const handleParaglide: Handle = ({ event, resolve }) =>
