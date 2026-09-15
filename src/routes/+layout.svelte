@@ -20,7 +20,6 @@
   {:else}
     <title>{m[`title`]()}</title>
   {/if}
-  <link rel="icon" href="/favicon.png" />
   <!-- OpenGraph -->
   {#if page.data.pageMetadata?.title && page.data.pageMetadata?.title.includes(" - ")}
     <meta property="og:title" content={page.data.pageMetadata.title} />

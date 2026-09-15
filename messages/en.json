@@ -13,12 +13,22 @@
         "form": {
             "title": "2026 Map Submission Form",
             "category": "Category",
-            "bsrKey": "BSR Key (e.g. \"43a1f\", \"48f0f\", \"48912\")",
+            "bsrKey": "BSR Key (e.g. \"51058\", \"5308f\")",
             "name": "Pack/Mapper Name or BeatSaver URL",
             "ostName": "OST Map",
             "difficulty": "Difficulty",
             "characteristic": "Characteristic",
             "submit": "Submit",
+            "response":{
+                "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps.",
+                "invalidRequest": "Invalid request. Please check your submission and try again.",
+                "invalidCategory": "Invalid category selected.",
+                "rateLimited": "You are submitting too quickly. Please wait and try again.",
+                "oldKey": "The BSR key provided is outdated.",
+                "invalidSubmission": "Invalid submission. Please check your input.",
+                "alreadyVoted": "You have already submitted this map.",
+                "success": "Your submission was successful!"
+            },
             "loggedInAsJudge": "You are logged in as a judge. You cannot submit maps. Please sign out and log in with BeatLeader or BeatSaver to submit maps.",
             "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps."
         }

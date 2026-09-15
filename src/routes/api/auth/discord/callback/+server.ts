@@ -53,7 +53,8 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
     const authSession = await SessionHelper.createAuthSession(user.id, {
         username: judge.name,
         service: `judgeId`,
-        isVerified: true,
+        isVerifiedMapper: false,
+        beatSaverId: null
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {

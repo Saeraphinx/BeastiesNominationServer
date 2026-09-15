@@ -113,8 +113,8 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                     return RequestSubmissionStatus.Invalid;
                 }
 
-                // from 270436 (42063) to 313841 (4c9f1) are eligible, except for RankedMap which has no restrictions
-                if ((bsrIdNoHex <= 270435 || bsrIdNoHex >= 313841) && content.category != SubmissionCategory.RankedMap) {
+                // from 313841 (4c9f1) to ??? are eligible, except for RankedMap which has no restrictions
+                if ((bsrIdNoHex <= 313842 || bsrIdNoHex >= 9999999) && content.category != SubmissionCategory.RankedMap) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }

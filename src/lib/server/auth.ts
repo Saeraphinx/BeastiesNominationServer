@@ -245,9 +245,10 @@ interface AuthSession {
     data: {
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
-        isVerified: boolean;
+        isVerifiedMapper: boolean;
+        beatSaverId: string | null;
     };
-    secretHash: Uint8Array;
+    secretHash: string;
     tokenLastVerifiedAt: Date;
     createdAt: Date;
 }
@@ -258,7 +259,7 @@ const authSessionExpiresInSeconds = 60 * 60 * 24 * 7; // 7 days
 export class SessionHelper {
     public static states: string[] = [];
 
-    public static async createAuthSession(userId: string, data: { username: string; service: `beatleader` | `beatsaver` | `judgeId`; isVerified: boolean }): Promise<AuthSessionAndAuthSessionToken> {
+    public static async createAuthSession(userId: string, data: AuthSession[`data`]): Promise<AuthSessionAndAuthSessionToken> {
         const now = new Date();
 
         const id = this.generateRandomId();
@@ -270,14 +271,10 @@ export class SessionHelper {
 
         // It's important to use a cryptographically-secure random source.
         const secretHashBuffer = await crypto.subtle.digest("SHA-256", secret);
-        const secretHash = new Uint8Array(secretHashBuffer);
+        const secretHash = Buffer.from(secretHashBuffer).toString('base64');
 
-        let secretBase64;
-        try {
-            secretBase64 = secret.toBase64();
-        } catch (error) {
-            secretBase64 = Array.from(secret.values()).map(b => b.toString(32)).join(""); 
-        }
+        // Convert the secret to a base64 string for inclusion in the token.
+        let secretBase64 = Buffer.from(secret).toString('base64');
 
         if (!secretBase64 || secretBase64.length === 0) {
             throw new Error("Failed to generate secretBase64");
@@ -289,7 +286,7 @@ export class SessionHelper {
             id,
             userId: userId,
             data,
-            secretHash,
+            secretHash: secretHash,
             tokenLastVerifiedAt: now,
             createdAt: now,
         };
@@ -321,16 +318,13 @@ export class SessionHelper {
 
         let authSessionSecret: Uint8Array;
         try {
-            // Uint8Array.fromBase64() was recently added to JavaScript.
-            authSessionSecret = Uint8Array.fromBase64(encodedAuthSessionSecret);
+            authSessionSecret = new Uint8Array(Buffer.from(encodedAuthSessionSecret, 'base64'));
         } catch {
             return null;
         }
 
-        // Replace this with your own database query.
         const authSession = await SessionTable.findByPk(authSessionId);
 
-        // If the record doesn't exist in the database, the ID is invalid.
         if (authSession === null) {
             return null;
         }
@@ -341,9 +335,15 @@ export class SessionHelper {
         }
 
         const authSessionSecretHashBuffer = await subtle.digest("SHA-256", Buffer.from(authSessionSecret));
-        const authSessionSecretHash = new Uint8Array(authSessionSecretHashBuffer);
+        const authSessionSecretHash = Buffer.from(authSessionSecretHashBuffer).toString('base64');
+
+        if (authSessionSecretHash.length !== authSession.secretHash.length) {
+            console.debug("Auth session secret hash length mismatch.");
+            return null;
+        }
+
         // Prevent any possibility of a timing attack by using a constant-time comparison.
-        const secretCorrect = timingSafeEqual(authSessionSecretHash, authSession.secretHash);
+        const secretCorrect = timingSafeEqual(Buffer.from(authSessionSecretHash, 'base64'), Buffer.from(authSession.secretHash, 'base64'));
         if (!secretCorrect) {
             return null;
         }
@@ -358,6 +358,10 @@ export class SessionHelper {
         }
 
         return authSession;
+    }
+
+    public static async invalidateSession(authSession: AuthSession): Promise<void> {
+        await SessionTable.destroy({ where: { id: authSession.id } });
     }
 
     private static generateRandomId(): string {
@@ -426,14 +430,15 @@ class SessionTable extends Model<InferAttributes<SessionTable>, InferCreationAtt
     declare data: {
         username: string;
         service: `beatleader` | `beatsaver` | `judgeId`;
-        isVerified: boolean;
+        beatSaverId: string | null;
+        isVerifiedMapper: boolean;
     };
 
     @Column({
-        type: DataType.BLOB,
+        type: DataType.STRING,
         allowNull: false,
     })
-    declare secretHash: Uint8Array;
+    declare secretHash: string;
 
     @Column({
         type: DataType.DATE,
@@ -446,4 +451,20 @@ class SessionTable extends Model<InferAttributes<SessionTable>, InferCreationAtt
         allowNull: false,
     })
     declare createdAt: Date;
+}
+
+export async function checkIfVerifiedMapper(id: string): Promise<boolean> {
+    //return true; //debug line
+    return await fetch(`https://api.beatsaver.com/users/id/${id}`)
+        .then(async (res) => {
+            const userData = await res.json() as any;
+            if (!userData || !(`verifiedMapper` in userData)) {
+                return false;
+            }
+            return userData.verifiedMapper === true;
+        })
+        .catch((err) => {
+            console.error(`Failed to check if user ${id} is a verified mapper:`, err);
+            return false;
+        });
 }

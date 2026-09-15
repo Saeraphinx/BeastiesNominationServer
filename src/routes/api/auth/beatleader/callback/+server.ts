@@ -1,4 +1,4 @@
-import { BeatLeaderAuthHelper, DiscordAuthHelper, SessionHelper } from "$lib/server/auth";
+import { BeatLeaderAuthHelper, checkIfVerifiedMapper, DiscordAuthHelper, SessionHelper } from "$lib/server/auth";
 import { error, redirect } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { Judge } from "../../../../../lib/server/database";
@@ -30,15 +30,18 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         throw error(500, `Internal server error.`);
     }
 
+    const beatSaverId = await BeatLeaderAuthHelper.getBeatSaverId(user.id);
+
     const authSession = await SessionHelper.createAuthSession(user.id, {
         username: user.name,
         service: `beatleader`,
-        isVerified: true,
+        isVerifiedMapper: await checkIfVerifiedMapper(user.id),
+        beatSaverId: beatSaverId,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
-        secure: PUBLIC_BASE_URL.startsWith("https://"),
+        secure: false,// PUBLIC_BASE_URL.startsWith("https://"),
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week

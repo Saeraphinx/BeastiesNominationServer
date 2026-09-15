@@ -22,18 +22,19 @@ const handleParaglide: Handle = ({ event, resolve }) =>
     });
 
 export const handle: Handle = async (input) => {
+    if (input.event.url.pathname.endsWith(".png")) {
+        return handleParaglide(input);
+    }
     let sessionCookie = input.event.cookies.get(SESSION_COOKIE_NAME);
     if (sessionCookie && !building) {
         let user = await SessionHelper.validateAuthSessionToken(sessionCookie);
         if (user) {
             input.event.locals.user = {
                 id: user.userId,
-                username: user.data.username,
-                service: user.data.service,
-                isVerified: user.data.isVerified,
+                ...user.data
             };
         } else {
-            input.event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" });
+            //input.event.cookies.delete(SESSION_COOKIE_NAME, { path: "/" });
         }
     }
     return handleParaglide(input);

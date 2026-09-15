@@ -8,16 +8,14 @@ import { Submission } from "../lib/server/database";
 export const submitMap = form(
     z.object({
         category: z.enum(SubmissionCategory),
-        name: z.string().min(1).max(100),
-        bsrId: z.string().optional(),
+        name: z.string().min(1).max(100).optional(),
+        bsrId: z.string().optional().optional(),
         characteristic: z.enum(CharacteristicEnum).optional(),
         difficulty: z.enum(DifficultyEnum).optional(),
     }),
-    async (data) => {
+    async (data, issue) => {
         const event = getRequestEvent();
         const user = event.locals.user;
-        // const cookie = event.cookies.get(SESSION_COOKIE_NAME);
-        // const user = await SessionHelper.validateAuthSessionToken(cookie);
 
         if (!user) {
             return { success: false, message: ErrorStringKeys.NotLoggedIn };
@@ -55,12 +53,12 @@ export const submitMap = form(
 );
 
 enum ErrorStringKeys {
-    NotLoggedIn = "submission.error.notLoggedIn",
-    InvalidRequest = "submission.error.invalidRequest",
-    InvalidCategory = "submission.error.invalidCategory",
-    RateLimited = "submission.error.rateLimited",
-    OldKey = "submission.error.oldKey",
-    InvalidSubmission = "submission.error.invalidSubmission",
-    AlreadyVoted = "submission.error.alreadyVoted",
-    Success = "submission.success",
+    NotLoggedIn = "homepage.form.response.notLoggedIn",
+    InvalidRequest = "homepage.form.response.invalidRequest",
+    InvalidCategory = "homepage.form.response.invalidCategory",
+    RateLimited = "homepage.form.response.rateLimited",
+    OldKey = "homepage.form.response.oldKey",
+    InvalidSubmission = "homepage.form.response.invalidSubmission",
+    AlreadyVoted = "homepage.form.response.alreadyVoted",
+    Success = "homepage.form.response.success",
 }

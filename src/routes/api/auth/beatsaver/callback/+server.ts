@@ -1,4 +1,4 @@
-import { BeatSaverAuthHelper, DiscordAuthHelper, SessionHelper } from "$lib/server/auth";
+import { BeatSaverAuthHelper, checkIfVerifiedMapper, DiscordAuthHelper, SessionHelper } from "$lib/server/auth";
 import { error, redirect } from "@sveltejs/kit";
 import type { RequestHandler } from "./$types";
 import { Judge } from "../../../../../lib/server/database";
@@ -33,13 +33,14 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
     const authSession = await SessionHelper.createAuthSession(user.id, {
         username: user.name,
         service: `beatsaver`,
-        isVerified: true,
+        isVerifiedMapper: await checkIfVerifiedMapper(user.id),
+        beatSaverId: user.id,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week
     });

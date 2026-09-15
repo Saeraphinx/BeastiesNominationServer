@@ -8,7 +8,8 @@ declare global {
                 id: string;
                 username: string;
                 service: `beatleader` | `beatsaver` | `judgeId`;
-                isVerified?: boolean;
+                beatSaverId?: string | null;
+                isVerifiedMapper?: boolean;
             }?;
         }
         interface PageData {

@@ -5,7 +5,8 @@
   import { submitMap } from "./submit.remote";
   import loginbl from "$lib/media/loginbl.png";
   import loginbs from "$lib/media/loginbs.png";
-    
+  import { enhance } from "$app/forms";
+
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
 
@@ -31,10 +32,30 @@
 
   let ostMaps = [`OST 9 - Beat Saber 2`];
 
-  onMount(() => {
-    submitMap.fields.category.set(SubmissionCategory.MapOfTheYear);
+  function resetForm() {
     submitMap.fields.name.set(``);
     submitMap.fields.bsrId.set(``);
+    submitMap.fields.characteristic.set(CharacteristicEnum.Standard);
+    submitMap.fields.difficulty.set(DifficultyEnum.ExpertPlus);
+  }
+
+  let message = $state(``);
+  let showMessage = $state(false);
+  let isGoodMessage = $state(false);
+  function handleMessage(shouldResetForm = false) {
+    if (shouldResetForm) {
+      resetForm();
+    }
+    showMessage = true;
+    isGoodMessage = shouldResetForm;
+    setTimeout(() => {
+      showMessage = false;
+    }, 3000); // Hide the success message after 3 seconds
+  }
+
+  onMount(() => {
+    submitMap.fields.category.set(SubmissionCategory.MapOfTheYear);
+    resetForm();
   });
 </script>
 
@@ -51,10 +72,25 @@
   </div>
   <div class="m-4 min-w-4xl rounded-lg bg-black/70 p-12 py-4 text-center">
     <h2 class="text-3xl font-bold">{m[`homepage.form.title`]()}</h2>
-    <p class="text-lg/snug mb-2">Time left to submit: <span id="timeLeft"></span></p>
+    <p class="mb-2 text-lg/snug">Time left to submit: <span id="timeLeft"></span></p>
     <!-- <p>{m[`homepage.form.description`]()}</p> -->
     {#if user && user.service !== `judgeId`}
-      <form class="mx-auto flex max-w-100 flex-col gap-2 text-left" {...submitMap}>
+      <form
+        class="relative mx-auto flex max-w-100 flex-col gap-2 text-left"
+        {...submitMap.enhance(async (form) => {
+          if (await form.submit()) {
+            try {
+              message = m[form.result?.message]();
+            } catch (e) {
+              message = `Message not available`;
+            }
+            handleMessage(form.result?.success);
+          } else {
+            message = m[`homepage.form.response.invalidRequest`]()
+            handleMessage(false);
+          }
+        })}
+      >
         <!-- category -->
         <span class="flex flex-col gap-1">
           <label class="text-lg font-bold" for="category">{m[`homepage.form.category`]()}</label>
@@ -107,20 +143,30 @@
           </span>
         {/if}
         <button class="my-2 rounded-lg bg-green-600 px-4 py-1 font-bold text-white hover:bg-green-700">{m[`homepage.form.submit`]()}</button>
+        {#if showMessage}
+          <div class="flex absolute justify-center items-center w-[104%] h-[102%] m-[-2%] bg-black/75 rounded-md">
+            <p class="text-center text-2xl text-white px-4 py-2 rounded-md {isGoodMessage ? `bg-green-600` : `bg-red-600`}">{message}</p>
+          </div>
+        {/if}
       </form>
+      <p class="text-center text-sm text-white/50">
+          {m[`common.loggedInAs`]({ username: user.username })} •
+          <a href="/api/auth/logout">{m[`common.logout`]()}</a>
+          {user.isVerifiedMapper ? ` • ${m[`common.verifiedMapper`]()}` : ``}
+        </p>
     {:else if false || (user && user.service === `judgeId`)}
-      <div class="flex flex-col gap-2 justify-center items-center">
+      <div class="flex flex-col items-center justify-center gap-2">
         <p class="max-w-lg text-center text-lg/snug text-wrap italic">{m[`homepage.form.loggedInAsJudge`]()}</p>
-        <a class="my-2 rounded-lg bg-white/20 hover:bg-white/30 px-4 py-1 font-bold text-white" href="/logout">{m[`common.logout`]()}</a>
+        <a class="my-2 rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/apit/auth/logout">{m[`common.logout`]()}</a>
       </div>
     {:else}
       <p class="text-center text-lg/snug italic">{m[`homepage.form.notLoggedIn`]()}</p>
-      <div class="flex flex-row gap-2 justify-center items-center">
+      <div class="flex flex-row items-center justify-center gap-2">
         <a href="/api/auth/beatleader">
-          <img src={loginbl} class="max-w-75 min-w-25 w-75" width="300px" alt="Login with BeatLeader" />
+          <img src={loginbl} class="w-75 max-w-75 min-w-25" width="300px" alt="Login with BeatLeader" />
         </a>
         <a href="/api/auth/beatsaver">
-          <img src={loginbs} class="max-w-75 min-w-25 w-75" width="300px" alt="Login with BeatSaver" />
+          <img src={loginbs} class="w-75 max-w-75 min-w-25" width="300px" alt="Login with BeatSaver" />
         </a>
       </div>
     {/if}
