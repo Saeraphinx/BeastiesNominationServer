@@ -10,6 +10,7 @@ declare global {
                 service: `beatleader` | `beatsaver` | `judgeId`;
                 beatSaverId?: string | null;
                 isVerifiedMapper?: boolean;
+                avatarUrl: string | null;
             }?;
         }
         interface PageData {

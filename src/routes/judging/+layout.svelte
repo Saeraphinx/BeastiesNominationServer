@@ -10,7 +10,9 @@
   import you2 from "$lib/media/backgrounds/you2.png";
   import { onMount } from "svelte";
 
-  let { children } = $props();
+  let { children, data: _internal } = $props();
+  const { user } = $derived(_internal);
+
   let links = [
     { enabled: true, href: "/", text: m[`judging.navigation.submissionForm`]() },
     { enabled: true, href: "/judging", text: m[`judging.navigation.home`]() },
@@ -63,7 +65,7 @@
 
 <div class="basebody">
   <nav>
-    <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 bg-black/70 text-white">
+    <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 px-2 rounded-md bg-black/70 text-white">
       {#each links as link}
         {let isActive = page.url.pathname === link.href}
         {let isEnabled = link.enabled}
@@ -75,8 +77,8 @@
           {/if}
         </li>
       {/each}
-      <div class="w-0.5 h-8 bg-white/50"></div>
-      <li>
+      <div class="w-0.5 h-8 bg-white/50 not-sm:hidden"></div>
+      <li class="not-sm:hidden">
         <select class="bg-black/70 text-white" bind:value={currentBackgroundName} >
           <option value="Default">Random Background</option>
           {#each backgrounds as background}
@@ -84,6 +86,12 @@
           {/each}
         </select>
       </li>
+      <div class="w-0.5 h-8 bg-white/50 not-sm:hidden"></div>
+      <div class="flex flex-row items-center gap-2">
+        <img src={user.avatarUrl} alt="User Avatar" class="w-8 h-8 rounded-full" />
+        <p>{user.username}</p>
+        <a class="hover:bg-white/20 p-2 rounded-md transition-colors duration-150" href="/api/auth/logout">Logout</a>
+      </div>
     </ul>
   </nav>
   <div>

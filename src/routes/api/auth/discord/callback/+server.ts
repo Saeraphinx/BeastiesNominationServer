@@ -54,16 +54,17 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         username: judge.name,
         service: `judgeId`,
         isVerifiedMapper: false,
-        beatSaverId: null
+        beatSaverId: null,
+        avatarUrl: judge.avatarUrl,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "strict",
+        sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week
     });
 
-    throw redirect(307, `${PUBLIC_BASE_URL}/judge`);
+    throw redirect(307, `${PUBLIC_BASE_URL}/judging`);
 };

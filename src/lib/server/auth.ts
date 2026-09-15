@@ -247,6 +247,7 @@ interface AuthSession {
         service: `beatleader` | `beatsaver` | `judgeId`;
         isVerifiedMapper: boolean;
         beatSaverId: string | null;
+        avatarUrl: string | null;
     };
     secretHash: string;
     tokenLastVerifiedAt: Date;
@@ -427,12 +428,7 @@ class SessionTable extends Model<InferAttributes<SessionTable>, InferCreationAtt
         type: DataType.JSON,
         allowNull: false,
     })
-    declare data: {
-        username: string;
-        service: `beatleader` | `beatsaver` | `judgeId`;
-        beatSaverId: string | null;
-        isVerifiedMapper: boolean;
-    };
+    declare data: AuthSession[`data`];
 
     @Column({
         type: DataType.STRING,

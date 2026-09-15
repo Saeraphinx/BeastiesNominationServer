@@ -37,11 +37,12 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         service: `beatleader`,
         isVerifiedMapper: await checkIfVerifiedMapper(user.id),
         beatSaverId: beatSaverId,
+        avatarUrl: null,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
         httpOnly: true,
-        secure: false,// PUBLIC_BASE_URL.startsWith("https://"),
+        secure: PUBLIC_BASE_URL.startsWith("https://"),
         sameSite: "lax",
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week

@@ -6,6 +6,8 @@
   import loginbl from "$lib/media/loginbl.png";
   import loginbs from "$lib/media/loginbs.png";
   import { enhance } from "$app/forms";
+  import { getMap } from "$lib/shared/getMap";
+  import DiffIcon from "../lib/components/DiffIcon.svelte";
 
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
@@ -53,6 +55,13 @@
     }, 3000); // Hide the success message after 3 seconds
   }
 
+  function getMapCheck(id?: string) {
+    if (!id || id.trim() === "" || id.length !== 5) {
+        return;
+    }
+    return getMap(id);
+  }
+
   onMount(() => {
     submitMap.fields.category.set(SubmissionCategory.MapOfTheYear);
     resetForm();
@@ -80,7 +89,11 @@
         {...submitMap.enhance(async (form) => {
           if (await form.submit()) {
             try {
-              message = m[form.result?.message]();
+              if (form.result?.message) {
+                message = m[form.result?.message]();
+              } else {
+                throw new Error(`No message available`);
+              }
             } catch (e) {
               message = `Message not available`;
             }
@@ -142,6 +155,29 @@
             </select>
           </span>
         {/if}
+
+        {#await getMapCheck(submitMap.fields.bsrId.value())} 
+        <span></span>
+        {:then map}
+          {#if map}
+            <div class="flex flex-row p-2 rounded-lg bg-black/40 h-32">
+              <img class="rounded-lg" src={map?.versions[0].coverURL}>
+              <div class="flex flex-col justify-center ml-4">
+                <p class="text-white text-xl font-bold">{map?.metadata.songName}</p>
+                <p class="text-white/50 text-base">{map?.metadata.songAuthorName} - {map?.metadata.levelAuthorName}</p>
+                <div class="flex flex-row gap-2 mt-2">
+                  {#each map.versions[0].diffs as diff}
+                    <DiffIcon characteristic={diff.characteristic as CharacteristicEnum} difficulty={diff.difficulty as DifficultyEnum} size="lg"/>
+                  {/each}
+                </div>
+              </div>
+            </div>
+          {/if}
+        {:catch error}
+            <div class="flex flex-row p-2 bg-black/5">
+              <p>{error.message}</p>
+            </div>
+        {/await}
         <button class="my-2 rounded-lg bg-green-600 px-4 py-1 font-bold text-white hover:bg-green-700">{m[`homepage.form.submit`]()}</button>
         {#if showMessage}
           <div class="flex absolute justify-center items-center w-[104%] h-[102%] m-[-2%] bg-black/75 rounded-md">

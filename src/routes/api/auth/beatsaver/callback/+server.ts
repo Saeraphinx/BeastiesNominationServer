@@ -35,6 +35,7 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         service: `beatsaver`,
         isVerifiedMapper: await checkIfVerifiedMapper(user.id),
         beatSaverId: user.id,
+        avatarUrl: null,
     });
 
     cookies.set(SESSION_COOKIE_NAME, authSession.authSessionToken, {
