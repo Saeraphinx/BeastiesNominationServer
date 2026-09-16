@@ -33,6 +33,10 @@
             },
             "loggedInAsJudge": "You are logged in as a judge. You cannot submit maps. Please sign out and log in with BeatLeader or BeatSaver to submit maps.",
             "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps."
+        },
+        "counts": {
+            "title": "Submission Counts",
+            "description": "The counts below have been updated to show unique maps only.\nThis section updates every minute."
         }
     },
     "judging": {

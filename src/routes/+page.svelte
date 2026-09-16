@@ -1,14 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { m } from "$lib/paraglide/messages";
-  import { CharacteristicEnum, DifficultyEnum, SubmissionCategory } from "../lib/shared/goodies";
-  import { submitMap } from "./submit.remote";
+  import { CharacteristicEnum, DifficultyEnum, SubmissionCategory, type Characteristic, type Difficulty } from "../lib/shared/goodies";
+  import { getCounts, submitMap } from "./api/submission.remote.js";
   import loginbl from "$lib/media/loginbl.png";
   import loginbs from "$lib/media/loginbs.png";
-  import { enhance } from "$app/forms";
   import { getMap } from "$lib/shared/getMap";
   import DiffIcon from "../lib/components/DiffIcon.svelte";
   import { setLocale } from "../lib/paraglide/runtime.js";
+  import { fi } from "zod/locales";
 
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
@@ -32,7 +32,8 @@
       curCategory !== SubmissionCategory.RookieMapperOfTheYear &&
       curCategory !== SubmissionCategory.RookieLighterOfTheYear
   );
-
+  let currentValidChars: Characteristic[] = $state(Object.values(CharacteristicEnum));
+  let currentValidDiffs: Difficulty[] = $state(Object.values(DifficultyEnum));
   let ostMaps = [`OST 9 - Beat Saber 2`];
 
   function resetForm() {
@@ -40,6 +41,8 @@
     submitMap.fields.bsrId.set(``);
     submitMap.fields.characteristic.set(CharacteristicEnum.Standard);
     submitMap.fields.difficulty.set(DifficultyEnum.ExpertPlus);
+    currentValidChars = Object.values(CharacteristicEnum);
+    currentValidDiffs = Object.values(DifficultyEnum);
   }
 
   let message = $state(``);
@@ -56,13 +59,21 @@
     }, 3000); // Hide the success message after 3 seconds
   }
 
-  function getMapCheck(id?: string) {
+  
+  async function getMapCheck(id?: string) {
     if (!id || id.trim() === "" || id.length !== 5) {
       return;
     }
-    return getMap(id);
+    const map = await getMap(id);
+    if (!map) {
+      return;
+    }
+    currentValidChars = Object.values(CharacteristicEnum).filter(char => map.versions[0].diffs.find(diff => diff.characteristic === char));
+    currentValidDiffs = Object.values(DifficultyEnum).filter(diff => map.versions[0].diffs.find(d => d.difficulty === diff));
+    return map;
   }
 
+  let timeString = $state(timeRemaining());
   function timeRemaining() {
     const timeLeft = new Date("16 Dec 2026 00:00:00 UTC").getTime() - new Date().getTime();
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
@@ -75,17 +86,27 @@
     }
   }
 
+  let countsObj: Awaited<ReturnType<typeof getCounts>> | undefined = $state(await fetchCounts());
+  async function fetchCounts() {
+    return await getCounts();
+  }
+  
   onMount(() => {
     submitMap.fields.category.set(SubmissionCategory.MapOfTheYear);
     resetForm();
+    let interval = setInterval(() => {
+      timeString = timeRemaining();
+      fetchCounts();
+    }, 60000); // Update the time remaining every minute
+    return () => clearInterval(interval);
   });
 </script>
 
-<div class="my-8 flex flex-col items-center justify-center">
-  <div class="max-w-4xl rounded-lg bg-black/70 p-12 py-8 text-center">
-    <h1 class="text-4xl font-bold">{m[`homepage.title`]()}</h1>
-    <h2 class="text-2xl font-bold">{m[`homepage.subtitle`]()}</h2>
-    <p class="mt-4 text-lg/snug [&>a]:text-cyan-300 [&>a]:transition-colors [&>a]:duration-150 [&>a]:hover:text-cyan-500 [&>a]:hover:underline">
+<div class="flex flex-col my-8 items-center justify-center gap-4">
+  <div class="flex flex-col max-w-5xl w-[90%] rounded-lg bg-black/70 p-12 py-8 text-center text-wrap wrap-break-word">
+      <h1 class="text-4xl font-bold text-wrap">{m[`homepage.title`]()}</h1>
+      <h2 class="text-2xl font-bold text-wrap">{m[`homepage.subtitle`]()}</h2>
+      <p class="mt-4 text-lg/snug text-wrap [&>a]:text-cyan-300 [&>a]:transition-colors [&>a]:duration-150 [&>a]:hover:text-cyan-500 [&>a]:hover:underline">
       {@html m[`homepage.description`]({
         bSaberUrl: `https://bsaber.com`,
         countId: `#counts`,
@@ -96,13 +117,13 @@
         {key: `en`, str: `English`},
         {key: `jp`, str: `日本語`}
       ] as const) as lang}
-        <button class="px-2 py-1 bg-black/50 transition-colors duration-150 hover:bg-black/70 rounded-md" onclick={() => setLocale(lang.key)}>{lang.str}</button>
+        <button class="px-2 py-1 bg-black/50 transition-colors duration-150 hover:bg-gray-500/50 rounded-md" onclick={() => setLocale(lang.key)}>{lang.str}</button>
       {/each}
     </div>
   </div>
-  <div class="m-4 min-w-4xl rounded-lg bg-black/70 p-12 py-4 text-center">
+  <div class="max-w-5xl w-[90%] rounded-lg bg-black/70 p-12 py-4 text-center">
     <h2 class="text-3xl font-bold">{m[`homepage.form.title`]()}</h2>
-    <p class="mb-2 text-lg/snug">{timeRemaining()}</p>
+    <p class="mb-2 text-lg/snug">{timeString}</p>
     <!-- <p>{m[`homepage.form.description`]()}</p> -->
     {#if user && user.service !== `judgeId`}
       <form
@@ -157,9 +178,9 @@
           <span class="flex flex-col gap-1">
             <label class="text-lg font-bold" for="difficulty">{m[`homepage.form.difficulty`]()}</label>
             <select class="text-lg" {...submitMap.fields.difficulty.as("select")}>
-              {#each Object.values(DifficultyEnum) as difficulty}
-                {#if difficulty !== `All`}
-                  <option value={difficulty}>{m[`common.difficulty.${difficulty}`]()}</option>
+              {#each currentValidDiffs as diff}
+                {#if diff !== `All`}
+                  <option value={diff}>{m[`common.difficulty.${diff}`]()}</option>
                 {/if}
               {/each}
             </select>
@@ -168,9 +189,9 @@
           <span class="flex flex-col gap-1">
             <label class="text-lg font-bold" for="characteristic">{m[`homepage.form.characteristic`]()}</label>
             <select class="text-lg" {...submitMap.fields.characteristic.as("select")}>
-              {#each Object.values(CharacteristicEnum) as characteristic}
-                {#if characteristic !== `All` && characteristic !== `Other`}
-                  <option value={characteristic}>{m[`common.characteristic.${characteristic}`]()}</option>
+              {#each currentValidChars as char}
+                {#if char !== `All` && char !== `Other`}
+                  <option value={char}>{m[`common.characteristic.${char}`]()}</option>
                 {/if}
               {/each}
             </select>
@@ -188,7 +209,11 @@
                 <p class="text-base text-white/50">{map?.metadata.songAuthorName} - {map?.metadata.levelAuthorName}</p>
                 <div class="mt-2 flex flex-row flex-wrap gap-2">
                   {#each map.versions[0].diffs as diff}
-                    <DiffIcon characteristic={diff.characteristic as CharacteristicEnum} difficulty={diff.difficulty as DifficultyEnum} size="sm" />
+                    <DiffIcon characteristic={diff.characteristic as CharacteristicEnum} difficulty={diff.difficulty as DifficultyEnum} size="sm" isSelected={submitMap.fields.difficulty.value() === diff.difficulty && submitMap.fields.characteristic.value() === diff.characteristic} onClick={() => {
+
+                      submitMap.fields.difficulty.set(diff.difficulty as DifficultyEnum);
+                      submitMap.fields.characteristic.set(diff.characteristic as CharacteristicEnum);
+                    }}/>
                   {/each}
                 </div>
               </div>
@@ -227,5 +252,34 @@
         </a>
       </div>
     {/if}
+  </div>
+  <div class="max-w-5xl w-[90%] rounded-lg bg-black/70 p-12 py-4 text-center">
+    <div class="mb-4">
+      <p class="text-3xl">{m[`homepage.counts.title`]()}</p>
+      <p class="text-lg text-white">{m[`homepage.counts.description`]()}</p>
+    </div>
+    <div class="flex flex-row flex-wrap justify-center gap-2 gap-x-4">
+      {#each [
+        ...Object.entries(countsObj).filter(([category, counts]) => !category.startsWith(`OTY`) && category !== `Total`),
+        ] as [category, counts]}
+        <div class="bg-black/50 p-2 min-w-48 rounded-lg">
+          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category}.dropdown`]()}</p>
+          <p class="text-3xl text-white">{counts.total}</p>
+        </div>
+      {/each}
+      <span class="w-full h-0.5 bg-white/10"></span>
+      {#each [
+        ...Object.entries(countsObj).filter(([category, counts]) => category.startsWith(`OTY`) && category !== `Total`),
+        ] as [category, counts]}
+        <div class="bg-black/50 p-2  rounded-lg">
+          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category}.dropdown`]()}</p>
+          <p class="text-3xl text-white">{counts.distinct}</p>
+        </div>
+      {/each}
+        <div class="bg-black/50 p-2 w-full rounded-lg">
+          <p class="text-lg font-bold text-white m-0">Total</p>
+          <p class="text-3xl text-white">{countsObj.Total.total}</p>
+        </div>
+    </div>
   </div>
 </div>

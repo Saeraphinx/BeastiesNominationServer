@@ -1,9 +1,9 @@
-import { form, getRequestEvent } from "$app/server";
+import { form, getRequestEvent, query } from "$app/server";
 import { z } from "zod";
 import { SubmissionCategory, CharacteristicEnum, DifficultyEnum, RequestSubmissionStatus } from "$lib/shared/goodies";
-import { SessionHelper } from "../lib/server/auth";
+import { SessionHelper } from "$lib/server/auth";
 import { SESSION_COOKIE_NAME } from "$app/env/private";
-import { Submission } from "../lib/server/database";
+import { Submission } from "$lib/server/database";
 
 export const submitMap = form(
     z.object({
@@ -62,3 +62,7 @@ enum ErrorStringKeys {
     AlreadyVoted = "homepage.form.response.alreadyVoted",
     Success = "homepage.form.response.success",
 }
+
+export const getCounts = query(async () => {
+    return await Submission.getNominationCount();
+});

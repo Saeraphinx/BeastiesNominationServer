@@ -12,6 +12,8 @@
     difficulty: Difficulty;
     characteristic: Characteristic;
     size: `sm` | `lg`;
+    isSelected?: boolean;
+    onClick?: () => void;
   } = $props();
 
   let sizeClass = $derived.by(() => {
@@ -58,6 +60,16 @@
   });
 </script>
 
-<div class="flex {sizeClass.div} rounded-full" style="background-color: #{color};">
-  <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
-</div>
+{#if props.onClick}
+  <button class="flex {sizeClass.div} rounded-full {props.isSelected ? 'ring-2 ring-offset-2 ring-blue-500' : ''}" style="background-color: #{color};" onclick={(e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    props.onClick?.();
+  }}>
+    <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
+  </button>
+{:else}
+  <div class="flex {sizeClass.div} rounded-full {props.isSelected ? 'ring-2 ring-offset-2 ring-blue-500' : ''}" style="background-color: #{color};">
+    <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
+  </div>
+{/if}

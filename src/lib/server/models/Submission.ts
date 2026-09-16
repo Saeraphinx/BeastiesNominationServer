@@ -287,192 +287,112 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
         return NominationStatusResponse.Accepted;
     }
 
-    public static async getNominationCount() {
-        const counts = {
-            Total: await this.count(),
-            MapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapOfTheYear },
-            }),
-            MapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapperOfTheYear },
-            }),
-            LighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.LighterOfTheYear },
-            }),
-            RookieMapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieMapperOfTheYear },
-            }),
-            RookieLighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieLighterOfTheYear },
-            }),
-            PackOfTheYear: await this.count({
-                where: { category: SubmissionCategory.PackOfTheYear },
-            }),
-            OSTMap: await this.count({
-                where: { category: SubmissionCategory.OST },
-            }),
-            NonStandardMap: await this.count({
-                where: { category: SubmissionCategory.NonStandardMap },
-            }),
-            FullSpreadMap: await this.count({
-                where: { category: SubmissionCategory.FullSpreadMap },
-            }),
-            Lightshow: await this.count({
-                where: { category: SubmissionCategory.Lightshow },
-            }),
-            GameplayModchart: await this.count({
-                where: { category: SubmissionCategory.GameplayModchart },
-            }),
-            RankedMap: await this.count({
-                where: { category: SubmissionCategory.RankedMap },
-            }),
-            BalancedMap: await this.count({
-                where: { category: SubmissionCategory.BalancedMap },
-            }),
-            TechMap: await this.count({
-                where: { category: SubmissionCategory.TechMap },
-            }),
-            SpeedMap: await this.count({
-                where: { category: SubmissionCategory.SpeedMap },
-            }),
-            DanceMap: await this.count({
-                where: { category: SubmissionCategory.DanceMap },
-            }),
-            FitnessMap: await this.count({
-                where: { category: SubmissionCategory.FitnessMap },
-            }),
-            ChallengeMap: await this.count({
-                where: { category: SubmissionCategory.ChallengeMap },
-            }),
-            AccMap: await this.count({
-                where: { category: SubmissionCategory.AccMap },
-            }),
-            PoodleMap: await this.count({
-                where: { category: SubmissionCategory.PoodleMap },
-            }),
-            WildcardMap: await this.count({
-                where: { category: SubmissionCategory.WildcardMap },
-            }),
-            ModdedMapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.ModdedMapOfTheYear },
-            }),
-        };
+    private static async getCategoryCounts(catgegory: SubmissionCategory, distinct = false) {
+        let isName = isNameRequired(catgegory) ? "name" : `bsrId`;
+        return await this.count({
+            where: { category: catgegory },
+            distinct: distinct,
+            col: distinct ? isName : undefined,
+        });
+    }
 
-        const uniqueCategories = {
-            MapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapOfTheYear },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            MapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.MapperOfTheYear },
-                distinct: true,
-                col: `name`,
-            }),
-            LighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.LighterOfTheYear },
-                distinct: true,
-                col: `name`,
-            }),
-            RookieMapperOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieMapperOfTheYear },
-                distinct: true,
-                col: `name`,
-            }),
-            RookieLighterOfTheYear: await this.count({
-                where: { category: SubmissionCategory.RookieLighterOfTheYear },
-                distinct: true,
-                col: `name`,
-            }),
-            PackOfTheYear: await this.count({
-                where: { category: SubmissionCategory.PackOfTheYear },
-                distinct: true,
-                col: `name`,
-            }),
-            OSTMap: await this.count({
-                where: { category: SubmissionCategory.OST },
-                distinct: true,
-                col: `name`,
-            }),
-            NonStandardMap: await this.count({
-                where: { category: SubmissionCategory.NonStandardMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            FullSpreadMap: await this.count({
-                where: { category: SubmissionCategory.FullSpreadMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            Lightshow: await this.count({
-                where: { category: SubmissionCategory.Lightshow },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            GameplayModchart: await this.count({
-                where: { category: SubmissionCategory.GameplayModchart },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            RankedMap: await this.count({
-                where: { category: SubmissionCategory.RankedMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            BalancedMap: await this.count({
-                where: { category: SubmissionCategory.BalancedMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            TechMap: await this.count({
-                where: { category: SubmissionCategory.TechMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            SpeedMap: await this.count({
-                where: { category: SubmissionCategory.SpeedMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            DanceMap: await this.count({
-                where: { category: SubmissionCategory.DanceMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            FitnessMap: await this.count({
-                where: { category: SubmissionCategory.FitnessMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            ChallengeMap: await this.count({
-                where: { category: SubmissionCategory.ChallengeMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            AccMap: await this.count({
-                where: { category: SubmissionCategory.AccMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            PoodleMap: await this.count({
-                where: { category: SubmissionCategory.PoodleMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            WildcardMap: await this.count({
-                where: { category: SubmissionCategory.WildcardMap },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            ModdedMapOfTheYear: await this.count({
-                where: { category: SubmissionCategory.ModdedMapOfTheYear },
-                distinct: true,
-                col: `bsrId`,
-            }),
-            Total: (await this.count({ distinct: true, col: `bsrId` })) + (await this.count({ distinct: true, col: `name` })),
+    public static async getNominationCount() {
+        const counts: Record<SubmissionCategory | "Total", { total: number; distinct: number }> = {
+            Total: {
+                total: await this.count(),
+                distinct: (await this.count({ distinct: true, col: `bsrId` })) + (await this.count({ distinct: true, col: `name` })),
+            },
+            [SubmissionCategory.OST]: {
+                total: await this.getCategoryCounts(SubmissionCategory.OST),
+                distinct: await this.getCategoryCounts(SubmissionCategory.OST, true),
+            },
+            [SubmissionCategory.NonStandardMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.NonStandardMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.NonStandardMap, true),
+            },
+            [SubmissionCategory.FullSpreadMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.FullSpreadMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.FullSpreadMap, true),
+            },
+            [SubmissionCategory.Lightshow]: {
+                total: await this.getCategoryCounts(SubmissionCategory.Lightshow),
+                distinct: await this.getCategoryCounts(SubmissionCategory.Lightshow, true),
+            },
+            [SubmissionCategory.GameplayModchart]: {
+                total: await this.getCategoryCounts(SubmissionCategory.GameplayModchart),
+                distinct: await this.getCategoryCounts(SubmissionCategory.GameplayModchart, true),
+            },
+            [SubmissionCategory.RankedMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.RankedMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.RankedMap, true),
+            },
+            [SubmissionCategory.BalancedMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.BalancedMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.BalancedMap, true),
+            },
+            [SubmissionCategory.TechMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.TechMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.TechMap, true),
+            },
+            [SubmissionCategory.SpeedMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.SpeedMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.SpeedMap, true),
+            },
+            [SubmissionCategory.DanceMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.DanceMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.DanceMap, true),
+            },
+            [SubmissionCategory.FitnessMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.FitnessMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.FitnessMap, true),
+            },
+            [SubmissionCategory.ChallengeMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.ChallengeMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.ChallengeMap, true),
+            },
+            [SubmissionCategory.AccMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.AccMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.AccMap, true),
+            },
+            [SubmissionCategory.PoodleMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.PoodleMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.PoodleMap, true),
+            },
+            [SubmissionCategory.WildcardMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.WildcardMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.WildcardMap, true),
+            },
+            [SubmissionCategory.MapperOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.MapperOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.MapperOfTheYear, true),
+            },
+            [SubmissionCategory.LighterOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.LighterOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.LighterOfTheYear, true),
+            },
+            [SubmissionCategory.RookieMapperOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.RookieMapperOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.RookieMapperOfTheYear, true),
+            },
+            [SubmissionCategory.RookieLighterOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.RookieLighterOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.RookieLighterOfTheYear, true),
+            },
+            [SubmissionCategory.PackOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.PackOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.PackOfTheYear, true),
+            },
+            [SubmissionCategory.ModdedMapOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.ModdedMapOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.ModdedMapOfTheYear, true),
+            },
+            [SubmissionCategory.MapOfTheYear]: {
+                total: await this.getCategoryCounts(SubmissionCategory.MapOfTheYear),
+                distinct: await this.getCategoryCounts(SubmissionCategory.MapOfTheYear, true),
+            }
         };
 
         // console.log(counts, uniqueCategories);
-        return [counts, uniqueCategories];
+        return counts;
     }
 }
