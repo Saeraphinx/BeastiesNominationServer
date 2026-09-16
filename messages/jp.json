@@ -1,3 +1,49 @@
 {
-    "$schema": "https://inlang.com/schema/inlang-message-format"
+    "$schema": "https://inlang.com/schema/inlang-message-format",
+    "title": "2026 ビーストセイバー・マッピング・アワード推薦フォーム",
+    "homepage": {
+        "title": "ビーストセイバー・マッピング・アワード",
+        "subtitle": "略して The Beasties - マッパーによる、マッパーのための賞",
+        "form": {
+            "title": "2026年譜面推薦フォーム",
+            "timeLeft": "推薦終了まで：",
+            "category": "カテゴリー（部門）",
+            "bsrKey": "BSRキー(例： \"51058\", \"5308f\")",
+            "name": "パック/マッパー名/BeatSaverのURLリンク",
+            "ostName": "OST 譜面",
+            "difficulty": "難易度",
+            "characteristic": "特性（Characteristic）",
+            "submit": "Submit",
+            "response":{
+                "notLoggedIn": "推薦するにはログインしてください。",
+                "invalidRequest": "無効なリクエストを受信しました。",
+                "rateLimited": "譜面の推薦が早すぎます。しばらくしてからもう一度お試しください。",
+                "oldKey": "このBSRキーは推薦対象ではございません。",
+                "alreadyVoted": "この譜面は既にこのアカウントから推薦済みです。",
+                "success": "受領いたしました。\n\nビーストセイバー・マッピング・アワードへ譜面を推薦していただきありがとうございました！"
+            }
+        }
+    },
+    "common": {
+        "characteristic": {
+            "Standard": "スタンダード",
+            "OneSaber": "ワンセイバー",
+            "NoArrows": "ノーアロー",
+            "360Degree": "360度",
+            "90Degree": "90度",
+            "Lightshow": "ライトショー",
+            "Lawless": "ローレス",
+            "All": "全て",
+            "Other": "全て"
+        },
+        "difficulty": {
+            "Easy": "Easy",
+            "Normal": "Normal",
+            "Hard": "Hard",
+            "Expert": "Expert",
+            "ExpertPlus": "Expert+",
+            "All": "All"
+        }
+    },
+    "footer": "作者： <a href=\"https://saeraphinx.dev\">Saeraphinx</a> • <a href=\"https://github.com/Saeraphinx/BeastiesNominationServer\">Source</a> • 翻訳：<a href=\"https://www.twitch.tv/mochichi72\">mochichi</a> • Special thanks to <a href=\"https://beatleader.com\">BeatLeader</a> & <a href=\"https://beatsaver.com\">BeatSaver</a>!"
 }

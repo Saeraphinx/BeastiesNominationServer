@@ -8,6 +8,7 @@
   import { enhance } from "$app/forms";
   import { getMap } from "$lib/shared/getMap";
   import DiffIcon from "../lib/components/DiffIcon.svelte";
+  import { setLocale } from "../lib/paraglide/runtime.js";
 
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
@@ -57,9 +58,21 @@
 
   function getMapCheck(id?: string) {
     if (!id || id.trim() === "" || id.length !== 5) {
-        return;
+      return;
     }
     return getMap(id);
+  }
+
+  function timeRemaining() {
+    const timeLeft = new Date("16 Dec 2026 00:00:00 UTC").getTime() - new Date().getTime();
+    const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+    if (timeLeft < 0) {
+      return m[`homepage.form.submissionsAreClosed`]();
+    } else {
+      return `${m[`homepage.form.timeLeft`]()} ${days} days, ${hours} ${hours == 1 ? "hour" : "hours"}, ${minutes} ${minutes == 1 ? "minute" : "minutes"}.`;
+    }
   }
 
   onMount(() => {
@@ -78,10 +91,18 @@
         countId: `#counts`,
       })}
     </p>
+    <div class="flex gap-2 justify-center items-center mt-2 -mb-4">
+      {#each ([
+        {key: `en`, str: `English`},
+        {key: `jp`, str: `日本語`}
+      ] as const) as lang}
+        <button class="px-2 py-1 bg-black/50 transition-colors duration-150 hover:bg-black/70 rounded-md" onclick={() => setLocale(lang.key)}>{lang.str}</button>
+      {/each}
+    </div>
   </div>
   <div class="m-4 min-w-4xl rounded-lg bg-black/70 p-12 py-4 text-center">
     <h2 class="text-3xl font-bold">{m[`homepage.form.title`]()}</h2>
-    <p class="mb-2 text-lg/snug">Time left to submit: <span id="timeLeft"></span></p>
+    <p class="mb-2 text-lg/snug">{timeRemaining()}</p>
     <!-- <p>{m[`homepage.form.description`]()}</p> -->
     {#if user && user.service !== `judgeId`}
       <form
@@ -99,7 +120,7 @@
             }
             handleMessage(form.result?.success);
           } else {
-            message = m[`homepage.form.response.invalidRequest`]()
+            message = m[`homepage.form.response.invalidRequest`]();
             handleMessage(false);
           }
         })}
@@ -156,40 +177,40 @@
           </span>
         {/if}
 
-        {#await getMapCheck(submitMap.fields.bsrId.value())} 
-        <span></span>
+        {#await getMapCheck(submitMap.fields.bsrId.value())}
+          <span></span>
         {:then map}
           {#if map}
-            <div class="flex flex-row p-2 rounded-lg bg-black/40 h-32">
-              <img class="rounded-lg" src={map?.versions[0].coverURL}>
-              <div class="flex flex-col justify-center ml-4">
-                <p class="text-white text-xl font-bold">{map?.metadata.songName}</p>
-                <p class="text-white/50 text-base">{map?.metadata.songAuthorName} - {map?.metadata.levelAuthorName}</p>
-                <div class="flex flex-row gap-2 mt-2">
+            <div class="flex h-32 flex-row rounded-lg bg-black/40 p-2">
+              <img class="rounded-lg" src={map?.versions[0].coverURL} />
+              <div class="ml-4 flex flex-col justify-center">
+                <p class="text-xl font-bold text-white">{map?.metadata.songName}</p>
+                <p class="text-base text-white/50">{map?.metadata.songAuthorName} - {map?.metadata.levelAuthorName}</p>
+                <div class="mt-2 flex flex-row flex-wrap gap-2">
                   {#each map.versions[0].diffs as diff}
-                    <DiffIcon characteristic={diff.characteristic as CharacteristicEnum} difficulty={diff.difficulty as DifficultyEnum} size="lg"/>
+                    <DiffIcon characteristic={diff.characteristic as CharacteristicEnum} difficulty={diff.difficulty as DifficultyEnum} size="sm" />
                   {/each}
                 </div>
               </div>
             </div>
           {/if}
         {:catch error}
-            <div class="flex flex-row p-2 bg-black/5">
-              <p>{error.message}</p>
-            </div>
+          <div class="flex flex-row bg-black/5 p-2">
+            <p>{error.message}</p>
+          </div>
         {/await}
         <button class="my-2 rounded-lg bg-green-600 px-4 py-1 font-bold text-white hover:bg-green-700">{m[`homepage.form.submit`]()}</button>
         {#if showMessage}
-          <div class="flex absolute justify-center items-center w-[104%] h-[102%] m-[-2%] bg-black/75 rounded-md">
-            <p class="text-center text-2xl text-white px-4 py-2 rounded-md {isGoodMessage ? `bg-green-600` : `bg-red-600`}">{message}</p>
+          <div class="absolute m-[-2%] flex h-[102%] w-[104%] items-center justify-center rounded-md bg-black/75">
+            <p class="rounded-md px-4 py-2 text-center text-2xl text-white {isGoodMessage ? `bg-green-600` : `bg-red-600`}">{message}</p>
           </div>
         {/if}
       </form>
       <p class="text-center text-sm text-white/50">
-          {m[`common.loggedInAs`]({ username: user.username })} •
-          <a href="/api/auth/logout">{m[`common.logout`]()}</a>
-          {user.isVerifiedMapper ? ` • ${m[`common.verifiedMapper`]()}` : ``}
-        </p>
+        {m[`common.loggedInAs`]({ username: user.username })} •
+        <a href="/api/auth/logout">{m[`common.logout`]()}</a>
+        {user.isVerifiedMapper ? ` • ${m[`common.verifiedMapper`]()}` : ``}
+      </p>
     {:else if false || (user && user.service === `judgeId`)}
       <div class="flex flex-col items-center justify-center gap-2">
         <p class="max-w-lg text-center text-lg/snug text-wrap italic">{m[`homepage.form.loggedInAsJudge`]()}</p>

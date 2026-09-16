@@ -34,7 +34,7 @@
 {#if page.url.href.includes(`/judging`)}
   {@render children()}
 {:else}
-  <div class="basebody min-h-screen min-w-screen">
+  <div class="basebody min-h-screen">
     {@render children()}
   </div>
 {/if}

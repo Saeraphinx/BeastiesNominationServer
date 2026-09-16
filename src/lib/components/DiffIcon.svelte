@@ -59,5 +59,5 @@
 </script>
 
 <div class="flex {sizeClass.div} rounded-full" style="background-color: #{color};">
-  <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" />
+  <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
 </div>

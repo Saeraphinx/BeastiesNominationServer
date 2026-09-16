@@ -12,6 +12,8 @@
         },
         "form": {
             "title": "2026 Map Submission Form",
+            "timeLeft": "Time left to submit:",
+            "submissionsAreClosed": "Submissions are closed. Thank you for submitting, stay tuned for community voting!",
             "category": "Category",
             "bsrKey": "BSR Key (e.g. \"51058\", \"5308f\")",
             "name": "Pack/Mapper Name or BeatSaver URL",
@@ -20,14 +22,14 @@
             "characteristic": "Characteristic",
             "submit": "Submit",
             "response":{
-                "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps.",
-                "invalidRequest": "Invalid request. Please check your submission and try again.",
+                "notLoggedIn": "You need to be logged in to submit a nomination.",
+                "invalidRequest": "Invalid request.",
                 "invalidCategory": "Invalid category selected.",
-                "rateLimited": "You are submitting too quickly. Please wait and try again.",
+                "rateLimited": "You've submitted maps too quickly. Please try again later.",
                 "oldKey": "The BSR key provided is outdated.",
                 "invalidSubmission": "Invalid submission. Please check your input.",
-                "alreadyVoted": "You have already submitted this map.",
-                "success": "Your submission was successful!"
+                "alreadyVoted": "You've already submitted this map.",
+                "success": "Your submission has been received.\n\nThank you for submitting a map to the BeastSaber Mapping Awards!"
             },
             "loggedInAsJudge": "You are logged in as a judge. You cannot submit maps. Please sign out and log in with BeatLeader or BeatSaver to submit maps.",
             "notLoggedIn": "You must be logged in with your BeatLeader or BeatSaver account to submit maps."
