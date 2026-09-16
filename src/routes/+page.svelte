@@ -253,7 +253,7 @@
       </div>
     {/if}
   </div>
-  <div class="max-w-5xl w-[90%] rounded-lg bg-black/70 p-12 py-4 text-center">
+  <div class="max-w-5xl w-[90%] rounded-lg bg-black/70 p-12 py-4 text-center" id="counts">
     <div class="mb-4">
       <p class="text-3xl">{m[`homepage.counts.title`]()}</p>
       <p class="text-lg text-white">{m[`homepage.counts.description`]()}</p>

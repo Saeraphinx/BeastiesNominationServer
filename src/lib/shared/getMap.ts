@@ -8,3 +8,12 @@ export async function getMap(id: string) {
         return res.json() as Promise<BSMap>;
     });
 }
+
+export async function getBulkMaps(id: string[]) {
+    return await fetch(`https://beatsaver.com/api/maps/ids/${id.join(",")}`).then(res => {
+        if (!res.ok) {
+            throw new Error(`Failed to fetch bulk maps with ids ${id.join(",")}`);
+        }
+        return res.json() as Promise<Record<BSMap[`id`], BSMap>>;
+    });
+}

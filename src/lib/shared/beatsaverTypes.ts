@@ -38,7 +38,8 @@ export interface BSMap {
     updatedAt: string
     lastPublishedAt: string
     tags: string[]
-    bookmarked: boolean
+    bookmarked: boolean,
+    collaborators?: Uploader[]
 }
 
 interface Uploader {
@@ -47,8 +48,11 @@ interface Uploader {
     hash: string
     avatar: string
     type: string
-    admin: boolean
-    curator: boolean
+    admin?: boolean,
+    curator?: boolean,
+    seniorCurator?: boolean,
+    curatorTab?: boolean,
+    verifiedMapper?: boolean,
     playlistUrl: string
 }
 

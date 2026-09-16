@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
+import { getJudge } from '../api/judging.remote';
 
 export const load: LayoutLoad = async ({ data, parent }) => {
     let parentData = await parent();
@@ -10,8 +11,11 @@ export const load: LayoutLoad = async ({ data, parent }) => {
         throw redirect(307, "/");
     }
 
+    const judge = await getJudge();
+
     return {
         user: parentData.user,
+        judge,
         pageMetadata: {
             title: `Judge Panel`
         }

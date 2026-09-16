@@ -11,16 +11,19 @@
   import { onMount } from "svelte";
 
   let { children, data: _internal } = $props();
-  const { user } = $derived(_internal);
+  const { user, judge } = $derived(_internal);
 
   let links = [
     { enabled: true, href: "/", text: m[`judging.navigation.submissionForm`]() },
     { enabled: true, href: "/judging", text: m[`judging.navigation.home`]() },
-    { enabled: false, href: "/judging/sort", text: m[`judging.navigation.sort`]() },
-    { enabled: false, href: "/judging/judge", text: m[`judging.navigation.judge`]() },
+    // svelte-ignore state_referenced_locally
+    { enabled: judge.roles.includes(`sort`), href: "/judging/sort", text: m[`judging.navigation.sort`]() },
+    // svelte-ignore state_referenced_locally
+    { enabled: judge.roles.includes(`judge`), href: "/judging/judge", text: m[`judging.navigation.judge`]() },
     { enabled: false, href: "/finalists", text: m[`judging.navigation.finalists`]() },
     { enabled: false, href: "/render", text: m[`judging.navigation.renderer`]() },
-    { enabled: true, href: "/judging/admin", text: m[`judging.navigation.admin`]() },
+    // svelte-ignore state_referenced_locally
+    { enabled: judge.roles.includes(`admin`), href: "/judging/admin", text: m[`judging.navigation.admin`]() },
   ];
 
   let backgrounds = [
@@ -67,7 +70,7 @@
   <nav>
     <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 px-2 rounded-md bg-black/70 text-white">
       {#each links as link}
-        {let isActive = page.url.pathname === link.href}
+        {let isActive = page.url.pathname.endsWith(link.href)}
         {let isEnabled = link.enabled}
         <li class="hover:bg-white/20 p-2 rounded-md transition-colors duration-150">
           {#if isEnabled}
