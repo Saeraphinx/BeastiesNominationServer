@@ -4,20 +4,26 @@ import { Judge, SortedSubmission, Submission } from "../../lib/server/database";
 import { CharacteristicEnum, DifficultyEnum, isNameRequiredSortedSubmission, isDiffCharRequiredSortedSubmission, SortedSubmissionsCategory } from "../../lib/shared/goodies";
 import type { BSMap } from "../../lib/shared/beatsaverTypes";
 import { getJudgeFromEvent } from "../../lib/server/auth";
+import type { WhereOptions } from "sequelize";
 
 export const getSubmissions = query(z.object({
     category: z.string().optional()
 }), async (inputs) => {
     const { judge } = await getJudgeFromEvent(); 
-    if (!judge.roles.includes("sort")) {
+    if (!judge.roles.includes("sort") && !judge.roles.includes("admin")) {
         throw new Error("Unauthorized");
     }
 
+    let whereOptions: WhereOptions<Submission> = { 
+        filterStatus: null
+    };
+
+    if (inputs.category) {
+        whereOptions = { ...whereOptions, category: inputs.category };
+    }
+
     return Submission.findAll({
-        where: {
-            category: inputs.category,
-            filterStatus: null
-        },
+        where: whereOptions,
         limit: 250
     }).then(submissions => submissions.map(submission => submission.toJSON()));
 });

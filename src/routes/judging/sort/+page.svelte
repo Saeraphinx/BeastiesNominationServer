@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from "svelte";
   import type { InferAttributes } from "sequelize";
   import type { Submission } from "../../../lib/server/database";
   import { getSubmissions } from "../../api/sorting.remote";
@@ -12,11 +13,14 @@
   let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
     const start = (currentPage - 1) * 25;
     const end = start + 25;
-    return submissions.slice(start, end);
+    console.log("Currently showing submissions from index", start, "to", end);
+    let ret = submissions.slice(start, end);
+    console.log("Submissions being returned:", ret);
+    return ret;
   });
 
   async function fetchSubmissions() {
-    getSubmissions({}).then(data => {
+    await getSubmissions({}).then(data => {
       submissions = data;
     });
 
@@ -33,11 +37,14 @@
       });
     }
   }
+
+  onMount(fetchSubmissions);
 </script>
 
 <div>
   <div>
     <p>Submissions:</p>
+    <button onclick={fetchSubmissions}>Fetch Submissions</button>
   </div>
   <div>
     {#each currentlyShowingSubmissions as submission}
