@@ -51,7 +51,21 @@ export class SortedSubmission extends Model<InferAttributes<SortedSubmission>, I
             this.setDataValue(`submitterIds`, JSON.stringify(value));
         },
     })
-    declare submitterIds: string[];
+    declare submitterIds: CreationOptional<string[]>;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false,
+        defaultValue: `[]`,
+        get: function () {
+            return JSON.parse(this.getDataValue(`involvedMappers`) || `[]`);
+        },
+        set: function (value: string[]) {
+            this.setDataValue(`involvedMappers`, JSON.stringify(value));
+        },
+
+    })
+    declare involvedMappers: CreationOptional<string[]>;
 
     @CreatedAt
     declare createdAt: CreationOptional<Date>;

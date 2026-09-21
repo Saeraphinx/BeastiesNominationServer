@@ -1,4 +1,4 @@
-import { Op, type CreationOptional, type InferAttributes, type InferCreationAttributes, type NonAttribute } from "sequelize";
+import { Op, type CreationOptional, type InferAttributes, type InferCreationAttributes, type NonAttribute, type WhereOptions } from "sequelize";
 import { AllowNull, Column, CreatedAt, DataType, Default, DeletedAt, Model, PrimaryKey, Table, UpdatedAt } from "sequelize-typescript";
 import { type Characteristic, type Difficulty, SubmissionCategory, type FilterStatus, isNameRequired, validateEnumValue, isDiffCharRequired, NominationStatusResponse, RequestSubmissionStatus, CharacteristicEnum } from "../../shared/goodies";
 
@@ -55,8 +55,8 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
 
     @AllowNull(true)
     @Default(null)
-    @Column(DataType.STRING)
-    declare filtererId: CreationOptional<string | null>; // if not null, this nomination was filtered by the user mentioned here
+    @Column(DataType.INTEGER)
+    declare filtererId: CreationOptional<number | null>; // if not null, this nomination was filtered by the user mentioned here
 
     @CreatedAt
     declare createdAt: CreationOptional<Date>;
@@ -218,7 +218,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
             return NominationStatusResponse.InvalidCategory;
         }
 
-        let sortedRecordInfo: { isSorted: boolean; status?: FilterStatus; filtererId?: string | null };
+        let sortedRecordInfo: { isSorted: boolean; status?: FilterStatus; filtererId?: number | null };
         sortedRecordInfo = { isSorted: false };
         switch (sortedrecord?.filterStatus) {
             case `Accepted`:
@@ -394,5 +394,28 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
 
         // console.log(counts, uniqueCategories);
         return counts;
+    }
+
+    public findDuplicateSubmissions() {
+        let whereOptions: WhereOptions<Submission> = {};
+        if (isNameRequired(this.category)) {
+            whereOptions = {
+                name: this.name,
+                category: this.category
+            };
+        } else if (isDiffCharRequired(this.category)) {
+            whereOptions = {
+                difficulty: this.difficulty,
+                characteristic: this.characteristic,
+                category: this.category
+            };
+        } else {
+            whereOptions = {
+                bsrId: this.bsrId,
+                category: this.category
+            };
+        }
+
+        return Submission.findAll({ where: whereOptions });
     }
 }

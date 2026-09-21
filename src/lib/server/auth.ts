@@ -4,6 +4,8 @@ import { timingSafeEqual, subtle, randomBytes } from "crypto";
 import path from "path";
 import { Column, DataType, Model, Sequelize, Table } from "sequelize-typescript";
 import type { InferAttributes, InferCreationAttributes } from "sequelize/lib/model";
+import { Judge } from "./database";
+import { getRequestEvent } from "$app/server";
 
 export function createRandomString(byteCount: number): string {
     let key = randomBytes(byteCount).toString(`base64url`);
@@ -463,4 +465,21 @@ export async function checkIfVerifiedMapper(id: string): Promise<boolean> {
             console.error(`Failed to check if user ${id} is a verified mapper:`, err);
             return false;
         });
+}
+
+export async function getJudgeFromEvent() {
+    const event = getRequestEvent();
+    const user = event.locals.user;
+    if (!user || user.service !== `judgeId`) {
+        throw new Error(`Unauthorized`);
+    }
+    const judge = await Judge.findOne({ where: { discordId: user.id } });
+    if (!judge) {
+        throw new Error(`Judge not found`);
+    }
+    return {
+        event,
+        user,
+        judge,
+    };
 }

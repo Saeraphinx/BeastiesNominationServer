@@ -7,8 +7,8 @@
 
   let props: {
     map: BSMap;
-    characteristic?: Characteristic;
-    difficulty?: Difficulty;
+    characteristic?: Characteristic | null;
+    difficulty?: Difficulty | null;
     children?: Snippet;
   } = $props();
 

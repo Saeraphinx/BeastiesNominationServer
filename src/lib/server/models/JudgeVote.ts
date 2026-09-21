@@ -15,12 +15,16 @@ export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAt
     declare judgeId: string;
 
     @AllowNull(false)
-    @Column(DataType.STRING)
-    declare submissionId: string;
+    @Column(DataType.INTEGER)
+    declare submissionId: number;
 
     @AllowNull(false)
     @Column(DataType.STRING)
     declare score: string;
+
+    @AllowNull(true)
+    @Column(DataType.STRING)
+    declare note: string | null;
 
     @CreatedAt
     declare createdAt: CreationOptional<Date>;

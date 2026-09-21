@@ -17,9 +17,9 @@
     { enabled: true, href: "/", text: m[`judging.navigation.submissionForm`]() },
     { enabled: true, href: "/judging", text: m[`judging.navigation.home`]() },
     // svelte-ignore state_referenced_locally
-    { enabled: judge.roles.includes(`sort`), href: "/judging/sort", text: m[`judging.navigation.sort`]() },
+    { enabled: judge.roles.includes(`sort`) || judge.roles.includes(`admin`), href: "/judging/sort", text: m[`judging.navigation.sort`]() },
     // svelte-ignore state_referenced_locally
-    { enabled: judge.roles.includes(`judge`), href: "/judging/judge", text: m[`judging.navigation.judge`]() },
+    { enabled: judge.roles.includes(`judge`) || judge.roles.includes(`admin`), href: "/judging/judge", text: m[`judging.navigation.judge`]() },
     { enabled: false, href: "/finalists", text: m[`judging.navigation.finalists`]() },
     { enabled: false, href: "/render", text: m[`judging.navigation.renderer`]() },
     // svelte-ignore state_referenced_locally
@@ -70,7 +70,7 @@
   <nav>
     <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 px-2 rounded-md bg-black/70 text-white">
       {#each links as link}
-        {let isActive = page.url.pathname.endsWith(link.href)}
+        {let isActive = $derived.by(() => page.url.pathname.endsWith(link.href))}
         {let isEnabled = link.enabled}
         <li class="hover:bg-white/20 p-2 rounded-md transition-colors duration-150">
           {#if isEnabled}
