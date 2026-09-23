@@ -1,8 +1,11 @@
 import { command, getRequestEvent, query } from "$app/server";
+import { TTLCache } from "@isaacs/ttlcache";
 import { z } from "zod";
+import { getBulkMaps } from "../../lib/shared/getMap";
 import { Judge, JudgeVote, SortedSubmission } from "../../lib/server/database";
 import { SortedSubmissionsCategory } from "../../lib/shared/goodies";
 import { getJudgeFromEvent } from "../../lib/server/auth";
+import type { BSMap } from "../../lib/shared/beatsaverTypes";
 
 export const getJudge = query(async () => {
     const { judge } = await getJudgeFromEvent();
@@ -26,6 +29,48 @@ export const getMaps = query(z.object({
             category: input.category
         }
     }).then(submissions => submissions.map(submission => submission.toJSON()));
+});
+
+
+const cache = new TTLCache<string, BSMap | null>({ max: 1000, ttl: 1000 * 60 * 60 * 24 });
+export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
+    const { judge } = await getJudgeFromEvent();
+
+    if (!input || input.length === 0) {
+        throw new Error(`Map ID is required.`);
+    }
+
+    const cachedMaps = input.map(id => cache.get(id)).filter((id) => id !== undefined);
+    if (cachedMaps.length === input.length) {
+        return cachedMaps.filter((id) => id !== null);
+    }
+
+    const uncachedMapIds = input.filter(id => !cache.has(id));
+    const fetchedMaps: BSMap[] = [];
+    const chunks: string[][] = [];
+    for (let i = 0; i < uncachedMapIds.length; i += 50) {
+        chunks.push(uncachedMapIds.slice(i, i + 50));
+    }
+    for (const chunk of chunks) {
+        // fetch the maps for each chunk and merge into fetchedMaps
+        await getBulkMaps(chunk).then(data => {
+            for (const id in data) {
+                console.log(`Cached map with ID: ${id}`);
+                if (data[id]) {
+                    fetchedMaps.push(data[id]);
+                    cache.set(id, data[id]);
+                }
+            }
+            for (const id of chunk) {
+                if (!Object.keys(data).includes(id)) {
+                    console.log(`Map with ID: ${id} was not found in the fetched data.`);
+                    cache.set(id, null);
+                }
+            }
+        });
+    }
+
+    return [...cachedMaps.filter((id) => id !== null), ...fetchedMaps];
 });
 
 export const vote = command(z.object({

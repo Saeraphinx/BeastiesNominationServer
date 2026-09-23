@@ -2,7 +2,7 @@ import { redirect } from '@sveltejs/kit';
 import type { LayoutLoad } from './$types';
 import { getJudge } from '../api/judging.remote';
 
-export const load: LayoutLoad = async ({ data, parent }) => {
+export const load: LayoutLoad = async ({ data, parent, fetch }) => {
     let parentData = await parent();
     
     if (!parentData.user) {
@@ -14,6 +14,7 @@ export const load: LayoutLoad = async ({ data, parent }) => {
     const judge = await getJudge();
 
     return {
+        fetch: fetch,
         user: parentData.user,
         judge,
         pageMetadata: {

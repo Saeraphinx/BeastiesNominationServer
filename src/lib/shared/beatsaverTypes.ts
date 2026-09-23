@@ -85,24 +85,26 @@ interface Version {
 }
 
 interface Diff {
-    njs: number
-    offset: number
-    notes: number
-    bombs: number
-    obstacles: number
-    nps: number
-    length: number
+    njs?: number
+    offset?: number
+    notes?: number
+    bombs?: number
+    obstacles?: number
+    nps?: number
+    length?: number
     characteristic: string
     difficulty: string
-    events: number
-    chroma: boolean
-    me: boolean
-    ne: boolean
-    cinema: boolean
+    events?: number
+    chroma?: boolean
+    me?: boolean
+    ne?: boolean
+    cinema?: boolean
     seconds: number
     paritySummary: ParitySummary
     maxScore: number
     label: string
+    blStars?: number
+    stars?: number
 }
 
 interface ParitySummary {

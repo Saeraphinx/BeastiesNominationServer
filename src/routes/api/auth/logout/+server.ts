@@ -15,5 +15,7 @@ export const GET: RequestHandler = async ({ url, cookies, getClientAddress }) =>
         } else {
             throw error(400, `You are not logged in.`);
         }
+    } else {
+        throw error(400, `You are not logged in.`);
     }
 };

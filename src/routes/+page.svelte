@@ -6,7 +6,7 @@
   import loginbl from "$lib/media/loginbl.png";
   import loginbs from "$lib/media/loginbs.png";
   import { getMap } from "$lib/shared/getMap";
-  import DiffIcon from "../lib/components/DiffIcon.svelte";
+  import DiffIcon from "../lib/components/maps/DiffIcon.svelte";
   import { setLocale } from "../lib/paraglide/runtime.js";
   import { fi } from "zod/locales";
 
@@ -202,10 +202,10 @@
           <span></span>
         {:then map}
           {#if map}
-            <div class="flex h-32 flex-row rounded-lg bg-black/40 p-2">
+            <div class="flex min-h-32 h-32 flex-row rounded-lg bg-black/40 p-2">
               <img class="rounded-lg" src={map?.versions[0].coverURL} />
               <div class="ml-4 flex flex-col justify-center">
-                <p class="text-xl font-bold text-white">{map?.metadata.songName}</p>
+                <p class="text-xl font-bold text-white ">{map?.metadata.songName}</p>
                 <p class="text-base text-white/50">{map?.metadata.songAuthorName} - {map?.metadata.levelAuthorName}</p>
                 <div class="mt-2 flex flex-row flex-wrap gap-2">
                   {#each map.versions[0].diffs as diff}
@@ -239,7 +239,7 @@
     {:else if false || (user && user.service === `judgeId`)}
       <div class="flex flex-col items-center justify-center gap-2">
         <p class="max-w-lg text-center text-lg/snug text-wrap italic">{m[`homepage.form.loggedInAsJudge`]()}</p>
-        <a class="my-2 rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/apit/auth/logout">{m[`common.logout`]()}</a>
+        <a class="my-2 rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/api/auth/logout">{m[`common.logout`]()}</a>
       </div>
     {:else}
       <p class="text-center text-lg/snug italic">{m[`homepage.form.notLoggedIn`]()}</p>

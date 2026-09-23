@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Difficulty, Characteristic } from "../shared/goodies";
+  import type { Difficulty, Characteristic } from "../../shared/goodies";
   import Standard from "$lib/media/icons/standard.svg";
   import OneSaber from "$lib/media/icons/one-saber.svg";
   import NoArrows from "$lib/media/icons/no-arrows.svg";
@@ -7,6 +7,7 @@
   import Degree90 from "$lib/media/icons/90-degree.svg";
   import Lightshow from "$lib/media/icons/lightshow.svg";
   import Lawless from "$lib/media/icons/lawless.svg";
+  import type { ClassValue } from "svelte/elements";
 
   let props: {
     difficulty: Difficulty;
@@ -14,6 +15,7 @@
     size: `sm` | `lg`;
     isSelected?: boolean;
     onClick?: () => void;
+    class?: ClassValue
   } = $props();
 
   let sizeClass = $derived.by(() => {
@@ -69,7 +71,7 @@
     <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
   </button>
 {:else}
-  <div class="flex {sizeClass.div} rounded-full {props.isSelected ? 'ring-2 ring-offset-2 ring-blue-500' : ''}" style="background-color: #{color};">
+  <div class="flex {sizeClass.div} rounded-full {props.isSelected ? 'ring-2 ring-offset-2 ring-blue-500' : ''} {props.class}" style="background-color: #{color};">
     <img src="{characteristicIcon}" alt="{props.characteristic}" class="{sizeClass.img}" title="{props.characteristic} {props.difficulty}" />
   </div>
 {/if}

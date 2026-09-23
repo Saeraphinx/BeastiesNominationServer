@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 @layer base {
   html {
@@ -10,4 +11,13 @@
     height: 36px;
     @apply rounded border-white bg-white px-2 py-1 text-black;
   }
+}
+
+
+@utility flex-row-center {
+  @apply flex flex-row justify-center items-center;
+}
+
+@utility flex-col-center {
+  @apply flex flex-col justify-center items-center;
 }

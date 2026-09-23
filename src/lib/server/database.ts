@@ -30,7 +30,7 @@ export class DatabaseManager {
         Logger.log(`Loading Database...`);
         this.loadTables();
         this.sequelize
-            .sync()
+            .sync({ alter: true })
             .then(() => {
                 Logger.log(`Database Loaded.`);
                 this.sequelize

@@ -40,38 +40,38 @@ export const approveSubmission = form(z.object({
 }).partial(), async (input) => {
     const { judge } = await getJudgeFromEvent();
     if (!judge.roles.includes("sort")) {
-        throw new Error("Unauthorized");
+        return { error: "Unauthorized" };
     }
 
     const submission = await Submission.findByPk(input.submissionId);
     if (!submission) {
-        throw new Error("Submission not found");
+        return { error: "Submission not found" };
     }
 
     const duplicateSubmissions = await submission.findDuplicateSubmissions();
 
     if (input.accepted === true) {
         if (!input.category) {
-            throw new Error("Category is required");
+            return { error: "Category is required" };
         }
 
         if (isNameRequiredSortedSubmission(input.category)) {
             if (!input.name || input.name.trim() === "") {
-                throw new Error("Name is required");
+                return { error: "Name is required" };
             }
         } else if (isDiffCharRequiredSortedSubmission(input.category)) {
             if (!input.bsrId || input.bsrId.trim() === "") {
-                throw new Error("BSR ID is required");
+                return { error: "BSR ID is required" };
             }
             if (!input.difficulty) {
-                throw new Error("Difficulty is required");
+                return { error: "Difficulty is required" };
             }
             if (!input.characteristic) {
-                throw new Error("Characteristic is required");
+                return { error: "Characteristic is required" };
             }
         } else {
             if (!input.bsrId || input.bsrId.trim() === "") {
-                throw new Error("BSR ID is required");
+                return { error: "BSR ID is required" };
             }
         }
 
@@ -83,7 +83,7 @@ export const approveSubmission = form(z.object({
             bsrId: input.bsrId,
             difficulty: input.difficulty,
             characteristic: input.characteristic,
-            submitterIds: [submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)],
+            submitterIds: Array.from(new Set([submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)])),
             hash: mapData?.hash,
             involvedMappers: mapData?.involvedMappers.map(String),
         });
@@ -95,7 +95,7 @@ export const approveSubmission = form(z.object({
                 bsrId: input.bsrId,
                 difficulty: input.difficulty,
                 characteristic: input.characteristic,
-                submitterIds: [submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)],
+                submitterIds: Array.from(new Set([submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)])),
                 hash: mapData?.hash,
                 involvedMappers: mapData?.involvedMappers.map(String),
             });
@@ -126,7 +126,11 @@ export const approveSubmission = form(z.object({
     }
 
     await submission.save();
-    return submission.toJSON();
+    return {
+        submission: submission.toJSON(),
+        duplicates: duplicateSubmissions.length,
+        duplicateIds: duplicateSubmissions.map(ds => ds.nominationId)
+    };
 });
 
 async function getMapData(bsrId: string) {

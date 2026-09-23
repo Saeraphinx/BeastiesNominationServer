@@ -405,6 +405,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
             };
         } else if (isDiffCharRequired(this.category)) {
             whereOptions = {
+                bsrId: this.bsrId,
                 difficulty: this.difficulty,
                 characteristic: this.characteristic,
                 category: this.category

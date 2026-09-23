@@ -3,11 +3,15 @@
   import type { InferAttributes } from "sequelize";
   import type { Submission } from "../../../lib/server/database";
   import { getSubmissions } from "../../api/sorting.remote";
-  import SortMap from "../../../lib/components/SortMap.svelte";
+  import SortMap from "../../../lib/components/maps/SortMap.svelte";
   import { type BSMap } from "../../../lib/shared/beatsaverTypes";
   import { getBulkMaps } from "../../../lib/shared/getMap";
+  import { getBeatSaverMaps } from "../../api/judging.remote";
+  import Button from "../../../lib/components/common/Button.svelte";
+  import { flip } from "svelte/animate";
+  import { fade } from "svelte/transition";
 
-  let bsAPIData: Record<string, BSMap> = {};
+  let bsAPIData: Record<string, BSMap> = $state({});
   let submissions: InferAttributes<Submission>[] = $state([]);
   let currentPage = $state(1);
   let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
@@ -19,36 +23,28 @@
     return ret;
   });
 
+  let promise = $state(fetchSubmissions());
   async function fetchSubmissions() {
     await getSubmissions({}).then(data => {
       submissions = data;
     });
 
-    const mapIds = submissions.map(submission => submission.bsrId).filter(v => v && Object.keys(bsAPIData).indexOf(v) === -1) as string[];
-    //split mapIds into chunks of 50
-    const chunks: string[][] = [];
-    for (let i = 0; i < mapIds.length; i += 50) {
-      chunks.push(mapIds.slice(i, i + 50));
-    }
-    for (const chunk of chunks) {
-      // fetch the maps for each chunk and merge into bsAPIData
-      await getBulkMaps(chunk).then(data => {
-        bsAPIData = { ...bsAPIData, ...data };
-      });
-    }
+    bsAPIData = Object.fromEntries((await getBeatSaverMaps(submissions.map(submission => submission.bsrId!).filter(Boolean))).map(map => [map.id, map]));
   }
-
-  onMount(fetchSubmissions);
 </script>
 
-<div>
+<div class="flex flex-col gap-4 justify-center items-center mb-24">
   <div>
     <p>Submissions:</p>
-    <button onclick={fetchSubmissions}>Fetch Submissions</button>
+    <Button onclick={() => promise = fetchSubmissions()}>Fetch Submissions</Button>
   </div>
-  <div>
-    {#each currentlyShowingSubmissions as submission}
-      <SortMap submission={submission} bsAPI={bsAPIData[submission.bsrId!]} />
-    {/each}
+  <div class="flex flex-row flex-wrap justify-center items-center gap-4">
+    {#await promise then _}
+      {#each currentlyShowingSubmissions as submission, index (submission.nominationId)}
+        <span out:fade={{ duration: 300 }} animate:flip={{ duration: 300 }}>
+          <SortMap submission={submission} bsAPI={bsAPIData[submission.bsrId!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
+        </span>
+      {/each}
+    {/await}
   </div>
 </div>
