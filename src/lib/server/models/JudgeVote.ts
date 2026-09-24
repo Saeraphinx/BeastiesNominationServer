@@ -12,7 +12,7 @@ export class JudgeVote extends Model<InferAttributes<JudgeVote>, InferCreationAt
 
     @AllowNull(false)
     @Column(DataType.STRING)
-    declare judgeId: string;
+    declare judgeId: number;
 
     @AllowNull(false)
     @Column(DataType.INTEGER)

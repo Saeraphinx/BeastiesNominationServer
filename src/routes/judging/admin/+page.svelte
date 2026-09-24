@@ -48,22 +48,22 @@
             {let isJudge = $derived(judge.roles.includes("judge"))}
             {let isSort = $derived(judge.roles.includes("sort"))}
             <tr>
-              <td>{judge.judgeId}</td>
+              <td>{judge.id}</td>
               <td>{judge.name}</td>
               <td>{judge.roles.join(", ")}</td>
               <td>{judge.permittedCategories.join(", ")}</td>
               <td>
                 {#if isJudge}
-                  <Button onclick={async () => await editJudgeRoles(judge.judgeId, "judge", "remove")}>Remove Judge</Button>
+                  <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "remove")}>Remove Judge</Button>
                 {:else}
-                  <Button onclick={async () => await editJudgeRoles(judge.judgeId, "judge", "add")}>Add Judge</Button>
+                  <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "add")}>Add Judge</Button>
                 {/if}
                 {#if isSort}
-                  <Button onclick={async () => await editJudgeRoles(judge.judgeId, "sort", "remove")}>Remove Sort</Button>
+                  <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "remove")}>Remove Sort</Button>
                 {:else}
-                  <Button onclick={async () => await editJudgeRoles(judge.judgeId, "sort", "add")}>Add Sort</Button>
+                  <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "add")}>Add Sort</Button>
                 {/if}
-                <Button onclick={() => openCategoriesDialog(judge.judgeId)}>Edit Categories</Button>
+                <Button onclick={() => openCategoriesDialog(judge.id)}>Edit Categories</Button>
               </td>
             </tr>
           {/each}
@@ -75,8 +75,8 @@
 
 <!-- svelte-ignore state_referenced_locally -->
 <Dialog bind:showDialog={showCategoriesDialog}>
-  <div class="max-w-xl w-full bg-black/90">
-    {let selectedJudge = $derived(judges.find((j) => j.judgeId === selectedJudgeId))}
+  <div class="max-w-xl w-full bg-black/90" role="presentation" onclick={(e) => e.stopPropagation()}>
+    {let selectedJudge = $derived(judges.find((j) => j.id === selectedJudgeId))}
     {let selectedCategories = $state(selectedJudge?.permittedCategories ?? [])}
     <p class="text-2xl m-2">Edit categories for {selectedJudge?.name}</p>
     <div class="flex-row-center flex-wrap gap-2">
@@ -100,7 +100,10 @@
     <div class="flex-row-center {selectedJudge ? `visible` : `invisible`} mt-2 gap-4">
         <Button class="bg-white/10" onclick={() => (showCategoriesDialog = false)}>Close</Button>
         <Button class="bg-white/10" onclick={async () => {
-            await setUserCategories({ judgeId: selectedJudge?.judgeId ?? -1, categories: selectedCategories });
+            await setUserCategories({ judgeId: selectedJudge?.id ?? -1, categories: selectedCategories });
+            showCategoriesDialog = false;
+            toast.success("Categories updated successfully.");
+            judges = await getUsers();
         }}>Save</Button>
     </div>
   </div>

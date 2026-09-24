@@ -6,6 +6,7 @@ import { Column, DataType, Model, Sequelize, Table } from "sequelize-typescript"
 import type { InferAttributes, InferCreationAttributes } from "sequelize/lib/model";
 import { Judge } from "./database";
 import { getRequestEvent } from "$app/server";
+import { redirect } from "@sveltejs/kit";
 
 export function createRandomString(byteCount: number): string {
     let key = randomBytes(byteCount).toString(`base64url`);

@@ -6,22 +6,23 @@ import { Judge, JudgeVote, SortedSubmission } from "../../lib/server/database";
 import { SortedSubmissionsCategory } from "../../lib/shared/goodies";
 import { getJudgeFromEvent } from "../../lib/server/auth";
 import type { BSMap } from "../../lib/shared/beatsaverTypes";
+import { Op } from "sequelize";
 
 export const getJudge = query(async () => {
     const { judge } = await getJudgeFromEvent();
     return judge.toJSON();
 });
 
-export const getMaps = query(z.object({
+export const getSortedSubmissions = query(z.object({
     category: z.enum(SortedSubmissionsCategory)
 }), async (input) => {
     const { judge } = await getJudgeFromEvent();
     if (judge.roles.includes("judge")) {
         if (!judge.permittedCategories.includes(input.category)) {
-            throw new Error("Unauthorized");
+            if (!judge.roles.includes("admin")) {
+                throw new Error("Unauthorized");
+            }
         }
-    } else if (!judge.roles.includes("admin")) {
-        throw new Error("Unauthorized");
     }
 
     return SortedSubmission.findAll({
@@ -37,7 +38,7 @@ export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
     const { judge } = await getJudgeFromEvent();
 
     if (!input || input.length === 0) {
-        throw new Error(`Map ID is required.`);
+        return [];
     }
 
     const cachedMaps = input.map(id => cache.get(id)).filter((id) => id !== undefined);
@@ -71,6 +72,75 @@ export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
     }
 
     return [...cachedMaps.filter((id) => id !== null), ...fetchedMaps];
+});
+
+export const getVotes = query(z.object({
+    submissionIds: z.array(z.number())
+}), async (input) => {
+    const { judge } = await getJudgeFromEvent();
+
+    if (!judge.roles.includes("judge")) {
+        throw new Error("Unauthorized");
+    }
+
+    const votes = await JudgeVote.findAll({
+        where: {
+            submissionId: input.submissionIds,
+            judgeId: judge.id
+        }
+    });
+
+    return votes.map(vote => vote.toJSON());
+});
+
+export const getJudgeStats = query(async () => {
+    const { judge } = await getJudgeFromEvent();
+
+    if (!judge.roles.includes("judge")) {
+        throw new Error("Unauthorized");
+    }
+
+    const allSubmissions = await SortedSubmission.findAll({
+        where: {
+            category: judge.permittedCategories
+        }
+    // convert to record categoryname, object
+    }).then(submissions => {
+        let submissionsByCategory: Record<string, SortedSubmission[]> = {};
+        for (const submission of submissions) {
+            if (!submissionsByCategory[submission.category]) {
+                submissionsByCategory[submission.category] = [];
+            }
+            submissionsByCategory[submission.category].push(submission);
+        }
+        return submissionsByCategory;
+    });
+    const submissionIds = Object.values(allSubmissions).flat().map(submission => submission.id);
+
+    const votes = await JudgeVote.findAll({
+        where: {
+            judgeId: judge.id,
+            submissionId: submissionIds,
+            score: {[Op.ne]: `0`}
+        },
+        attributes: ['submissionId']
+    });
+
+    const retVal: Record<string, { submissionCount: number, votes: number }> = {
+
+    };
+
+    for (const category in allSubmissions) {
+        const submissions = allSubmissions[category];
+        const submissionCount = submissions.length;
+        const votesCount = votes.filter(vote => submissions.some(submission => submission.id === vote.submissionId)).length;
+        retVal[category] = {
+            submissionCount,
+            votes: votesCount
+        };
+    }
+
+    return retVal;
 });
 
 export const vote = command(z.object({

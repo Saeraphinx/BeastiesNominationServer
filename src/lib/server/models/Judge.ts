@@ -13,7 +13,7 @@ export class Judge extends Model<InferAttributes<Judge>, InferCreationAttributes
         primaryKey: true,
         autoIncrement: true,
     })
-    declare judgeId: CreationOptional<number>;
+    declare id: CreationOptional<number>;
 
     @AllowNull(false)
     @Column(DataType.STRING)

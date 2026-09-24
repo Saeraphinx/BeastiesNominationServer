@@ -19,10 +19,11 @@
     difficulty?: Difficulty | null;
     category?: string;
     children?: Snippet;
+    extraButtons?: Snippet;
   } & HTMLAttributes<HTMLDivElement> = $props();
 
   let divProps = $derived.by(() => {
-    const { map, subText, characteristic, difficulty, category, children, ...rest } = props;
+    const { map, subText, characteristic, difficulty, category, children, extraButtons, ...rest } = props;
     return rest;
   });
 
@@ -85,7 +86,7 @@
     </div>
   </div>
   {#if props.children}
-    <div class="flex flex-row items-center justify-center gap-2 p-2 pt-0">
+    <div class="flex flex-row items-center justify-center mr-8 gap-2 p-2 pt-0">
       {@render props.children()}
     </div>
   {/if}
@@ -103,6 +104,9 @@
     >
       <img src={squarePlay} alt="Play" />
     </button>
+    {#if props.extraButtons}
+      {@render props.extraButtons()}
+    {/if}
     <a href="beatsaver://{props.map?.id}" class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10">
       <img src={cloud} alt="Cloud" />
     </a>
@@ -113,7 +117,7 @@
 </div>
 
 <Dialog bind:showDialog={viewInfo}>
-  <div class="z-20 max-h-[80%] max-w-[80%] overflow-x-hidden overflow-y-scroll rounded-lg bg-black/90 p-8 py-4 text-center text-wrap">
+  <div onclick={(e) => e.stopPropagation()} role="presentation" class="z-20 max-h-[80%] max-w-[80%] overflow-x-hidden overflow-y-scroll rounded-lg bg-black/90 p-8 py-4 text-center text-wrap">
       <p class="text-2xl text-white">{props.map?.name}</p>
       <p class="text-lg text-white">{props.map?.metadata.songAuthorName} - {props.map?.metadata.songName}{props.map?.metadata.songSubName ? ` ${props.map?.metadata.songSubName}` : ""}</p>
       <p class="text-white">In-Game Mapper(s): {props.map?.metadata.levelAuthorName} | Mapper(s): {mappers.arr.map((mapper) => mapper.name).join(", ")}</p>
@@ -124,7 +128,7 @@
 </Dialog>
 
 <Dialog bind:showDialog={viewPreview} class="m-auto flex h-full w-full items-center justify-center bg-black/30" contentClass="">
-    <iframe src={viewerIframeSrc} class="z-20 h-[80%] w-[90%]" title="Map Preview" frameborder="0"></iframe>
+    <iframe onclick={(e) => e.stopPropagation()} role="presentation" src={viewerIframeSrc} class="z-20 h-[80%] w-[90%]" title="Map Preview" frameborder="0"></iframe>
 </Dialog>
 
 <!-- <div class="flex w-64 flex-col items-center justify-center gap-2 rounded-lg bg-black/30 p-2">

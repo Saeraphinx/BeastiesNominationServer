@@ -37,6 +37,7 @@
     "dependencies": {
         "@isaacs/ttlcache": "^2.1.5",
         "discord.js": "^14.27.0",
+        "p-debounce": "^5.1.1",
         "reflect-metadata": "^0.2.2",
         "sequelize": "^6.37.8",
         "sequelize-typescript": "^2.1.6",

@@ -34,14 +34,20 @@
 </script>
 
 <div class="flex flex-col gap-4 justify-center items-center mb-24">
-  <div>
+  <div class="flex-col-center bg-black/50 p-4 rounded-2xl">
     <p>Submissions:</p>
     <Button onclick={() => promise = fetchSubmissions()}>Fetch Submissions</Button>
+    <div class="flex-row-center gap-2">
+        <Button onclick={() => currentPage = Math.max(currentPage - 1, 1)}>&lt; Page {currentPage - 1}</Button>
+        <p>Currently showing {currentlyShowingSubmissions.length}/{submissions.length} submissions</p>
+        <Button onclick={() => currentPage = currentPage + 1}>Page {currentPage + 1} &gt;</Button>
+    </div>
+
   </div>
   <div class="flex flex-row flex-wrap justify-center items-center gap-4">
     {#await promise then _}
       {#each currentlyShowingSubmissions as submission, index (submission.nominationId)}
-        <span out:fade={{ duration: 300 }} animate:flip={{ duration: 300 }}>
+        <span out:fade={{ duration: 300, delay: 300 }} animate:flip={{ duration: 300 }}>
           <SortMap submission={submission} bsAPI={bsAPIData[submission.bsrId!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
         </span>
       {/each}

@@ -103,24 +103,24 @@ export const approveSubmission = form(z.object({
 
         submission.update({
             filterStatus: `Accepted`,
-            filtererId: judge.judgeId
+            filtererId: judge.id
         });
 
         for (const duplicateSubmission of duplicateSubmissions) {
             await duplicateSubmission.update({
                 filterStatus: `Duplicate`,
-                filtererId: judge.judgeId
+                filtererId: judge.id
             });
         }
     } else {
         submission.update({
             filterStatus: `Rejected`,
-            filtererId: judge.judgeId
+            filtererId: judge.id
         });
         duplicateSubmissions.forEach(async (duplicateSubmission) => {
             await duplicateSubmission.update({
                 filterStatus: `RejectedDuplicate`,
-                filtererId: judge.judgeId
+                filtererId: judge.id
             });
         });
     }

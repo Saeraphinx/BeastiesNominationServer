@@ -417,6 +417,9 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
             };
         }
 
-        return Submission.findAll({ where: whereOptions });
+        return Submission.findAll({ where: {
+            nominationId: { [Op.ne]: this.nominationId },
+            ...whereOptions
+        } });
     }
 }

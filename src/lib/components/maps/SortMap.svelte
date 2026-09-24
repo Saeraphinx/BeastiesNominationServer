@@ -14,7 +14,7 @@
 
   let props: {
     submission: InferAttributes<Submission>;
-    bsAPI: BSMap;
+    bsAPI?: BSMap;
     onApprove?: (response: { submission: InferAttributes<Submission>; duplicates: number; duplicateIds: number[] }) => void;
     onReject?: () => void;
   } & HTMLAttributes<HTMLDivElement> = $props();
@@ -25,15 +25,15 @@
   });
 
   let subText = $derived.by(() => {
-    let text = `${props.bsAPI.id}`;
+    let text = `${props.bsAPI?.id}`;
     if (props.submission.category.startsWith(`Ranked`)) {
-      let selectedDiff = props.bsAPI.versions[0].diffs.find((diff) => diff.characteristic === props.submission.characteristic && diff.difficulty === props.submission.difficulty);
+      let selectedDiff = props.bsAPI?.versions[0].diffs.find((diff) => diff.characteristic === props.submission.characteristic && diff.difficulty === props.submission.difficulty);
       text = `${text} | BL: ${selectedDiff?.blStars ?? "N/A"}★ | SS: ${selectedDiff?.stars ?? "N/A"}★`;
     } else if (props.submission.category.startsWith(`Mods`)) {
-      let selectedDiff = props.bsAPI.versions[0].diffs.find((diff) => diff.characteristic === props.submission.characteristic && diff.difficulty === props.submission.difficulty);
+      let selectedDiff = props.bsAPI?.versions[0].diffs.find((diff) => diff.characteristic === props.submission.characteristic && diff.difficulty === props.submission.difficulty);
       text = `${text} | NE: ${selectedDiff?.ne ?? "No"} | Chroma: ${selectedDiff?.chroma ?? "no"}`;
     } else {
-      text = `${text} | ${new Date(props.bsAPI.uploaded).toLocaleDateString()}`;
+      text = `${text} | ${new Date(props.bsAPI?.uploaded ?? 0).toLocaleDateString()}`;
     }
     return text;
   });
@@ -52,7 +52,7 @@
 <MapBase category={props.submission.category} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} {...divProps}>
   <p class="w-[50%] text-center">{props.submission.category}</p>
   <span class="h-8 w-0.5 rounded bg-white/20"></span>
-  <div class="mr-6 flex w-[50%] flex-row justify-center gap-2">
+  <div class="flex w-[50%] flex-row justify-center gap-2">
     <Button class="w-20 border-2 border-green-600" onclick={showSortDialog}>Approve</Button>
     <Button class="w-20 border-2 border-red-600" onclick={() => props.onReject?.()}>Reject</Button>
   </div>
@@ -60,6 +60,7 @@
 
 <Dialog bind:showDialog={showSubmissionDialog}>
     <form
+    onclick={(e) => e.stopPropagation()} role="presentation"
       class="flex flex-col rounded-lg bg-black/90 p-4 [&>label]:text-lg [&>label]:font-bold"
       {...approveSubmission.enhance(async (form) => {
         if (await approveSubmission.submit()) {

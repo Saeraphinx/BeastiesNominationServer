@@ -1420,6 +1420,7 @@ __metadata:
     "@types/node": "npm:^26.4.1"
     "@types/validator": "npm:^13.15.10"
     discord.js: "npm:^14.27.0"
+    p-debounce: "npm:^5.1.1"
     prettier: "npm:^3.8.3"
     prettier-plugin-svelte: "npm:^4.1.0"
     prettier-plugin-tailwindcss: "npm:^0.8.0"
@@ -2515,6 +2516,13 @@ __metadata:
     "@oxc-minify/binding-win32-x64-msvc":
       optional: true
   checksum: 10c0/78a84b771b155fbd75ac58a09caefb66711131388409442d958d2a4dbca03ac588db7c30921926b42b0b52a0a9c55a4044a0e0c2865837e1205d865c855455d3
+  languageName: node
+  linkType: hard
+
+"p-debounce@npm:^5.1.1":
+  version: 5.1.1
+  resolution: "p-debounce@npm:5.1.1"
+  checksum: 10c0/b1c4ad2bde4ada8332703cb5922a47f1548f6c45b6df9c00634b5694d405ec5fd6923d549fdc1ae40c63713508515baa63151ce3df26a6be7e583ef90c42f395
   languageName: node
   linkType: hard
 

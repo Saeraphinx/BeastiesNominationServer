@@ -110,7 +110,7 @@
       </div>
     </ul>
   </nav>
-  <div>
+  <div class="mb-16">
     {@render children()}
   </div>
   <footer class="fixed bottom-0 left-0 w-full py-2 mb-6 text-center text-white/50 text-shadow-md">
