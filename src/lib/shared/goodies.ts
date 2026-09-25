@@ -31,12 +31,14 @@ export enum SubmissionCategory {
     FullSpreadMap = `Gen-FullSpread`,
 
     Lightshow = `Mods-Lightshow`,
+    VivifyLightshow = `Mods-VivifyLightshow`,
     GameplayModchart = `Mods-GameplayModchart`,
 
     RankedMap = `Ranked-RankedMap`,
 
     BalancedMap = `Style-Balanced`,
     TechMap = `Style-Tech`,
+    ExtremeMap = `Style-Extreme`,
     SpeedMap = `Style-Speed`,
     DanceMap = `Style-Dance`,
     FitnessMap = `Style-Fitness`,
@@ -95,7 +97,7 @@ export enum SortedSubmissionsCategory {
     FullSpreadMap = `Gen-FullSpread`,
 
     LightshowVanilla = `Lightshow-Vanilla`,
-    LightshowVanillaPlus = `Lightshow-VanillaPlus`,
+    //LightshowVanillaPlus = `Lightshow-VanillaPlus`,
     LightshowChroma = `Lightshow-Chroma`,
     LightshowChromaPlus = `Lightshow-ChromaPlus`,
     LightshowVivify = `Lightshow-Vivify`,
@@ -111,8 +113,8 @@ export enum SortedSubmissionsCategory {
     RankedMapSS12Plus = `Ranked-SS12Plus`,
 
     BalancedMap = `Style-Balanced`,
-    LowTechMap = `Style-LowTech`,
-    HighTechMap = `Style-HighTech`,
+    TechMap = `Style-Tech`,
+    ExtremeMap = `Style-Extreme`,
     SpeedMap = `Style-Speed`,
     DanceMap = `Style-Dance`,
     FitnessMap = `Style-Fitness`,

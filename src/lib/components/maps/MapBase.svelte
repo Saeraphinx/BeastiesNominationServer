@@ -97,8 +97,8 @@
     <button
       class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10"
       onclick={() => {
-        //viewerIframeSrc = `https://chroviewer.com/?map=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${difficultyNumber}`;
-        viewerIframeSrc = `https://allpoland.github.io/ArcViewer/?id=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${props.difficulty}`;
+        viewerIframeSrc = `https://cv2.sae.sh/?map=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${difficultyNumber}`;
+        //viewerIframeSrc = `https://allpoland.github.io/ArcViewer/?id=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${props.difficulty}`;
         viewPreview = true;
       }}
     >

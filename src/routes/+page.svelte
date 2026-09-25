@@ -239,7 +239,10 @@
     {:else if false || (user && user.service === `judgeId`)}
       <div class="flex flex-col items-center justify-center gap-2">
         <p class="max-w-lg text-center text-lg/snug text-wrap italic">{m[`homepage.form.loggedInAsJudge`]()}</p>
-        <a class="my-2 rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/api/auth/logout">{m[`common.logout`]()}</a>
+        <div class="flex-row-col my-2 gap-4">
+            <a class="rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/judging">Judging Panel</a>
+            <a class="rounded-lg bg-white/20 px-4 py-1 font-bold text-white hover:bg-white/30" href="/api/auth/logout">{m[`common.logout`]()}</a>
+        </div>
       </div>
     {:else}
       <p class="text-center text-lg/snug italic">{m[`homepage.form.notLoggedIn`]()}</p>
@@ -263,7 +266,7 @@
         ...Object.entries(countsObj).filter(([category, counts]) => !category.startsWith(`OTY`) && category !== `Total`),
         ] as [category, counts]}
         <div class="bg-black/50 p-2 min-w-48 rounded-lg">
-          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category}.dropdown`]()}</p>
+          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category as SubmissionCategory}.dropdown`]()}</p>
           <p class="text-3xl text-white">{counts.total}</p>
         </div>
       {/each}
@@ -272,7 +275,7 @@
         ...Object.entries(countsObj).filter(([category, counts]) => category.startsWith(`OTY`) && category !== `Total`),
         ] as [category, counts]}
         <div class="bg-black/50 p-2  rounded-lg">
-          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category}.dropdown`]()}</p>
+          <p class="text-lg font-bold text-white m-0">{m[`common.category.${category as SubmissionCategory}.dropdown`]()}</p>
           <p class="text-3xl text-white">{counts.distinct}</p>
         </div>
       {/each}

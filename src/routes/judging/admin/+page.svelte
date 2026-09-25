@@ -32,14 +32,14 @@
 <div class="flex-col-center">
   boo
   <div class="flex-col-center rounded-2xl bg-black/50 px-8 py-2">
-    <table class="prose prose-invert">
+    <table class="prose prose-invert max-w-3xl">
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Roles</th>
-          <th>Categories</th>
-          <th>Actions</th>
+          <th class="w-xl">Categories</th>
+          <th class="w-lg">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -97,7 +97,7 @@
         </Button>
       {/each}
     </div>
-    <div class="flex-row-center {selectedJudge ? `visible` : `invisible`} mt-2 gap-4">
+    <div class="flex-row-center {selectedJudge ? `visible` : `invisible`} my-2 gap-4">
         <Button class="bg-white/10" onclick={() => (showCategoriesDialog = false)}>Close</Button>
         <Button class="bg-white/10" onclick={async () => {
             await setUserCategories({ judgeId: selectedJudge?.id ?? -1, categories: selectedCategories });
