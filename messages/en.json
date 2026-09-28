@@ -78,7 +78,7 @@
       "OTY-Map": {
         "title": "Map of the Year",
         "dropdown": "Map of the Year",
-        "description": "The best unmodded map of the year. Full stop. It has it all - representation, emphasis, flow - everything coming together for an incredible playing experience to go with the song."
+        "description": "The best unmodded map of the year. Full stop. It has it all – representation, emphasis, flow, multiple difficulties, manual lighting – everything coming together for an incredible playing experience to go with the song."
       },
       "OTY-ModdedMap": {
         "title": "Modded Map of the Year",
@@ -136,7 +136,7 @@
         "description": "The best lightshow is a feast for the eyes and ears, with a focus on the visuals and the music. Lighting nominations only have one \"funnel\" on the form. The Beasties team will separate maps into the right categories based on their construction."
       },
       "Mods-VivifyLightshow": {
-        "title": "N/A",
+        "title": "Best Vivify Lightshow",
         "dropdown": "Vivify Lightshow",
         "description": "The best Vivify lightshow is a feast for the eyes and ears, with a focus on the visuals and the music. Lighting nominations only have one \"funnel\" on the form. The Beasties team will separate maps into the right categories based on their construction."
       },
@@ -200,7 +200,7 @@
       "OTY-Map": {
         "title": "Map of the Year",
         "dropdown": "Map of the Year",
-        "description": "The best unmodded map of the year. Full stop. It has it all - representation, emphasis, flow - everything coming together for an incredible playing experience to go with the song."
+        "description": "The best unmodded map of the year. Full stop. It has it all – representation, emphasis, flow, multiple difficulties, manual lighting – everything coming together for an incredible playing experience to go with the song."
       },
       "OTY-ModdedMap": {
         "title": "Modded Map of the Year",
@@ -225,12 +225,12 @@
       "OTY-RookieMapper": {
         "title": "Rookie Mapper of the Year",
         "dropdown": "Rookie Mapper of the Year",
-        "description": "The best up-and-coming mapper whose first map was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2026). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2025-Dec 1st 2026."
+        "description": "The best up-and-coming mapper whose first map was released during the nomination period. (Previously deleted maps count as first map releases.)"
       },
       "OTY-RookieLighter": {
         "title": "Rookie Lighter of the Year",
         "dropdown": "Rookie Lighter of the Year",
-        "description": "The best up-and-coming lighter whose first map/lightshow was released during the nomination period, now with the added grace period of 6 months leading up to the nomination period (June 1st 2025). Previously deleted maps count as first map releases. At most five maps can be from June 1st 2025-Dec 1st 2026."
+        "description": "The best up-and-coming lighter whose first map/lightshow was released during the nomination period. (Previously deleted maps count as first map releases.)"
       },
       "Gen-OST": {
         "title": "Best OST/DLC Map",
