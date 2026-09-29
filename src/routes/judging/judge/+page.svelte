@@ -1,5 +1,6 @@
 <script lang="ts">
   import Button from "../../../lib/components/common/Button.svelte";
+  import { m } from "../../../lib/paraglide/messages.js";
   import { SortedSubmissionsCategory } from "../../../lib/shared/goodies.js";
   import { getJudgeStats } from "../../api/judging.remote.js";
 
@@ -37,20 +38,20 @@
     {#each Object.entries(voteSummary) as [category, summary]}
       {let percentage = summary.votes / (summary.submissionCount || 1) * 100}
       <div class="grid grid-cols-[1fr_2fr] gap-4">
-        <p>{category}</p>
+        <p>{m[`common.sortedCategories.${category as SortedSubmissionsCategory}.dropdown`]()}</p>
         <span class="bg-gray-500 w-64 rounded-2xl">
           <span class="bg-green-500 rounded-2xl text-center" style="width: {percentage}%; display: inline-block;"><p class="px-4">{percentage.toFixed(1)}%</p></span>
         </span>
       </div>
     {/each}
   </div>
-  <div class="flex-row-center max-w-xl flex-wrap gap-2 bg-black/50 p-4 rounded-2xl">
+  <div class="flex-row-center max-w-2xl flex-wrap gap-2 bg-black/50 p-4 rounded-2xl">
     <p class="text-xl font-bold w-full text-center">Select Category</p>
     {#each Object.keys(categoriesList) as categoryCategory}
       <span class="w-full mx-8 bg-gray-500/10 h-1"></span>
       <p class="w-full text-center text-2xl">{categoryCategory}</p>
       {#each categoriesList[categoryCategory] as subcategory}
-        <Button href="/judging/judge/{subcategory}">{subcategory}</Button>
+        <Button href="/judging/judge/{subcategory}">{m[`common.sortedCategories.${subcategory as SortedSubmissionsCategory}.title`]()}</Button>
       {/each}
     {/each}
   </div>

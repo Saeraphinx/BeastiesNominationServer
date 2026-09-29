@@ -8,6 +8,10 @@
   import you0 from "$lib/media/backgrounds/you0.png";
   import you1 from "$lib/media/backgrounds/you1.png";
   import you2 from "$lib/media/backgrounds/you2.png";
+  import dormant0 from "$lib/media/backgrounds/dormant0.png";
+  import forest0 from "$lib/media/backgrounds/sot0.png";
+  import somewhere0 from "$lib/media/backgrounds/sot1.png";
+  import madelineTheo0 from "$lib/media/backgrounds/madelineandtheo0.png";
   import { onMount } from "svelte";
   import { Toaster } from "svelte-sonner";
 
@@ -35,6 +39,10 @@
     { name: `You`, url: you0, credit: `you by Swifter` },
     { name: `You 2`, url: you1, credit: `you by Swifter` },
     { name: `You 3`, url: you2, credit: `you by Swifter` },
+    { name: `Lily's Outlook`, url: dormant0, credit: `Dormant by Swifter` },
+    { name: `Forest`, url: forest0, credit: `Somewhere Out There by Swifter` },
+    { name: `Shore`, url: somewhere0, credit: `Somewhere Out There by Swifter` },
+    { name: `Madeline and Theo`, url: madelineTheo0, credit: `Madeline and Theo by nasafrasa` }
   ];
 
   let currentBackgroundName = $state(`None`);
@@ -83,7 +91,7 @@
   <nav>
     <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 px-2 rounded-md bg-black/70 text-white">
       {#each links as link}
-        {let isActive = $derived.by(() => page.url.pathname.endsWith(link.href))}
+        {let isActive = $derived.by(() => { let path = page.url.pathname.split(`/`); (path[2] == `judge`) ? path.pop() : void 0; return path?.join(`/`).endsWith(link.href); })}
         {let isEnabled = link.enabled}
         <li class="hover:bg-white/20 p-2 rounded-md transition-colors duration-150">
           {#if isEnabled}

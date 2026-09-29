@@ -1,11 +1,11 @@
 import { command, getRequestEvent, query } from "$app/server";
 import { TTLCache } from "@isaacs/ttlcache";
 import { z } from "zod";
-import { getBulkMaps } from "../../lib/shared/getMap";
+import { getBulkMaps, getBulkUsers, getUser } from "../../lib/shared/getMap";
 import { Judge, JudgeVote, SortedSubmission } from "../../lib/server/database";
 import { SortedSubmissionsCategory } from "../../lib/shared/goodies";
 import { getJudgeFromEvent } from "../../lib/server/auth";
-import type { BSMap } from "../../lib/shared/beatsaverTypes";
+import type { BSMap, BSUser } from "../../lib/shared/beatsaverTypes";
 import { Op } from "sequelize";
 
 export const getJudge = query(async () => {
@@ -74,6 +74,66 @@ export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
     return [...cachedMaps.filter((id) => id !== null), ...fetchedMaps];
 });
 
+const userCache = new TTLCache<string, BSUser | null>({ max: 1000, ttl: 1000 * 60 * 60 * 24 });
+export const getBeatSaverUsers = query(z.array(z.string()), async (input) => {
+    const { judge } = await getJudgeFromEvent();
+
+    if (!input || input.length === 0) {
+        return [];
+    }
+
+    const cachedUsers = input.map(id => userCache.get(id)).filter((id) => id !== undefined);
+    if (cachedUsers.length === input.length) {
+        return cachedUsers.filter((id) => id !== null);
+    }
+
+    const uncachedUserIds = input.filter(id => !userCache.has(id));
+    const fetchedUsers: BSUser[] = [];
+    // const chunks: string[][] = [];
+    // for (let i = 0; i < uncachedUserIds.length; i += 50) {
+    //     chunks.push(uncachedUserIds.slice(i, i + 50));
+    // }
+    
+    // for (const chunk of chunks) {
+    //     await getBulkUsers(chunk).then(data => {
+    //         for (const user of data) {
+    //             console.log(`Cached user with ID: ${user.id}`);
+    //             fetchedUsers.push(user);
+    //             userCache.set(user.id.toString(), user);
+    //         }
+    //         for (const id of chunk) {
+    //             if (!data.find(user => user.id.toString() == id)) {
+    //                 console.log(`User with ID: ${id} was not found in the fetched data.`);
+    //                 userCache.set(id.toString(), null);
+    //             }
+    //         }
+    //     });
+    // }
+
+    // beatsaver doesn't return a lot of fields on the bulk endpoint
+    // https://discord.com/channels/882730837974609940/882731668589387796/1554516122471112816
+    let promises: Promise<void>[] = [];
+    for (const [index, id] of uncachedUserIds.entries()) {
+        promises.push(new Promise((resolve) => {
+            setTimeout(() => {
+                getUser(id).catch(() => null).then(user => {
+                    if (user) {
+                        console.log(`Cached user with ID: ${id}`);
+                        fetchedUsers.push(user);
+                        userCache.set(id, user);
+                    } else {
+                        console.log(`User with ID: ${id} was not found.`);
+                        userCache.set(id, null);
+                    }
+                }).finally(resolve);
+            }, index * 25);
+        }));
+    }
+    await Promise.all(promises);
+
+    return [...cachedUsers.filter((id) => id !== null), ...fetchedUsers];
+});
+
 export const getVotes = query(z.object({
     submissionIds: z.array(z.number())
 }), async (input) => {
@@ -121,7 +181,7 @@ export const getJudgeStats = query(async () => {
         where: {
             judgeId: judge.id,
             submissionId: submissionIds,
-            score: {[Op.ne]: `0`}
+            score: {[Op.ne]: `-1`}
         },
         attributes: ['submissionId']
     });

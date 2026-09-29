@@ -1,16 +1,19 @@
 <script lang="ts">
   import type { InferAttributes } from "sequelize";
-  import type { BSMap } from "../../../../lib/shared/beatsaverTypes.js";
-  import { getBeatSaverMaps, getSortedSubmissions, getVotes } from "../../../api/judging.remote.js";
+  import type { BSMap, BSPlaylist, BSUser } from "../../../../lib/shared/beatsaverTypes.js";
+  import { getBeatSaverMaps, getBeatSaverUsers, getSortedSubmissions, getVotes } from "../../../api/judging.remote.js";
   import { getSubmissions } from "../../../api/sorting.remote.js";
   import type { JudgeVote, SortedSubmission } from "../../../../lib/server/database.js";
   import JudgeMap from "../../../../lib/components/maps/JudgeMap.svelte";
   import Button from "../../../../lib/components/common/Button.svelte";
+  import { getPlaylist } from "../../../../lib/shared/getMap.js";
 
   const { data: _internal } = $props();
   const { pageData, judge } = $derived(_internal);
 
   let bsAPIData: Record<string, BSMap> = $state({});
+  let bsAPIUserData: Record<string, BSUser> = $state({});
+  let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
   let submissions: InferAttributes<SortedSubmission>[] = $state([]);
   let votes: InferAttributes<JudgeVote>[] = $state([]);
   let currentPage = $state(1);
@@ -32,7 +35,12 @@
     });
 
     const mapIds = submissions.map((submission) => submission.bsrId!).filter(Boolean);
-    bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map((map) => [map.id, map]));
+    const userIds = submissions.filter(e => e.name && e.name.match(/\d+/) && !e.category.includes(`Pack`) && !e.category.includes(`OST`) ).map(submission => submission.name as string);
+    const playlistIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category.includes(`Pack`)).map(submission => submission.name as string);
+
+    bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map(map => [map.id, map]));
+    bsAPIUserData = Object.fromEntries((await getBeatSaverUsers(userIds)).map(user => [user.id, user]));
+    bsAPIPlaylistData = Object.fromEntries((await Promise.all(playlistIds.map(id => getPlaylist(id)))).map(playlist => [playlist.playlist.playlistId, playlist]));
     votes = await getVotes({
       submissionIds: submissions.map((submission) => submission.id),
     });
@@ -62,6 +70,8 @@
         <JudgeMap
           sortedSubmission={submission}
           bsAPI={bsAPIData[submission.bsrId!]}
+          bsAPIUser={bsAPIUserData[submission.name ?? ``]}
+          bsAPIPlaylist={bsAPIPlaylistData[submission.name ?? ``]}
           vote={votes.find((vote) => vote.submissionId === submission.id)}
           onVote={(vote) => {
             const existingIndex = votes.findIndex((v) => v.submissionId === submission.id);

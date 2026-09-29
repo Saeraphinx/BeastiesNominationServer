@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { InferAttributes } from "sequelize";
   import type { SortedSubmission, JudgeVote } from "../../server/database";
-  import type { BSMap } from "../../shared/beatsaverTypes";
+  import type { BSMap, BSUser, BSPlaylist } from "../../shared/beatsaverTypes";
   import MapBase from "./MapBase.svelte";
   import Button from "../common/Button.svelte";
   import type { HTMLAttributes } from "svelte/elements";
@@ -20,6 +20,8 @@
     sortedSubmission: InferAttributes<SortedSubmission>;
     vote?: InferAttributes<JudgeVote>;
     bsAPI?: BSMap;
+    bsAPIUser?: BSUser;
+    bsAPIPlaylist?: BSPlaylist;
     onVote: (vote: InferAttributes<JudgeVote>) => void;
     enableButtons: boolean;
   } & HTMLAttributes<HTMLDivElement> = $props();
@@ -30,6 +32,13 @@
   });
 
   let subText = $derived.by(() => {
+    if (isNameRequiredSortedSubmission(props.sortedSubmission.category) && !props.sortedSubmission.category.includes(`Pack`) && !props.sortedSubmission.category.includes(`OST`)) {
+        return `${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIUser?.stats?.firstUpload ?? "Unknown Upload Date"}`;
+    } else if (props.sortedSubmission.category.includes(`Pack`)) {
+        return `${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIPlaylist?.playlist.createdAt ?? "Unknown Playlist"}`;
+    } else if (props.sortedSubmission.category.includes(`OST`)) {
+        return ``;
+    }
     let text = `${props.bsAPI?.id}`;
     if (props.sortedSubmission.category.startsWith(`Ranked`)) {
       let selectedDiff = props.bsAPI?.versions[0].diffs.find((diff) => diff.characteristic === props.sortedSubmission.characteristic && diff.difficulty === props.sortedSubmission.difficulty);
@@ -64,7 +73,7 @@
   const handleVoteText = pDebounce(handleVotePromise, 1000);
 </script>
 
-<MapBase category={props.sortedSubmission.category} map={props.bsAPI} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} {...divProps}>
+<MapBase category={props.sortedSubmission.category} map={props.bsAPI} bsAPIUser={props.bsAPIUser} bsAPIPlaylist={props.bsAPIPlaylist} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} {...divProps}>
   {#snippet children()}
     <div class="flex-col-center min-w-24 gap-2">
         <Button class="w-full hover:bg-green-500/40 {props.vote?.score === `1` ? `ring-1 ring-green-500 bg-green-500/20` : ``}" onclick={() => { voteValue = `1`; handleVote(); }} disabled={!props.enableButtons}>Yes</Button>

@@ -1,20 +1,23 @@
 <script lang="ts">
   import type { InferAttributes } from "sequelize";
   import type { Submission } from "../../server/database";
-  import type { BSMap } from "../../shared/beatsaverTypes";
+  import type { BSMap, BSUser, BSPlaylist } from "../../shared/beatsaverTypes";
   import MapBase from "./MapBase.svelte";
   import Button from "../common/Button.svelte";
   import type { HTMLAttributes } from "svelte/elements";
-  import { CharacteristicEnum, DifficultyEnum, isDiffCharRequiredSortedSubmission, isNameRequiredSortedSubmission, SortedSubmissionsCategory } from "../../shared/goodies";
+  import { CharacteristicEnum, DifficultyEnum, isDiffCharRequiredSortedSubmission, isNameRequired, isNameRequiredSortedSubmission, SortedSubmissionsCategory } from "../../shared/goodies";
   import { approveSubmission } from "../../../routes/api/sorting.remote";
   import { fade, fly } from "svelte/transition";
   import { toast } from "svelte-sonner";
   import { includes } from "zod";
   import Dialog from "../common/Dialog.svelte";
+  import { m } from "../../paraglide/messages";
 
   let props: {
     submission: InferAttributes<Submission>;
     bsAPI?: BSMap;
+    bsAPIUser?: BSUser;
+    bsAPIPlaylist?: BSPlaylist;
     onApprove?: (response: { submission: InferAttributes<Submission>; duplicates: number; duplicateIds: number[] }) => void;
     onReject?: () => void;
   } & HTMLAttributes<HTMLDivElement> = $props();
@@ -25,6 +28,13 @@
   });
 
   let subText = $derived.by(() => {
+    if (isNameRequired(props.submission.category) && !props.submission.category.includes(`Pack`) && !props.submission.category.includes(`OST`)) {
+        return `${props.submission.name ?? "Unnamed Submission"} | ${props.bsAPIUser?.stats?.firstUpload ?? "Unknown Upload Date"}`;
+    } else if (props.submission.category.includes(`Pack`)) {
+        return `${props.submission.name ?? "Unnamed Submission"} | ${props.bsAPIPlaylist?.playlist.createdAt ?? "Unknown Playlist"}`;
+    } else if (props.submission.category.includes(`OST`)) {
+        return ``;
+    }
     let text = `${props.bsAPI?.id}`;
     if (props.submission.category.startsWith(`Ranked`)) {
       let selectedDiff = props.bsAPI?.versions[0].diffs.find((diff) => diff.characteristic === props.submission.characteristic && diff.difficulty === props.submission.difficulty);
@@ -36,6 +46,31 @@
       text = `${text} | ${new Date(props.bsAPI?.uploaded ?? 0).toLocaleDateString()}`;
     }
     return text;
+  });
+  let customData = $derived.by(() => {
+    if (!isNameRequired(props.submission.category)) {
+      return undefined;
+    }
+
+    if (props.bsAPIUser) {
+      return {
+        name: props.bsAPIUser?.name ?? "Unknown User",
+        icon: props.bsAPIUser?.avatar,
+        link: `https://beatsaver.com/profile/${props.bsAPIUser?.id}`
+      };
+    } else if (props.bsAPIPlaylist) {
+      return {
+        name: props.bsAPIPlaylist?.playlist.name ?? "Unknown Playlist",
+        icon: props.bsAPIPlaylist?.playlist.playlistImage512,
+        link: `https://beatsaver.com/playlist/${props.bsAPIPlaylist?.playlist.playlistId}`
+      };
+    } else {
+        return {
+          name: props.submission.name ?? "Unnamed Submission",
+          icon: undefined,
+          link: "#"
+        };
+    }
   });
 
   let showSubmissionDialog = $state(false);
@@ -49,8 +84,8 @@
   }
 </script>
 
-<MapBase category={props.submission.category} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} {...divProps}>
-  <p class="w-[50%] text-center">{props.submission.category}</p>
+<MapBase category={props.submission.category} map={props.bsAPI} custom={customData} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} {...divProps}>
+  <p class="w-[50%] text-center">{m[`common.category.${props.submission.category}.dropdown`]()}</p>
   <span class="h-8 w-0.5 rounded bg-white/20"></span>
   <div class="flex w-[50%] flex-row justify-center gap-2">
     <Button class="w-20 border-2 border-green-600" onclick={showSortDialog}>Approve</Button>

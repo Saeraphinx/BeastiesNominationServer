@@ -1,3 +1,64 @@
+export interface BSUser {
+  id: number
+  name: string
+  description: string
+  hash: string
+  avatar: string
+  stats: UserStats
+  type: string
+  admin: boolean
+  curator: boolean
+  seniorCurator: boolean
+  playlistUrl: string
+  patreon: string
+}
+
+interface UserStats {
+  totalUpvotes: number
+  totalDownvotes: number
+  totalMaps: number
+  avgBpm: number
+  avgScore: number
+  avgDuration: number
+  firstUpload: string
+  lastUpload: string
+  diffStats: DiffStats
+  totalPlaylists: number
+}
+
+interface DiffStats {
+  total: number
+  easy: number
+  normal: number
+  hard: number
+  expert: number
+  expertPlus: number
+}
+
+export interface BSPlaylist {
+  maps: BSMap[]
+  playlist: Playlist
+}
+
+export interface Playlist {
+  config: object
+  createdAt: string
+  curatedAt: string
+  curator: Uploader
+  deletedAt: string
+  description: string
+  downloadURL: string
+  name: string
+  owner: Uploader
+  playlistId: number
+  playlistImage: string
+  playlistImage512: string
+  songsChangedAt: string
+  stats: object
+  type: string
+  updatedAt: string
+}
+
 /*
 MIT License
 

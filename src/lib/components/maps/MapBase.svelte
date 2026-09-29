@@ -14,6 +14,11 @@
 
   let props: {
     map?: BSMap;
+    custom?: {
+      name?: string;
+      icon?: string;
+      link?: string;
+    };
     subText?: string;
     characteristic?: Characteristic | null;
     difficulty?: Difficulty | null;
@@ -23,7 +28,7 @@
   } & HTMLAttributes<HTMLDivElement> = $props();
 
   let divProps = $derived.by(() => {
-    const { map, subText, characteristic, difficulty, category, children, extraButtons, ...rest } = props;
+    const { map, custom, subText, characteristic, difficulty, category, children, extraButtons, ...rest } = props;
     return rest;
   });
 
@@ -62,73 +67,86 @@
 <div class="relative flex w-lg flex-col overflow-hidden rounded-2xl bg-black/50" {...divProps}>
   <div class="relative flex">
     <div class="relative m-2 h-32 w-32">
-      <img class="h-32 w-32 min-w-32 rounded-2xl" src={props.map?.versions[0].coverURL} alt={`Cover of ${props.map?.name}`} />
-      {#if props.difficulty && props.characteristic}
-        <DiffIcon difficulty={props.difficulty} characteristic={props.characteristic} size="lg" class="absolute right-2 bottom-2" />
+      {#if props.custom}
+        <img class="h-32 w-32 min-w-32 rounded-2xl" src={props.custom.icon} alt={`Icon of ${props.custom.name}`} />
+      {:else}
+        <img class="h-32 w-32 min-w-32 rounded-2xl" src={props.map?.versions[0].coverURL} alt={`Cover of ${props.map?.name}`} />
+        {#if props.difficulty && props.characteristic}
+          <DiffIcon difficulty={props.difficulty} characteristic={props.characteristic} size="lg" class="absolute right-2 bottom-2" />
+        {/if}
       {/if}
     </div>
     <div class="my-4 ml-2 flex w-80 flex-col items-start justify-center gap-2">
-      <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
-        <p class="text-xs/tight text-gray-300">{props.subText ?? props.map?.id} | {props.map?.metadata.songAuthorName}</p>
-        <p class="text-lg/tight font-bold">
-          {props.map?.metadata.songName}
-          <span class="pl-0.5 text-xs text-gray-300">{props.map?.metadata.songSubName}</span>
-        </p>
-      </div>
-      <div class="flex flex-row flex-wrap items-center justify-start gap-2">
-        {#each mappers.arr as mapper}
-          <MapperNameplate {mapper} />
-        {/each}
-        {#if mappers.overflow}
-          <p>+{mappers.overflowCount} more</p>
-        {/if}
-      </div>
+      {#if props.custom}
+        <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
+          <p class="text-xs/tight text-gray-300">{props.subText}</p>
+          <p class="text-lg/tight font-bold">{props.custom.name}</p>
+        </div>
+      {:else}
+        <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
+          <p class="text-xs/tight text-gray-300">{props.subText ?? props.map?.id} | {props.map?.metadata.songAuthorName}</p>
+          <p class="text-lg/tight font-bold">
+            {props.map?.metadata.songName}
+            <span class="pl-0.5 text-xs text-gray-300">{props.map?.metadata.songSubName}</span>
+          </p>
+        </div>
+        <div class="flex flex-row flex-wrap items-center justify-start gap-2">
+          {#each mappers.arr as mapper}
+            <MapperNameplate {mapper} />
+          {/each}
+          {#if mappers.overflow}
+            <p>+{mappers.overflowCount} more</p>
+          {/if}
+        </div>
+      {/if}
     </div>
   </div>
   {#if props.children}
-    <div class="flex flex-row items-center justify-center mr-8 gap-2 p-2 pt-0">
+    <div class="mr-8 flex flex-row items-center justify-center gap-2 p-2 pt-0">
       {@render props.children()}
     </div>
   {/if}
   <div class="absolute right-0 my-auto flex h-full flex-col items-center justify-center rounded-r-2xl">
-    <button class="flex h-full items-center justify-center bg-black/20 p-1 pt-2 text-2xl hover:bg-white/10" onclick={() => (viewInfo = true)}>
-      <img src={info} alt="Info" />
-    </button>
-    <button
-      class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10"
-      onclick={() => {
-        viewerIframeSrc = `https://cv2.sae.sh/?map=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${difficultyNumber}`;
-        //viewerIframeSrc = `https://allpoland.github.io/ArcViewer/?id=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${props.difficulty}`;
-        viewPreview = true;
-      }}
-    >
-      <img src={squarePlay} alt="Play" />
-    </button>
-    {#if props.extraButtons}
-      {@render props.extraButtons()}
+    {#if !props.custom}
+      <button class="flex h-full items-center justify-center bg-black/20 p-1 pt-2 text-2xl hover:bg-white/10" onclick={() => (viewInfo = true)}>
+        <img src={info} alt="Info" />
+      </button>
+      <button
+        class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10"
+        onclick={() => {
+          viewerIframeSrc = `https://cv2.sae.sh/?map=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${difficultyNumber}`;
+          //viewerIframeSrc = `https://allpoland.github.io/ArcViewer/?id=${props.map?.id}&characteristic=${props.characteristic}&difficulty=${props.difficulty}`;
+          viewPreview = true;
+        }}
+      >
+        <img src={squarePlay} alt="Play" />
+      </button>
+      {#if props.extraButtons}
+        {@render props.extraButtons()}
+      {/if}
+      <a href="beatsaver://{props.map?.id}" class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10">
+        <img src={cloud} alt="Cloud" />
+      </a>
+      <a href={props.map?.versions[0].downloadURL} class="flex h-full items-center justify-center bg-black/20 p-1 pb-2 text-2xl hover:bg-white/10">
+        <img src={download} alt="Download" />
+      </a>
     {/if}
-    <a href="beatsaver://{props.map?.id}" class="flex h-full items-center justify-center bg-black/20 p-1 text-2xl hover:bg-white/10">
-      <img src={cloud} alt="Cloud" />
-    </a>
-    <a href={props.map?.versions[0].downloadURL} class="flex h-full items-center justify-center bg-black/20 p-1 pb-2 text-2xl hover:bg-white/10">
-      <img src={download} alt="Download" />
-    </a>
   </div>
 </div>
 
 <Dialog bind:showDialog={viewInfo}>
   <div onclick={(e) => e.stopPropagation()} role="presentation" class="z-20 max-h-[80%] max-w-[80%] overflow-x-hidden overflow-y-scroll rounded-lg bg-black/90 p-8 py-4 text-center text-wrap">
-      <p class="text-2xl text-white">{props.map?.name}</p>
-      <p class="text-lg text-white">{props.map?.metadata.songAuthorName} - {props.map?.metadata.songName}{props.map?.metadata.songSubName ? ` ${props.map?.metadata.songSubName}` : ""}</p>
-      <p class="text-white">In-Game Mapper(s): {props.map?.metadata.levelAuthorName} | Mapper(s): {mappers.arr.map((mapper) => mapper.name).join(", ")}</p>
-      <p class="text-white">Uploader: {props.map?.uploader.name}</p>
-      <p class="my-8 text-left whitespace-pre-wrap text-white">{props.map?.description}</p>
-      <pre class="text-left text-white">{JSON.stringify(props.map, null, 2)}</pre>
+    <p class="text-2xl text-white">{props.map?.name}</p>
+    <p class="text-lg text-white">{props.map?.metadata.songAuthorName} - {props.map?.metadata.songName}{props.map?.metadata.songSubName ? ` ${props.map?.metadata.songSubName}` : ""}</p>
+    <p class="text-white">In-Game Mapper(s): {props.map?.metadata.levelAuthorName} | Mapper(s): {mappers.arr.map((mapper) => mapper.name).join(", ")}</p>
+    <p class="text-white">Uploader: {props.map?.uploader.name}</p>
+    <p class="my-8 text-left whitespace-pre-wrap text-white">{props.map?.description}</p>
+    <pre class="text-left text-white">{JSON.stringify(props.map, null, 2)}</pre>
   </div>
 </Dialog>
 
 <Dialog bind:showDialog={viewPreview} class="m-auto flex h-full w-full items-center justify-center bg-black/30" contentClass="">
-    <iframe onclick={(e) => e.stopPropagation()} role="presentation" src={viewerIframeSrc} class="z-20 h-[80%] w-[90%]" title="Map Preview" frameborder="0"></iframe>
+  <iframe onclick={(e) => e.stopPropagation()} role="presentation" src={viewerIframeSrc} class="z-20 h-[80%] w-[90%]" title="Map Preview" frameborder="0"></iframe>
 </Dialog>
 
 <!-- <div class="flex w-64 flex-col items-center justify-center gap-2 rounded-lg bg-black/30 p-2">
