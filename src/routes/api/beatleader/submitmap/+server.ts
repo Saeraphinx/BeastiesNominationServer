@@ -37,7 +37,7 @@ export const POST: RequestHandler = async ({ request }) => {
             .digest()
     );
 
-    if (!apiKey || !process.env.SUBMISSION_API_KEY || !timingSafeEqual(apiKeyBuffer, submissionApiKeyBuffer)) {
+    if (!apiKey || !process.env.SUBMISSION_API_KEY || apiKeyBuffer.length !== submissionApiKeyBuffer.length || !timingSafeEqual(apiKeyBuffer, submissionApiKeyBuffer)) {
         return json({ message: `Unauthorized` }, { status: 401 });
     }
 
