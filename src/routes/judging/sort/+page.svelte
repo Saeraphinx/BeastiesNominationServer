@@ -1,0 +1,65 @@
+<script lang="ts">
+  import { onMount } from "svelte";
+  import type { InferAttributes } from "sequelize";
+  import type { Submission } from "../../../lib/server/database";
+  import { getSubmissions } from "../../api/sorting.remote";
+  import SortMap from "../../../lib/components/maps/SortMap.svelte";
+  import type { BSMap, BSUser, BSPlaylist } from "../../../lib/shared/beatsaverTypes";
+  import { getBulkMaps, getPlaylist } from "../../../lib/shared/getMap";
+  import { getBeatSaverMaps, getBeatSaverUsers } from "../../api/judging.remote";
+  import Button from "../../../lib/components/common/Button.svelte";
+  import { flip } from "svelte/animate";
+  import { fade } from "svelte/transition";
+  import { SubmissionCategory } from "../../../lib/shared/goodies";
+
+  let bsAPIData: Record<string, BSMap> = $state({});
+  let bsAPIUserData: Record<string, BSUser> = $state({});
+  let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
+  let submissions: InferAttributes<Submission>[] = $state([]);
+  let currentPage = $state(1);
+  let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
+    const start = (currentPage - 1) * 25;
+    const end = start + 25;
+    console.log("Currently showing submissions from index", start, "to", end);
+    let ret = submissions.slice(start, end);
+    console.log("Submissions being returned:", ret);
+    return ret;
+  });
+
+  let promise = $state(fetchSubmissions());
+  async function fetchSubmissions() {
+    await getSubmissions({}).then(data => {
+      submissions = data;
+    });
+
+    let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
+    let userIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
+    let playlistIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
+
+    bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map(map => [map.id, map]));
+    bsAPIUserData = Object.fromEntries((await getBeatSaverUsers(userIds)).map(user => [user.id, user]));
+    bsAPIPlaylistData = Object.fromEntries((await Promise.all(playlistIds.map(id => getPlaylist(id)))).map(playlist => [playlist.playlist.playlistId, playlist]));
+  }
+</script>
+
+<div class="flex flex-col gap-4 justify-center items-center mb-24">
+  <div class="flex-col-center bg-black/50 p-4 rounded-2xl">
+    <p>Submissions:</p>
+    <Button onclick={() => promise = fetchSubmissions()}>Fetch Submissions</Button>
+    <div class="flex-row-center gap-2">
+        <Button onclick={() => currentPage = Math.max(currentPage - 1, 1)}>&lt; Page {currentPage - 1}</Button>
+        <p>Currently showing {currentlyShowingSubmissions.length}/{submissions.length} submissions</p>
+        <Button onclick={() => currentPage = currentPage + 1}>Page {currentPage + 1} &gt;</Button>
+    </div>
+
+  </div>
+  <div class="flex flex-row flex-wrap justify-center items-center gap-4">
+    {#await promise then _}
+      {#each currentlyShowingSubmissions as submission, index (submission.nominationId)}
+        <span out:fade={{ duration: 300, delay: 300 }} animate:flip={{ duration: 300 }}>
+          <SortMap submission={submission} bsAPI={bsAPIData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
+        </span>
+      {/each}
+    {/await}
+  </div>
+</div>

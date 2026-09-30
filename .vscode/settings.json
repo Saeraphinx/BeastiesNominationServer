@@ -1,6 +1,13 @@
 {
-    "discord.enabled": true,
-    "eslint.workingDirectories": [
-        "./src", 
-    ],
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.tabSize": 4,
+    "files.associations": {
+        "*.css": "tailwindcss"
+    },
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.configPath": "prettier.config.ts",
+    "[svelte]": {
+        "editor.defaultFormatter": "svelte.svelte-vscode"
+    }
 }
