@@ -31,6 +31,4 @@ old
 #data
 storage
 
-.yarn/install-state.gz
-.yarn/cache
-.yarn/unplugged
+.yarn
