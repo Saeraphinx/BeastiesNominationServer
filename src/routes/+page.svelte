@@ -103,7 +103,7 @@
 </script>
 
 <div class="my-8 flex flex-col items-center justify-center gap-4">
-  <div class="flex w-[90%] max-w-5xl flex-col rounded-lg bg-black/70 p-12 py-8 text-center text-wrap wrap-break-word">
+  <div class="flex w-[90%] max-w-5xl flex-col rounded-lg bg-black/70 p-12 py-8 not-md:p-4 text-center text-wrap wrap-break-word">
     <h1 class="text-4xl font-bold text-wrap">{m[`homepage.title`]()}</h1>
     <h2 class="text-2xl font-bold text-wrap">{m[`homepage.subtitle`]()}</h2>
     <p class="mt-4 text-lg/snug text-wrap [&>a]:text-cyan-300 [&>a]:transition-colors [&>a]:duration-150 [&>a]:hover:text-cyan-500 [&>a]:hover:underline">
@@ -112,7 +112,7 @@
         countId: `#counts`,
       })}
     </p>
-    <div class="mt-2 -mb-4 flex items-center justify-center gap-2">
+    <div class="mt-2 flex items-center justify-center gap-2">
       {#each [{ key: `en`, str: `English` }, { key: `jp`, str: `日本語` }] as const as lang}
         <button class="rounded-md bg-black/50 px-2 py-1 transition-colors duration-150 hover:bg-gray-500/50" onclick={() => setLocale(lang.key)}>{lang.str}</button>
       {/each}
@@ -307,7 +307,7 @@
       </div>
     {:else}
       <p class="text-center text-lg/snug italic">{m[`homepage.form.notLoggedIn`]()}</p>
-      <div class="flex flex-row items-center justify-center gap-2">
+      <div class="flex flex-row flex-wrap items-center justify-center gap-2">
         <a href="/api/auth/beatleader">
           <img src={loginbl} class="w-75 max-w-75 min-w-25" width="300px" alt="Login with BeatLeader" />
         </a>
