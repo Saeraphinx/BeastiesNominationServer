@@ -23,7 +23,9 @@
       curCategory !== SubmissionCategory.MapperOfTheYear &&
       curCategory !== SubmissionCategory.LighterOfTheYear &&
       curCategory !== SubmissionCategory.RookieMapperOfTheYear &&
-      curCategory !== SubmissionCategory.RookieLighterOfTheYear
+      curCategory !== SubmissionCategory.RookieLighterOfTheYear &&
+      curCategory !== SubmissionCategory.MapOfTheYear &&
+      curCategory !== SubmissionCategory.ModdedMapOfTheYear
   );
   let showBsrId = $derived(
     curCategory !== SubmissionCategory.OST &&
@@ -108,7 +110,7 @@
     <h2 class="text-2xl font-bold text-wrap">{m[`homepage.subtitle`]()}</h2>
     <p class="mt-4 text-lg/snug text-wrap [&>a]:text-cyan-300 [&>a]:transition-colors [&>a]:duration-150 [&>a]:hover:text-cyan-500 [&>a]:hover:underline">
       {@html m[`homepage.description`]({
-        bSaberUrl: `https://bsaber.com`,
+        bSaberUrl: `https://bsaber.com/the-beastsaber-mapping-awards`,
         countId: `#counts`,
       })}
     </p>

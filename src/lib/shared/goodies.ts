@@ -167,7 +167,9 @@ export function isDiffCharRequired(category: string): boolean {
         category != SubmissionCategory.LighterOfTheYear &&
         category != SubmissionCategory.RookieMapperOfTheYear &&
         category != SubmissionCategory.RookieLighterOfTheYear &&
-        category != SubmissionCategory.FullSpreadMap
+        category != SubmissionCategory.FullSpreadMap &&
+        category != SubmissionCategory.MapOfTheYear &&
+        category != SubmissionCategory.ModdedMapOfTheYear
     );
 }
 
@@ -190,6 +192,8 @@ export function isDiffCharRequiredSortedSubmission(category: string): boolean {
         category != SortedSubmissionsCategory.RookieMapperOfTheYear &&
         category != SortedSubmissionsCategory.RookieLighterOfTheYear &&
         category != SortedSubmissionsCategory.FullSpreadMap &&
-        category != SortedSubmissionsCategory.OST
+        category != SortedSubmissionsCategory.OST &&
+        category != SortedSubmissionsCategory.MapOfTheYear &&
+        category != SortedSubmissionsCategory.ModdedMapOfTheYear
     );
 }
