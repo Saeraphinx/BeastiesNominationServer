@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import { m } from "$lib/paraglide/messages";
-  import { CharacteristicEnum, DifficultyEnum, SubmissionCategory, type Characteristic, type Difficulty } from "../lib/shared/goodies";
+  import { CharacteristicEnum, DifficultyEnum, SubmissionCategory, submissionEndDate, type Characteristic, type Difficulty } from "../lib/shared/goodies";
   import { getCounts, submitMap } from "./api/submission.remote.js";
   import loginbl from "$lib/media/loginbl.png";
   import loginbs from "$lib/media/loginbs.png";
@@ -37,7 +37,42 @@
   );
   let currentValidChars: Characteristic[] = $state(Object.values(CharacteristicEnum));
   let currentValidDiffs: Difficulty[] = $state(Object.values(DifficultyEnum));
-  let ostMaps = [`OST 9 - Beat Saber 2`];
+  let ostMaps = [
+    `Shock Drop | ROSÉ & Bruno Mars - APT.`,
+    `Hip Hop Mixtape 2 | Kendrick Lamar – tv off (feat. Lefty Gunplay)`,
+    `Hip Hop Mixtape 2 | Lil Nas X & Jack Harlow – INDUSTRY BABY`,
+    `Hip Hop Mixtape 2 | Doja Cat – Kiss Me More (feat. SZA)`,
+    `Hip Hop Mixtape 2 | JID – Surround Sound (feat. 21 Savage & Baby Tate)`,
+    `Hip Hop Mixtape 2 | Lil Wayne – 6 Foot 7 Foot (feat. Cory Gunz)`,
+    `Hip Hop Mixtape 2 | Cardi B – I Like It (with Bad Bunny & J Balvin)`,
+    `Hip Hop Mixtape 2 | Doechii – NISSAN ALTIMA`,
+    `Hip Hop Mixtape 2 | Tommy Richman – MILLION DOLLAR BABY`,
+    `Extras | Haywyre - Gone for Good`,
+    `Shock Drop | YUNGBLUD - Zombie`,
+    `Extras | Boom Kitty x MDK - KILLSHOT`,
+    `Extras | Skybreak & Daeya - Astral Blossom`,
+    `Extras | Zakka G - Phantom Fangs`,
+    `The Prodigy | The Prodigy - Breathe`,
+    `The Prodigy | The Prodigy - Firestarter`,
+    `The Prodigy | The Prodigy - Invaders Must Die`,
+    `The Prodigy | The Prodigy - Omen`,
+    `The Prodigy | The Prodigy - Poison`,
+    `The Prodigy | The Prodigy - Spitfire`,
+    `Shock Drop | Twenty One Pilots - Stressed Out`,
+    `Shock Drop | Bad Bunny - Me Porto Bonito (feat. Chencho Corleone)`,
+    `Coldplay | Coldplay - A Sky Full of Stars`,
+    `Coldplay | Coldplay - Adventure of a Lifetime`,
+    `Coldplay | Coldplay - Clocks`,
+    `Coldplay | Coldplay - feelslikeimfallinginlove`,
+    `Coldplay | Coldplay - GOOD FEELiNGS`,
+    `Coldplay | Coldplay - Something Just Like This`,
+    `Coldplay | Coldplay - Speed of Sound`,
+    `Coldplay | Coldplay - Talk`,
+    `Coldplay | Coldplay - Trouble`,
+    `Coldplay | Coldplay - Viva La Vida`,
+    `Coldplay | Coldplay - WE PRAY ft. Little Simz, Burna Boy, Elyanna, TINI`,
+    `Coldplay | Coldplay - Yellow`
+  ];
 
   function resetForm() {
     submitMap.fields.name.set(``);
@@ -77,7 +112,7 @@
 
   let timeString = $state(timeRemaining());
   function timeRemaining() {
-    const timeLeft = new Date("16 Dec 2026 00:00:00 UTC").getTime() - new Date().getTime();
+    const timeLeft = submissionEndDate.getTime() - new Date().getTime();
     const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
     const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
