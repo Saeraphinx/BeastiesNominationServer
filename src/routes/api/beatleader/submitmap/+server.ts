@@ -17,6 +17,7 @@ export const POST: RequestHandler = async ({ request }) => {
             characteristic: z.enum(CharacteristicEnum).optional(),
             difficulty: z.enum(DifficultyEnum).optional(),
             userId: z.string(),
+            name: z.string().optional(),
         })
         .safeParse(await request.json());
 
