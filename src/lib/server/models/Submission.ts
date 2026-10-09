@@ -114,7 +114,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 }
 
                 // from 313841 (4c9f1) to ??? are eligible, except for RankedMap which has no restrictions
-                if ((bsrIdNoHex <= 313842 || bsrIdNoHex >= 9999999) && content.category != SubmissionCategory.RankedMap) {
+                if ((bsrIdNoHex <= 313840 || bsrIdNoHex >= 9999999) && content.category != SubmissionCategory.RankedMap) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }
