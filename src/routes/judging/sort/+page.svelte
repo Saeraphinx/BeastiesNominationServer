@@ -33,8 +33,8 @@
     });
 
     let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
-    let userIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
-    let playlistIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
+    let userIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
+    let playlistIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
 
     bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map(map => [map.id, map]));
     bsAPIUserData = Object.fromEntries((await getBeatSaverUsers(userIds)).map(user => [user.id, user]));

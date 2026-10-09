@@ -318,6 +318,10 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                 total: await this.getCategoryCounts(SubmissionCategory.Lightshow),
                 distinct: await this.getCategoryCounts(SubmissionCategory.Lightshow, true),
             },
+            [SubmissionCategory.VivifyLightshow]: {
+                total: await this.getCategoryCounts(SubmissionCategory.VivifyLightshow),
+                distinct: await this.getCategoryCounts(SubmissionCategory.VivifyLightshow, true),
+            },
             [SubmissionCategory.GameplayModchart]: {
                 total: await this.getCategoryCounts(SubmissionCategory.GameplayModchart),
                 distinct: await this.getCategoryCounts(SubmissionCategory.GameplayModchart, true),
@@ -349,6 +353,10 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
             [SubmissionCategory.ChallengeMap]: {
                 total: await this.getCategoryCounts(SubmissionCategory.ChallengeMap),
                 distinct: await this.getCategoryCounts(SubmissionCategory.ChallengeMap, true),
+            },
+            [SubmissionCategory.ExtremeMap]: {
+                total: await this.getCategoryCounts(SubmissionCategory.ExtremeMap),
+                distinct: await this.getCategoryCounts(SubmissionCategory.ExtremeMap, true),
             },
             [SubmissionCategory.AccMap]: {
                 total: await this.getCategoryCounts(SubmissionCategory.AccMap),

@@ -15,7 +15,7 @@
             <tbody>
                 <tr>
                     <td>Submission</td>
-                    <td>ASAP</td>
+                    <td>2026-10-07</td>
                     <td>2026-12-15</td>
                 </tr>
                 <tr>
@@ -25,7 +25,7 @@
                 </tr>
                 <tr>
                     <td>Finalist Voting</td>
-                    <td>2027-12-31</td>
+                    <td>2026-12-31</td>
                     <td>2027-01-15</td>
                 </tr>
             </tbody>
