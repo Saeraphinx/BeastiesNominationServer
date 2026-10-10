@@ -34,11 +34,11 @@ export const POST: RequestHandler = async ({ request }) => {
     );
     const submissionApiKeyBuffer = Buffer.from(
         createHash("sha256")
-            .update(`Bearer ${process.env.SUBMISSION_API_KEY}` || "")
+            .update(`Bearer ${process.env.API_BEATLEADER_KEY }` || "")
             .digest()
     );
 
-    if (!apiKey || !process.env.SUBMISSION_API_KEY || apiKeyBuffer.length !== submissionApiKeyBuffer.length || !timingSafeEqual(apiKeyBuffer, submissionApiKeyBuffer)) {
+    if (!apiKey || !process.env.API_BEATLEADER_KEY || apiKeyBuffer.length !== submissionApiKeyBuffer.length || !timingSafeEqual(apiKeyBuffer, submissionApiKeyBuffer)) {
         return json({ message: `Unauthorized` }, { status: 401 });
     }
 
