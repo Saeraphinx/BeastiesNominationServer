@@ -12,7 +12,7 @@
   import { fade } from "svelte/transition";
   import { SubmissionCategory } from "../../../lib/shared/goodies";
 
-  let bsAPIData: Record<string, BSMap> = $state({});
+  let bsAPIMapData: Record<string, BSMap> = $state({});
   let bsAPIUserData: Record<string, BSUser> = $state({});
   let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
   let submissions: InferAttributes<Submission>[] = $state([]);
@@ -26,6 +26,40 @@
     return ret;
   });
 
+  $effect(() => {
+    let mapIdsToFind = [];
+    let userIdsToFind = [];
+    let playlistIdsToFind = [];
+
+    for (const submission of currentlyShowingSubmissions) {
+      if (submission.bsrId && !bsAPIMapData[submission.bsrId]) {
+        mapIdsToFind.push(submission.bsrId);
+      }
+      if (submission.name && submission.name.match(/^\d+$/) && submission.category != SubmissionCategory.PackOfTheYear && submission.category != SubmissionCategory.OST && !bsAPIUserData[submission.name]) {
+        userIdsToFind.push(submission.name);
+      }
+      if (submission.name && submission.name.match(/^\d+$/) && submission.category == SubmissionCategory.PackOfTheYear && !bsAPIPlaylistData[submission.name]) {
+        playlistIdsToFind.push(submission.name);
+      }
+    }
+
+    if (mapIdsToFind.length > 0) {
+      getBeatSaverMaps(mapIdsToFind).then(maps => {
+        bsAPIMapData = { ...bsAPIMapData, ...Object.fromEntries(maps.map(map => [map.id, map])) };
+      });
+    }
+    if (userIdsToFind.length > 0) {
+      getBeatSaverUsers(userIdsToFind).then(users => {
+        bsAPIUserData = { ...bsAPIUserData, ...Object.fromEntries(users.map(user => [user.id, user])) };
+      });
+    }
+    if (playlistIdsToFind.length > 0) {
+      Promise.all(playlistIdsToFind.map(id => getPlaylist(id))).then(playlists => {
+        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map(playlist => [playlist.playlist.playlistId, playlist])) };
+      });
+    }
+  });
+
   let promise = $state(fetchSubmissions());
   async function fetchSubmissions() {
     await getSubmissions({}).then(data => {
@@ -35,10 +69,6 @@
     let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
     let userIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
     let playlistIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
-
-    bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map(map => [map.id, map]));
-    bsAPIUserData = Object.fromEntries((await getBeatSaverUsers(userIds)).map(user => [user.id, user]));
-    bsAPIPlaylistData = Object.fromEntries((await Promise.all(playlistIds.map(id => getPlaylist(id)))).map(playlist => [playlist.playlist.playlistId, playlist]));
   }
 </script>
 
@@ -57,7 +87,7 @@
     {#await promise then _}
       {#each currentlyShowingSubmissions as submission, index (submission.nominationId)}
         <span out:fade={{ duration: 300, delay: 300 }} animate:flip={{ duration: 300 }}>
-          <SortMap submission={submission} bsAPI={bsAPIData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
+          <SortMap submission={submission} bsAPI={bsAPIMapData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
         </span>
       {/each}
     {/await}

@@ -25,10 +25,11 @@
     category?: string;
     children?: Snippet;
     extraButtons?: Snippet;
+    ringClass?: string;
   } & HTMLAttributes<HTMLDivElement> = $props();
 
   let divProps = $derived.by(() => {
-    const { map, custom, subText, characteristic, difficulty, category, children, extraButtons, ...rest } = props;
+    const { map, custom, subText, characteristic, difficulty, category, ringClass, children, extraButtons, ...rest } = props;
     return rest;
   });
 
@@ -64,7 +65,7 @@
   });
 </script>
 
-<div class="relative flex w-lg flex-col overflow-hidden rounded-2xl bg-black/50" {...divProps}>
+<div class="relative flex w-lg flex-col overflow-hidden rounded-2xl bg-black/50 {props.ringClass}" {...divProps}>
   <div class="relative flex">
     <div class="relative m-2 h-32 w-32">
       {#if props.custom}

@@ -71,9 +71,22 @@
   }, {after: true});
   const handleVote = pDebounce(handleVotePromise, 1000, { before: true });
   const handleVoteText = pDebounce(handleVotePromise, 1000);
+
+  const voteClass = $derived.by(() => {
+    switch (props.vote?.score) {
+      case `1`:
+        return `ring-2 ring-green-500 `;
+      case `0.5`:
+        return `ring-2 ring-yellow-500`;
+      case `0`:
+        return `ring-2 ring-red-500`;
+      default:
+        return ``;
+    }
+  });
 </script>
 
-<MapBase category={props.sortedSubmission.category} map={props.bsAPI} bsAPIUser={props.bsAPIUser} bsAPIPlaylist={props.bsAPIPlaylist} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} {...divProps}>
+<MapBase category={props.sortedSubmission.category} map={props.bsAPI} bsAPIUser={props.bsAPIUser} bsAPIPlaylist={props.bsAPIPlaylist} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} ringClass={voteClass} {...divProps}>
   {#snippet children()}
     <div class="flex-col-center min-w-24 gap-2">
         <Button class="w-full hover:bg-green-500/40 {props.vote?.score === `1` ? `ring-1 ring-green-500 bg-green-500/20` : ``}" onclick={() => { voteValue = `1`; handleVote(); }} disabled={!props.enableButtons}>Yes</Button>
