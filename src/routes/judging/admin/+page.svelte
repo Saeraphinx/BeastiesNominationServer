@@ -34,14 +34,14 @@
 <div class="flex-col-center">
   boo
   <div class="flex-col-center rounded-2xl bg-black/50 px-8 py-2">
-    <table class="prose max-w-3xl prose-invert">
+    <table class="prose max-w-4xl prose-invert">
       <thead>
         <tr>
           <th>ID</th>
           <th>Name</th>
           <th>Roles</th>
           <th class="w-xl">Categories</th>
-          <th class="w-lg">Actions</th>
+          <th class="w-xl">Actions</th>
         </tr>
       </thead>
       <tbody>
