@@ -31,17 +31,18 @@
   }
 </script>
 
-<div class="flex-col-center">
+<div class="flex-col-center gap-2">
   boo
-  <div class="flex-col-center rounded-2xl bg-black/50 px-8 py-2">
-    <table class="prose max-w-4xl prose-invert">
+  <div class="flex-col-center w-full rounded-2xl bg-black/50 px-8 pt-2">
+    <table class="prose min-w-full mx-8 prose-invert">
       <thead>
         <tr>
+          <th></th>
           <th>ID</th>
           <th>Name</th>
           <th>Roles</th>
-          <th class="w-xl">Categories</th>
-          <th class="w-xl">Actions</th>
+          <th class="">Categories</th>
+          <th class="">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -50,6 +51,7 @@
             {let isJudge = $derived(judge.roles.includes("judge"))}
             {let isSort = $derived(judge.roles.includes("sort"))}
             <tr>
+              <td class="not-prose"><img src={judge.avatarUrl} class="w-6 h-6 rounded-full"></td>
               <td>{judge.id}</td>
               <td>{judge.name}</td>
               <td>{judge.roles.join(", ")}</td>
@@ -73,7 +75,7 @@
       </tbody>
     </table>
   </div>
-  <div class="m-4 grid grid-cols-2 grid-flow-dense flex-wrap gap-2">
+  <div class="grid grid-cols-2 grid-flow-dense flex-wrap gap-2">
     {const oneShotClass: ClassValue = `flex-col-center rounded-2xl bg-black/50 p-4 gap-2 max-w-lg`}
     {const oneShotTextClass: ClassValue = `flex-col-center text-wrap text-center`}
     <div class={oneShotClass}>
