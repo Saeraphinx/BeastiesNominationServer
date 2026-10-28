@@ -13,7 +13,7 @@
   });
 </script>
 
-<div class="flex flex-row justify-center items-center bg-black/75 rounded-full {ringClass}">
+<a href="https://beatsaver.com/profile/{props.mapper.id}" target="_blank" class="flex flex-row justify-center items-center bg-black/75 rounded-full {ringClass}">
     <img class="h-6 w-6 rounded-full" src={props.mapper.avatar} alt={`Avatar of ${props.mapper.name}`} />
     <p class="text-sm/snug px-2 text-white">{props.mapper.name}</p>
-</div>
+</a>

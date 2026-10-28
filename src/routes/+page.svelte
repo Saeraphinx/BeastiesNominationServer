@@ -10,6 +10,7 @@
   import { setLocale } from "../lib/paraglide/runtime.js";
   import pDebounce from "p-debounce";
   import type { BSMap } from "../lib/shared/beatsaverTypes.js";
+  import { getBeatSaverMaps } from "./api/judging.remote.js";
 
   const { data: _internal } = $props();
   const { user } = $derived(_internal);
@@ -101,7 +102,7 @@
     if (!id || id.trim() === "" || id.length !== 5) {
       return;
     }
-    const map = await getMap(id);
+    const map = (await getBeatSaverMaps([id]))[0];
     if (!map) {
       return;
     }

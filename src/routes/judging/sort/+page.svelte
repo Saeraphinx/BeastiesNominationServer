@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from "svelte";
   import type { InferAttributes } from "sequelize";
   import type { Submission } from "../../../lib/server/database";
   import { getSubmissions } from "../../api/sorting.remote";
@@ -16,12 +15,15 @@
   let bsAPIUserData: Record<string, BSUser> = $state({});
   let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
   let submissions: InferAttributes<Submission>[] = $state([]);
+  let currentCategory = $state("");
   let currentPage = $state(1);
   let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
+    let submissionsToLookAt = submissions.filter(s => s.category == currentCategory || currentCategory == "All");
     const start = (currentPage - 1) * 25;
     const end = start + 25;
     console.log("Currently showing submissions from index", start, "to", end);
-    let ret = submissions.slice(start, end);
+
+    let ret = submissionsToLookAt.slice(start, end);
     console.log("Submissions being returned:", ret);
     return ret;
   });
@@ -73,9 +75,15 @@
 </script>
 
 <div class="flex flex-col gap-4 justify-center items-center mb-24">
-  <div class="flex-col-center bg-black/50 p-4 rounded-2xl">
+  <div class="flex-col-center gap-2 bg-black/50 p-4 rounded-2xl">
     <p>Submissions:</p>
     <Button onclick={() => promise = fetchSubmissions()}>Fetch Submissions</Button>
+    <select bind:value={currentCategory}>
+      <option value="All">All</option>  
+      {#each Object.values(SubmissionCategory) as category}
+        <option value={category}>{category}</option>
+      {/each}
+    </select>
     <div class="flex-row-center gap-2">
         <Button onclick={() => currentPage = Math.max(currentPage - 1, 1)}>&lt; Page {currentPage - 1}</Button>
         <p>Currently showing {currentlyShowingSubmissions.length}/{submissions.length} submissions</p>

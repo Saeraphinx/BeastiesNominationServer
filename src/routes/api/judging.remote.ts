@@ -35,8 +35,6 @@ export const getSortedSubmissions = query(z.object({
 
 const cache = new TTLCache<string, BSMap | null>({ max: 1000, ttl: 1000 * 60 * 60 * 24 });
 export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
-    const { judge } = await getJudgeFromEvent();
-
     if (!input || input.length === 0) {
         return [];
     }
