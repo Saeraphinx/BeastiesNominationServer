@@ -24,6 +24,7 @@ export const getSubmissions = query(z.object({
 
     return Submission.findAll({
         where: whereOptions,
+        order: [["bsrId", "ASC"], ["category", "ASC"]],
         limit: 250
     }).then(submissions => submissions.map(submission => submission.toJSON()));
 });
