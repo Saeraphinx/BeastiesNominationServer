@@ -65,7 +65,7 @@
   {#await promise}
     <div>Loading submissions...</div>
   {:then}
-    <div class="flex-row-center gap-2">
+    <div class="flex-row-center flex-wrap gap-2">
       {#each currentlyShowingSubmissions as submission, index (submission.id)}
         <JudgeMap
           sortedSubmission={submission}
