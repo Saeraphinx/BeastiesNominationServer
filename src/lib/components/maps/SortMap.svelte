@@ -6,10 +6,8 @@
   import Button from "../common/Button.svelte";
   import type { HTMLAttributes } from "svelte/elements";
   import { CharacteristicEnum, DifficultyEnum, isDiffCharRequiredSortedSubmission, isNameRequired, isNameRequiredSortedSubmission, SortedSubmissionsCategory } from "../../shared/goodies";
-  import { approveSubmission } from "../../../routes/api/sorting.remote";
-  import { fade, fly } from "svelte/transition";
+  import { approveSubmission, rejectSubmission } from "../../../routes/api/sorting.remote";
   import { toast } from "svelte-sonner";
-  import { includes } from "zod";
   import Dialog from "../common/Dialog.svelte";
   import { m } from "../../paraglide/messages";
 
@@ -19,13 +17,15 @@
     bsAPIUser?: BSUser;
     bsAPIPlaylist?: BSPlaylist;
     onApprove?: (response: { submission: InferAttributes<Submission>; duplicates: number; duplicateIds: number[] }) => void;
-    onReject?: () => void;
+    onReject?: (response: { submission: InferAttributes<Submission>; duplicates: number; duplicateIds: number[] }) => void;
   } & HTMLAttributes<HTMLDivElement> = $props();
 
   let divProps = $derived.by(() => {
     const { submission, bsAPI, ...rest } = props;
     return rest;
   });
+
+  let isLoading = $state(false);
 
   let subText = $derived.by(() => {
     if (isNameRequired(props.submission.category) && !props.submission.category.includes(`Pack`) && !props.submission.category.includes(`OST`)) {
@@ -76,28 +76,51 @@
   let showSubmissionDialog = $state(false);
   function showSortDialog() {
     showSubmissionDialog = true;
+    approveSubmission.fields.name.set(props.submission.name ?? undefined);
     approveSubmission.fields.category.set(props.submission.category as any);
+    approveSubmission.fields.doubleRankedCategory.set(undefined);
     approveSubmission.fields.submissionId.set(props.submission.nominationId);
     approveSubmission.fields.characteristic.set(props.submission.characteristic as any);
     approveSubmission.fields.difficulty.set(props.submission.difficulty as any);
-    approveSubmission.fields.accepted.set(true);
   }
 </script>
 
 <MapBase category={props.submission.category} map={props.bsAPI} custom={customData} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} {...divProps}>
+  {#if isLoading}
+    <div class="absolute inset-0 w-full h-full bg-black/50">
+      <div class="flex items-center justify-center h-full">
+        <span class="text-white">Loading...</span>
+      </div>
+    </div>
+  {/if}
   <p class="w-[50%] text-center">{m[`common.category.${props.submission.category}.dropdown`]()}</p>
   <span class="h-8 w-0.5 rounded bg-white/20"></span>
   <div class="flex w-[50%] flex-row justify-center gap-2">
-    <Button class="w-20 border-2 border-green-600" onclick={showSortDialog}>Approve</Button>
-    <Button class="w-20 border-2 border-red-600" onclick={() => props.onReject?.()}>Reject</Button>
+    <Button class="w-20 border-2 border-green-600" disabled={isLoading} onclick={showSortDialog}>Approve</Button>
+    <Button class="w-20 border-2 border-red-600" disabled={isLoading} onclick={async () => {
+      isLoading = true;
+      const result = await rejectSubmission({ submissionId: props.submission.nominationId });
+      if (result?.error) {
+        toast.error(`Failed to reject submission: ${result.error}`);
+      } else {
+        toast.success(`Submission ${props.submission.nominationId} rejected successfully.`, {
+          description: `${result?.duplicates} duplicate(s) found.`,
+        });
+        if (result?.submission) {
+          props.onReject?.({ submission: result.submission, duplicates: result.duplicates, duplicateIds: result.duplicateIds });
+        }
+      }
+      isLoading = false;
+    }}>Reject</Button>
   </div>
 </MapBase>
 
 <Dialog bind:showDialog={showSubmissionDialog}>
     <form
     onclick={(e) => e.stopPropagation()} role="presentation"
-      class="flex flex-col rounded-lg bg-black/90 p-4 [&>label]:text-lg [&>label]:font-bold"
+      class="flex flex-col rounded-lg bg-black/75 backdrop-blur-md p-4 [&>label]:text-lg [&>label]:font-bold"
       {...approveSubmission.enhance(async (form) => {
+        isLoading = true;
         if (await approveSubmission.submit()) {
           if (form.result?.error) {
             toast.error("Failed to approve submission.", {
@@ -116,16 +139,21 @@
             // @ts-ignore
             props.onApprove?.(form.result);
           }
+        isLoading = false;
         }
       })}
     >
       <p class="text-lg font-bold">Submission Details for {props.submission.nominationId}</p>
-      <MapBase category={props.submission.category} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} />
+      {#if !isNameRequired(props.submission.category)}
+        <MapBase category={props.submission.category} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} onclick={(e) => {
+            e.stopPropagation()
+            e.preventDefault()
+        }} />
+      {/if}
       <div class="mt-4 grid grid-cols-2 gap-2">
         <input {...approveSubmission.fields.submissionId.as(`hidden`, props.submission.nominationId)} />
-        <input {...approveSubmission.fields.accepted.as(`hidden`, true)} />
         <label for="category">Category</label>
-        <select id="category" {...approveSubmission.fields.category.as(`select`, props.submission.category)}>
+        <select id="category" disabled={isLoading} {...approveSubmission.fields.category.as(`select`, props.submission.category)}>
           {#each Object.values(SortedSubmissionsCategory) as category}
             <option value={category}>{category}</option>
           {/each}
@@ -133,7 +161,7 @@
 
         {let selectedCategory = $derived.by(approveSubmission.fields.category.value)}{#if selectedCategory && selectedCategory.includes(`Ranked`)}
           <label for="doubleRankedCategory">Second Category</label>
-          <select id="doubleRankedCategory" {...approveSubmission.fields.doubleRankedCategory.as(`select`, ``)}>
+          <select id="doubleRankedCategory" disabled={isLoading} {...approveSubmission.fields.doubleRankedCategory.as(`select`, ``)}>
             {#each Object.values(SortedSubmissionsCategory).filter((c) => c.includes(`Ranked`)) as category}
               <option value={category}>{category}</option>
             {/each}
@@ -141,28 +169,28 @@
         {/if}
 
         {#if selectedCategory && isNameRequiredSortedSubmission(selectedCategory)}
-          <label for="name">Name</label>
-          <input id="name" type="text" {...approveSubmission.fields.name.as(`text`, props.submission.name ?? "")} />
+          <label for="name">ID</label>
+          <input id="name" type="text" disabled={isLoading} {...approveSubmission.fields.name.as(`text`, props.submission.name ?? "")} />
         {:else}
           <label for="bsrId">BSR ID</label>
-          <input id="bsrId" type="text" {...approveSubmission.fields.bsrId.as(`text`, props.submission.bsrId ?? "")} />
+          <input id="bsrId" type="text" disabled={isLoading} {...approveSubmission.fields.bsrId.as(`text`, props.submission.bsrId ?? "")} />
           {#if selectedCategory && isDiffCharRequiredSortedSubmission(selectedCategory)}
             <label for="difficulty">Difficulty</label>
-            <select id="difficulty" {...approveSubmission.fields.difficulty.as(`select`, props.submission.difficulty ?? "")}>
+            <select id="difficulty" disabled={isLoading} {...approveSubmission.fields.difficulty.as(`select`, props.submission.difficulty ?? "")}>
               {#each Object.values(DifficultyEnum) as difficulty}
                 <option value={difficulty}>{difficulty}</option>
               {/each}
             </select>
             <label for="characteristic">Characteristic</label>
-            <select id="characteristic" {...approveSubmission.fields.characteristic.as(`select`, props.submission.characteristic ?? "")}>
+            <select id="characteristic" disabled={isLoading} {...approveSubmission.fields.characteristic.as(`select`, props.submission.characteristic ?? "")}>
               {#each Object.values(CharacteristicEnum) as characteristic}
                 <option value={characteristic}>{characteristic}</option>
               {/each}
             </select>
           {/if}
         {/if}
-        <button type="button" class="rounded-lg border-2 border-gray-600 p-2" onclick={() => (showSubmissionDialog = false)}>Cancel</button>
-        <button type="submit" class="rounded-lg border-2 border-green-600 p-2">Save</button>
+        <button type="button" class="rounded-lg border-2 border-gray-600 p-2" disabled={isLoading} onclick={() => (showSubmissionDialog = false)}>Cancel</button>
+        <button type="submit" class="rounded-lg border-2 border-green-600 p-2" disabled={isLoading}>Save</button>
       </div>
     </form>
 </Dialog>

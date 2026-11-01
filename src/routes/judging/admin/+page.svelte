@@ -13,12 +13,18 @@
 
   let judges: InferAttributes<Judge>[] = $state([]);
   onMount(async () => {
-    judges = await getUsers();
+    await refreshJudges();
   });
+
+  async function refreshJudges() {
+    const users = getUsers();
+    await users.refresh();
+    judges = await users;
+  }
 
   async function editJudgeRoles(judgeId: number, role: "sort" | "judge", addOrRemove: "add" | "remove") {
     await editUserRole({ judgeId, role, addOrRemove });
-    judges = await getUsers();
+    await refreshJudges();
     toast.success(`User role "${role}" ${addOrRemove === "add" ? "added" : "removed"} successfully.`);
     //return judge;
   }
@@ -34,7 +40,7 @@
 <div class="flex-col-center gap-2">
   boo
   <div class="flex-col-center w-full rounded-2xl bg-black/50 px-8 pt-2">
-    <table class="prose min-w-full mx-8 prose-invert">
+    <table class="mx-8 prose min-w-full prose-invert">
       <thead>
         <tr>
           <th></th>
@@ -46,36 +52,39 @@
         </tr>
       </thead>
       <tbody>
-        {#key judges}
-          {#each judges as judge}
-            {let isJudge = $derived(judge.roles.includes("judge"))}
-            {let isSort = $derived(judge.roles.includes("sort"))}
-            <tr>
-              <td class="not-prose"><img src={judge.avatarUrl} class="w-6 h-6 rounded-full"></td>
-              <td>{judge.id}</td>
-              <td>{judge.name}</td>
-              <td>{judge.roles.join(", ")}</td>
-              <td>{judge.permittedCategories.map((category) => m[`common.sortedCategories.${category as SortedSubmissionsCategory}.dropdown`]()).join(", ")}</td>
-              <td>
-                {#if isJudge}
-                  <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "remove")}>Remove Judge</Button>
-                {:else}
-                  <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "add")}>Add Judge</Button>
-                {/if}
-                {#if isSort}
-                  <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "remove")}>Remove Sort</Button>
-                {:else}
-                  <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "add")}>Add Sort</Button>
-                {/if}
-                <Button onclick={() => openCategoriesDialog(judge.id)}>Edit Categories</Button>
-              </td>
-            </tr>
-          {/each}
-        {/key}
+        {#each judges as judge (judge.id)}
+          <tr>
+            <td class="not-prose"><img src={judge.avatarUrl} class="h-6 w-6 rounded-full" /></td>
+            <td>{judge.id}</td>
+            <td>{judge.name}</td>
+            <td>{judge.roles.join(", ")}</td>
+            <td>{judge.permittedCategories.map((category) => m[`common.sortedCategories.${category as SortedSubmissionsCategory}.dropdown`]()).join(", ")}</td>
+            <td>
+              {#if judge.roles.includes("judge")}
+                <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "remove")}>Remove Judge</Button>
+              {:else}
+                <Button onclick={async () => await editJudgeRoles(judge.id, "judge", "add")}>Add Judge</Button>
+              {/if}
+              {#if judge.roles.includes("sort")}
+                <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "remove")}>Remove Sort</Button>
+              {:else}
+                <Button onclick={async () => await editJudgeRoles(judge.id, "sort", "add")}>Add Sort</Button>
+              {/if}
+              <Button onclick={() => openCategoriesDialog(judge.id)}>Edit Categories</Button>
+            </td>
+          </tr>
+        {/each}
       </tbody>
+      {#if judges.length === 0}
+        <tfoot>
+          <tr>
+            <td colspan="6" class="text-center">No judges found.</td>
+          </tr>
+        </tfoot>
+      {/if}
     </table>
   </div>
-  <div class="grid grid-cols-2 grid-flow-dense flex-wrap gap-2">
+  <div class="grid grid-flow-dense grid-cols-2 flex-wrap gap-2">
     {const oneShotClass: ClassValue = `flex-col-center rounded-2xl bg-black/50 p-4 gap-2 max-w-lg`}
     {const oneShotTextClass: ClassValue = `flex-col-center text-wrap text-center`}
     <div class={oneShotClass}>
@@ -131,8 +140,7 @@
             const result = await moveSubmission({ submissionId: parseInt(moveSubmissionSubmissionId), newCategory: moveSubmissionNewCategory as SortedSubmissionsCategory });
             toast.success(`Moved submission ${moveSubmissionSubmissionId} successfully.`);
           }
-        }}>Move Submission</Button
-      >
+        }}>Move Submission</Button>
     </div>
     <div class={oneShotClass}>
       <div class={oneShotTextClass}>
@@ -143,19 +151,19 @@
         onclick={async () => {
           const result = await updateNullValues();
           toast.success(`Updated ${result.updatedCount} submissions with null values.`);
-        }}>Update Null Values</Button
-      >
+        }}>Update Null Values</Button>
     </div>
     <div class={oneShotClass}>
-        <div class={oneShotTextClass}>
-            <p class="text-2xl/tight">Run Involved Check</p>
-            <p class="text-gray-300">Check all submissions for involved mappers and update accordingly. This will not change votes of judges who have already voted.</p>
-        </div>
-        <Button
-          onclick={async () => {
-            //const result = await runInvolvedCheck();
-            toast.success(`Involved check completed successfully.`);
-          }}>Run Involved Check</Button>
+      <div class={oneShotTextClass}>
+        <p class="text-2xl/tight">Run Involved Check</p>
+        <p class="text-gray-300">Check all submissions for involved mappers and update accordingly. This will not change votes of judges who have already voted.</p>
+      </div>
+      <Button
+        onclick={async () => {
+          //const result = await runInvolvedCheck();
+          toast.success(`Involved check completed successfully.`);
+        }}>Run Involved Check</Button
+      >
     </div>
   </div>
 </div>
@@ -192,7 +200,7 @@
           await setUserCategories({ judgeId: selectedJudge?.id ?? -1, categories: selectedCategories });
           showCategoriesDialog = false;
           toast.success("Categories updated successfully.");
-          judges = await getUsers();
+          await refreshJudges();
         }}>Save</Button
       >
     </div>

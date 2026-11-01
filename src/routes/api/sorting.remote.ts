@@ -1,4 +1,4 @@
-import { form, getRequestEvent, query } from "$app/server";
+import { command, form, getRequestEvent, query } from "$app/server";
 import { z } from "zod";
 import { Judge, SortedSubmission, Submission } from "../../lib/server/database";
 import { CharacteristicEnum, DifficultyEnum, isNameRequiredSortedSubmission, isDiffCharRequiredSortedSubmission, SortedSubmissionsCategory } from "../../lib/shared/goodies";
@@ -9,12 +9,12 @@ import type { WhereOptions } from "sequelize";
 export const getSubmissions = query(z.object({
     category: z.string().optional()
 }), async (inputs) => {
-    const { judge } = await getJudgeFromEvent(); 
+    const { judge } = await getJudgeFromEvent();
     if (!judge.roles.includes("sort") && !judge.roles.includes("admin")) {
         throw new Error("Unauthorized");
     }
 
-    let whereOptions: WhereOptions<Submission> = { 
+    let whereOptions: WhereOptions<Submission> = {
         filterStatus: null
     };
 
@@ -29,6 +29,36 @@ export const getSubmissions = query(z.object({
     }).then(submissions => submissions.map(submission => submission.toJSON()));
 });
 
+export const rejectSubmission = command(z.object({
+    submissionId: z.number()
+}), async (input) => {
+    const { judge } = await getJudgeFromEvent();
+    if (!judge.roles.includes("sort")) {
+        return { error: "Unauthorized" };
+    }
+
+    const submission = await Submission.findByPk(input.submissionId);
+    if (!submission) {
+        return { error: "Submission not found" };
+    }
+
+    const duplicateSubmissions = await submission.findDuplicateSubmissions();
+
+    submission.update({
+        filterStatus: `Rejected`,
+        filtererId: judge.id
+    });
+
+    duplicateSubmissions.forEach(async (duplicateSubmission) => {
+        await duplicateSubmission.update({
+            filterStatus: `RejectedDuplicate`,
+            filtererId: judge.id
+        });
+    });
+
+    return { submission: submission.toJSON(), duplicates: duplicateSubmissions.length, duplicateIds: duplicateSubmissions.map(ds => ds.id) };
+});
+
 export const approveSubmission = form(z.object({
     submissionId: z.number(),
     name: z.string(),
@@ -37,7 +67,6 @@ export const approveSubmission = form(z.object({
     characteristic: z.enum(CharacteristicEnum),
     category: z.enum(SortedSubmissionsCategory),
     doubleRankedCategory: z.enum(SortedSubmissionsCategory),
-    accepted: z.boolean()
 }).partial(), async (input) => {
     const { judge } = await getJudgeFromEvent();
     if (!judge.roles.includes("sort")) {
@@ -51,35 +80,46 @@ export const approveSubmission = form(z.object({
 
     const duplicateSubmissions = await submission.findDuplicateSubmissions();
 
-    if (input.accepted === true) {
-        if (!input.category) {
-            return { error: "Category is required" };
+    if (!input.category) {
+        return { error: "Category is required" };
+    }
+
+    if (isNameRequiredSortedSubmission(input.category)) {
+        if (!input.name || input.name.trim() === "") {
+            return { error: "Name is required" };
         }
-
-        if (isNameRequiredSortedSubmission(input.category)) {
-            if (!input.name || input.name.trim() === "") {
-                return { error: "Name is required" };
-            }
-        } else if (isDiffCharRequiredSortedSubmission(input.category)) {
-            if (!input.bsrId || input.bsrId.trim() === "") {
-                return { error: "BSR ID is required" };
-            }
-            if (!input.difficulty) {
-                return { error: "Difficulty is required" };
-            }
-            if (!input.characteristic) {
-                return { error: "Characteristic is required" };
-            }
-        } else {
-            if (!input.bsrId || input.bsrId.trim() === "") {
-                return { error: "BSR ID is required" };
-            }
+    } else if (isDiffCharRequiredSortedSubmission(input.category)) {
+        if (!input.bsrId || input.bsrId.trim() === "") {
+            return { error: "BSR ID is required" };
         }
+        if (!input.difficulty) {
+            return { error: "Difficulty is required" };
+        }
+        if (!input.characteristic) {
+            return { error: "Characteristic is required" };
+        }
+    } else {
+        if (!input.bsrId || input.bsrId.trim() === "") {
+            return { error: "BSR ID is required" };
+        }
+    }
 
-        const mapData = !isNameRequiredSortedSubmission(input.category) ? undefined : await getMapData(input.bsrId!);
+    const mapData = !isNameRequiredSortedSubmission(input.category) ? undefined : await getMapData(input.bsrId!);
 
+    SortedSubmission.create({
+        category: input.category,
+        name: input.name,
+        bsrId: input.bsrId,
+        difficulty: input.difficulty,
+        characteristic: input.characteristic,
+        submitterIds: Array.from(new Set([submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)])),
+        hash: mapData?.hash,
+        involvedMappers: mapData?.involvedMappers.map(String),
+    });
+
+    if (input.doubleRankedCategory) {
         SortedSubmission.create({
-            category: input.category,
+            category: input.doubleRankedCategory,
             name: input.name,
             bsrId: input.bsrId,
             difficulty: input.difficulty,
@@ -88,41 +128,17 @@ export const approveSubmission = form(z.object({
             hash: mapData?.hash,
             involvedMappers: mapData?.involvedMappers.map(String),
         });
+    }
 
-        if (input.doubleRankedCategory) {
-            SortedSubmission.create({
-                category: input.doubleRankedCategory,
-                name: input.name,
-                bsrId: input.bsrId,
-                difficulty: input.difficulty,
-                characteristic: input.characteristic,
-                submitterIds: Array.from(new Set([submission.submitterId, ...duplicateSubmissions.map(ds => ds.submitterId)])),
-                hash: mapData?.hash,
-                involvedMappers: mapData?.involvedMappers.map(String),
-            });
-        }
+    submission.update({
+        filterStatus: `Accepted`,
+        filtererId: judge.id
+    });
 
-        submission.update({
-            filterStatus: `Accepted`,
+    for (const duplicateSubmission of duplicateSubmissions) {
+        await duplicateSubmission.update({
+            filterStatus: `Duplicate`,
             filtererId: judge.id
-        });
-
-        for (const duplicateSubmission of duplicateSubmissions) {
-            await duplicateSubmission.update({
-                filterStatus: `Duplicate`,
-                filtererId: judge.id
-            });
-        }
-    } else {
-        submission.update({
-            filterStatus: `Rejected`,
-            filtererId: judge.id
-        });
-        duplicateSubmissions.forEach(async (duplicateSubmission) => {
-            await duplicateSubmission.update({
-                filterStatus: `RejectedDuplicate`,
-                filtererId: judge.id
-            });
         });
     }
 

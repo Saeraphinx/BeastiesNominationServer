@@ -10,12 +10,14 @@
   import { flip } from "svelte/animate";
   import { fade } from "svelte/transition";
   import { SubmissionCategory } from "../../../lib/shared/goodies";
+  import { toast } from "svelte-sonner";
+  import { onMount } from "svelte";
 
   let bsAPIMapData: Record<string, BSMap> = $state({});
   let bsAPIUserData: Record<string, BSUser> = $state({});
   let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
   let submissions: InferAttributes<Submission>[] = $state([]);
-  let currentCategory = $state("");
+  let currentCategory = $state("All");
   let currentPage = $state(1);
   let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
     let submissionsToLookAt = submissions.filter(s => s.category == currentCategory || currentCategory == "All");
@@ -62,22 +64,23 @@
     }
   });
 
-  let promise = $state(fetchSubmissions());
   async function fetchSubmissions() {
-    await getSubmissions({}).then(data => {
-      submissions = data;
-    });
+    const getSubs = getSubmissions({});
+    await getSubs.refresh();
+    submissions = await getSubs;
 
-    let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
-    let userIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
-    let playlistIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
+    // let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
+    // let userIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
+    // let playlistIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
   }
+
+  onMount(fetchSubmissions);
 </script>
 
 <div class="flex flex-col gap-4 justify-center items-center mb-24">
   <div class="flex-col-center gap-2 bg-black/50 p-4 rounded-2xl">
     <p>Submissions:</p>
-    <Button onclick={() => promise = fetchSubmissions()}>Fetch Submissions</Button>
+    <Button onclick={fetchSubmissions}>Fetch Submissions</Button>
     <select bind:value={currentCategory}>
       <option value="All">All</option>  
       {#each Object.values(SubmissionCategory) as category}
@@ -92,10 +95,10 @@
 
   </div>
   <div class="flex flex-row flex-wrap justify-center items-center gap-4">
-    {#await promise then _}
-      {#each currentlyShowingSubmissions as submission, index (submission.nominationId)}
+    {#await getSubmissions({}) then _}
+      {#each currentlyShowingSubmissions as submission (submission.nominationId)}
         <span out:fade={{ duration: 300, delay: 300 }} animate:flip={{ duration: 300 }}>
-          <SortMap submission={submission} bsAPI={bsAPIMapData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
+          <SortMap submission={submission} bsAPI={bsAPIMapData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} onReject={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
         </span>
       {/each}
     {/await}

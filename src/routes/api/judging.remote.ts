@@ -17,7 +17,7 @@ export const getSortedSubmissions = query(z.object({
     category: z.enum(SortedSubmissionsCategory)
 }), async (input) => {
     const { judge } = await getJudgeFromEvent();
-    if (judge.roles.includes("judge")) {
+    if (judge.roles.includes("judge") || judge.roles.includes("admin")) {
         if (!judge.permittedCategories.includes(input.category)) {
             if (!judge.roles.includes("admin")) {
                 throw new Error("Unauthorized");
@@ -72,7 +72,7 @@ export const getBeatSaverMaps = query(z.array(z.string()), async (input) => {
     return [...cachedMaps.filter((id) => id !== null), ...fetchedMaps];
 });
 
-const userCache = new TTLCache<string, BSUser | null>({ max: 1000, ttl: 1000 * 60 * 60 * 24 });
+const userCache = new TTLCache<string, BSUser | null>({ max: 1000, ttl: 1000 * 60 * 60 * 24 * 3 });
 export const getBeatSaverUsers = query(z.array(z.string()), async (input) => {
     const { judge } = await getJudgeFromEvent();
 
@@ -121,10 +121,9 @@ export const getBeatSaverUsers = query(z.array(z.string()), async (input) => {
                         userCache.set(id, user);
                     } else {
                         console.log(`User with ID: ${id} was not found.`);
-                        userCache.set(id, null);
                     }
                 }).finally(resolve);
-            }, index * 25);
+            }, index * 200);
         }));
     }
     await Promise.all(promises);
@@ -137,7 +136,7 @@ export const getVotes = query(z.object({
 }), async (input) => {
     const { judge } = await getJudgeFromEvent();
 
-    if (!judge.roles.includes("judge")) {
+    if (!judge.roles.includes("judge") && !judge.roles.includes("admin")) {
         throw new Error("Unauthorized");
     }
 
@@ -154,7 +153,7 @@ export const getVotes = query(z.object({
 export const getJudgeStats = query(async () => {
     const { judge } = await getJudgeFromEvent();
 
-    if (!judge.roles.includes("judge")) {
+    if (!judge.roles.includes("judge") && !judge.roles.includes("admin")) {
         throw new Error("Unauthorized");
     }
 
@@ -184,9 +183,7 @@ export const getJudgeStats = query(async () => {
         attributes: ['submissionId']
     });
 
-    const retVal: Record<string, { submissionCount: number, votes: number }> = {
-
-    };
+    const retVal: Record<string, { submissionCount: number, votes: number }> = {};
 
     for (const category in allSubmissions) {
         const submissions = allSubmissions[category];

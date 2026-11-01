@@ -14,6 +14,8 @@
   import madelineTheo0 from "$lib/media/backgrounds/madelineandtheo0.png";
   import { onMount } from "svelte";
   import { Toaster } from "svelte-sonner";
+  import { afterNavigate, beforeNavigate } from "$app/navigation";
+  import { fade } from "svelte/transition";
 
   let { children, data: _internal } = $props();
   const { user, judge, fetch } = $derived(_internal);
@@ -82,12 +84,23 @@
     }
     localStorage.setItem(`judgingBackground`, currentBackgroundName);
   });
+
+  let isNavigating = $state(false);
+  beforeNavigate(() => {
+    isNavigating = true;
+  });
+  afterNavigate(() => {
+    isNavigating = false;
+  });
 </script>
 
 <div class="fixed w-full h-full bg-black -z-50"></div>
 <div class="fixed w-full h-full bg-cover -z-49 bg-no-repeat bg-center blur-md " style="background-image: url({currentBackgroundUrl});"></div>
 
 <div class="basebody">
+  {#if isNavigating}
+    <div class="fixed top-0 left-0 w-full h-1 bg-gradient-to-r from-[#8e28e2] via-[#DC2DE2] to-[#8e28e2] z-50 motion-safe:animate-pulse"></div>
+  {/if}
   <nav>
     <ul class="flex flex-row items-center justify-center gap-2 m-2 p-1 px-2 rounded-md bg-black/70 text-white">
       {#each links as link}
