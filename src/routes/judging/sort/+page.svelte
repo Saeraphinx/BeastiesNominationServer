@@ -20,7 +20,7 @@
   let currentCategory = $state("All");
   let currentPage = $state(1);
   let currentlyShowingSubmissions: InferAttributes<Submission>[] = $derived.by(() => {
-    let submissionsToLookAt = submissions.filter(s => s.category == currentCategory || currentCategory == "All");
+    let submissionsToLookAt = submissions.filter((s) => s.category == currentCategory || currentCategory == "All");
     const start = (currentPage - 1) * 25;
     const end = start + 25;
     console.log("Currently showing submissions from index", start, "to", end);
@@ -48,59 +48,66 @@
     }
 
     if (mapIdsToFind.length > 0) {
-      getBeatSaverMaps(mapIdsToFind).then(maps => {
-        bsAPIMapData = { ...bsAPIMapData, ...Object.fromEntries(maps.map(map => [map.id, map])) };
+      getBeatSaverMaps(mapIdsToFind).then((maps) => {
+        bsAPIMapData = { ...bsAPIMapData, ...Object.fromEntries(maps.map((map) => [map.id, map])) };
       });
     }
     if (userIdsToFind.length > 0) {
-      getBeatSaverUsers(userIdsToFind).then(users => {
-        bsAPIUserData = { ...bsAPIUserData, ...Object.fromEntries(users.map(user => [user.id, user])) };
+      getBeatSaverUsers(userIdsToFind).then((users) => {
+        bsAPIUserData = { ...bsAPIUserData, ...Object.fromEntries(users.map((user) => [user.id, user])) };
       });
     }
     if (playlistIdsToFind.length > 0) {
-      Promise.all(playlistIdsToFind.map(id => getPlaylist(id))).then(playlists => {
-        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map(playlist => [playlist.playlist.playlistId, playlist])) };
+      Promise.all(playlistIdsToFind.map((id) => getPlaylist(id))).then((playlists) => {
+        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map((playlist) => [playlist.playlist.playlistId, playlist])) };
       });
     }
   });
 
+  let isLoading = $state(false);
   async function fetchSubmissions() {
-    const getSubs = getSubmissions({});
+    isLoading = true;
+    const getSubs = getSubmissions({ category: currentCategory == "All" ? undefined : currentCategory });
     await getSubs.refresh();
     submissions = await getSubs;
 
     // let mapIds = submissions.map(submission => submission.bsrId!).filter(Boolean);
     // let userIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category != SubmissionCategory.PackOfTheYear && e.category != SubmissionCategory.OST ).map(submission => submission.name as string);
     // let playlistIds = submissions.filter(e => e.name && e.name.match(/^\d+$/) && e.category == SubmissionCategory.PackOfTheYear).map(submission => submission.name as string);
+    isLoading = false;
   }
 
-  onMount(fetchSubmissions);
+  onMount(async () => await fetchSubmissions());
 </script>
 
-<div class="flex flex-col gap-4 justify-center items-center mb-24">
-  <div class="flex-col-center gap-2 bg-black/50 p-4 rounded-2xl">
+<div class="mb-24 flex flex-col items-center justify-center gap-4">
+  <div class="flex-col-center gap-2 rounded-2xl bg-black/50 p-4">
     <p>Submissions:</p>
-    <Button onclick={fetchSubmissions}>Fetch Submissions</Button>
+    <Button onclick={async () => await fetchSubmissions()} disabled={isLoading}>{isLoading ? `Fetching...` : `Fetch Submissions`}</Button>
     <select bind:value={currentCategory}>
-      <option value="All">All</option>  
+      <option value="All">All</option>
       {#each Object.values(SubmissionCategory) as category}
         <option value={category}>{category}</option>
       {/each}
     </select>
     <div class="flex-row-center gap-2">
-        <Button onclick={() => currentPage = Math.max(currentPage - 1, 1)}>&lt; Page {currentPage - 1}</Button>
-        <p>Currently showing {currentlyShowingSubmissions.length}/{submissions.length} submissions</p>
-        <Button onclick={() => currentPage = currentPage + 1}>Page {currentPage + 1} &gt;</Button>
+      <Button onclick={() => (currentPage = Math.max(currentPage - 1, 1))}>&lt; Page {currentPage - 1}</Button>
+      <p>Currently showing {currentlyShowingSubmissions.length}/{submissions.length} submissions</p>
+      <Button onclick={() => (currentPage = currentPage + 1)}>Page {currentPage + 1} &gt;</Button>
     </div>
-
   </div>
-  <div class="flex flex-row flex-wrap justify-center items-center gap-4">
-    {#await getSubmissions({}) then _}
-      {#each currentlyShowingSubmissions as submission (submission.nominationId)}
-        <span out:fade={{ duration: 300, delay: 300 }} animate:flip={{ duration: 300 }}>
-          <SortMap submission={submission} bsAPI={bsAPIMapData[submission.bsrId!]} bsAPIUser={bsAPIUserData[submission.name!]} bsAPIPlaylist={bsAPIPlaylistData[submission.name!]} onApprove={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} onReject={(res) => submissions = submissions.filter(s => s.nominationId !== submission.nominationId && !res.duplicateIds.includes(s.nominationId))} />
-        </span>
-      {/each}
-    {/await}
+  <div class="flex flex-row flex-wrap items-center justify-center gap-4">
+    {#each currentlyShowingSubmissions as submission (submission.nominationId)}
+      <span out:fade={{ duration: 300 }} animate:flip={{ duration: 300 }}>
+        <SortMap
+          {submission}
+          bsAPI={bsAPIMapData[submission.bsrId!]}
+          bsAPIUser={bsAPIUserData[submission.name!]}
+          bsAPIPlaylist={bsAPIPlaylistData[submission.name!]}
+          onApprove={(res) => fetchSubmissions()}
+          onReject={(res) => fetchSubmissions()}
+        />
+      </span>
+    {/each}
   </div>
 </div>

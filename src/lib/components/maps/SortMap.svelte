@@ -100,15 +100,13 @@
     <Button class="w-20 border-2 border-red-600" disabled={isLoading} onclick={async () => {
       isLoading = true;
       const result = await rejectSubmission({ submissionId: props.submission.nominationId });
-      if (result?.error) {
+      if (`error` in result) {
         toast.error(`Failed to reject submission: ${result.error}`);
       } else {
         toast.success(`Submission ${props.submission.nominationId} rejected successfully.`, {
           description: `${result?.duplicates} duplicate(s) found.`,
         });
-        if (result?.submission) {
-          props.onReject?.({ submission: result.submission, duplicates: result.duplicates, duplicateIds: result.duplicateIds });
-        }
+        props.onReject?.({ submission: result.submission, duplicates: result.duplicates, duplicateIds: result.duplicateIds });
       }
       isLoading = false;
     }}>Reject</Button>
