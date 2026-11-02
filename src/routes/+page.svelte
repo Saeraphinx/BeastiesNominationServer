@@ -39,6 +39,7 @@
   let currentValidChars: Characteristic[] = $state(Object.values(CharacteristicEnum));
   let currentValidDiffs: Difficulty[] = $state(Object.values(DifficultyEnum));
   let ostMaps = [
+    `Shock Drop | Ray Parker Jr. - Ghostbusters`,
     `Shock Drop | ROSÉ & Bruno Mars - APT.`,
     `Hip Hop Mixtape 2 | Kendrick Lamar – tv off (feat. Lefty Gunplay)`,
     `Hip Hop Mixtape 2 | Lil Nas X & Jack Harlow – INDUSTRY BABY`,
@@ -72,7 +73,8 @@
     `Coldplay | Coldplay - Trouble`,
     `Coldplay | Coldplay - Viva La Vida`,
     `Coldplay | Coldplay - WE PRAY ft. Little Simz, Burna Boy, Elyanna, TINI`,
-    `Coldplay | Coldplay - Yellow`
+    `Coldplay | Coldplay - Yellow`,
+
   ];
 
   function resetForm() {
