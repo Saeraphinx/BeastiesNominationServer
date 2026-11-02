@@ -81,7 +81,7 @@
       {#if props.custom}
         <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
           <p class="text-xs/tight text-gray-300">{props.subText}</p>
-          <p class="text-lg/tight font-bold">{props.custom.name}</p>
+          <a class="text-lg/tight font-bold" href="{props.custom.link}" target="_blank" rel="noopener noreferrer">{props.custom.name}</a>
         </div>
       {:else}
         <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
