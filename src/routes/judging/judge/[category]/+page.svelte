@@ -1,17 +1,19 @@
 <script lang="ts">
   import type { InferAttributes } from "sequelize";
   import type { BSMap, BSPlaylist, BSUser } from "../../../../lib/shared/beatsaverTypes.js";
-  import { getBeatSaverMaps, getBeatSaverUsers, getSortedSubmissions, getVotes } from "../../../api/judging.remote.js";
+  import { getBeatSaverMaps, getBeatSaverPlaylists, getBeatSaverUsers, getSortedSubmissions, getVotes } from "../../../api/judging.remote.js";
   import { getSubmissions } from "../../../api/sorting.remote.js";
   import type { JudgeVote, SortedSubmission } from "../../../../lib/server/database.js";
   import JudgeMap from "../../../../lib/components/maps/JudgeMap.svelte";
   import Button from "../../../../lib/components/common/Button.svelte";
   import { getPlaylist } from "../../../../lib/shared/getMap.js";
+  import { SortedSubmissionsCategory } from "../../../../lib/shared/goodies.js";
+  import { onMount } from "svelte";
 
   const { data: _internal } = $props();
   const { pageData, judge } = $derived(_internal);
 
-  let bsAPIData: Record<string, BSMap> = $state({});
+  let bsAPIMapData: Record<string, BSMap> = $state({});
   let bsAPIUserData: Record<string, BSUser> = $state({});
   let bsAPIPlaylistData: Record<string, BSPlaylist> = $state({});
   let submissions: InferAttributes<SortedSubmission>[] = $state([]);
@@ -26,31 +28,59 @@
     return ret;
   });
 
-  let promise = $state(fetchSubmissions());
+  $effect(() => {
+    let mapIdsToFind = [];
+    let userIdsToFind = [];
+    let playlistIdsToFind = [];
+
+    for (const submission of currentlyShowingSubmissions) {
+      if (submission.bsrId && !bsAPIMapData[submission.bsrId]) {
+        mapIdsToFind.push(submission.bsrId);
+      }
+      if (submission.name && submission.name.match(/^\d+$/) && submission.category != SortedSubmissionsCategory.PackOfTheYear && submission.category != SortedSubmissionsCategory.OST && !bsAPIUserData[submission.name]) {
+        userIdsToFind.push(submission.name);
+      }
+      if (submission.name && submission.name.match(/^\d+$/) && submission.category == SortedSubmissionsCategory.PackOfTheYear && !bsAPIPlaylistData[submission.name]) {
+        playlistIdsToFind.push(submission.name);
+      }
+    }
+
+    if (mapIdsToFind.length > 0) {
+      getBeatSaverMaps(mapIdsToFind).then((maps) => {
+        bsAPIMapData = { ...bsAPIMapData, ...Object.fromEntries(maps.map((map) => [map.id, map])) };
+      });
+    }
+    if (userIdsToFind.length > 0) {
+      getBeatSaverUsers(userIdsToFind).then((users) => {
+        bsAPIUserData = { ...bsAPIUserData, ...Object.fromEntries(users.map((user) => [user.id.toString(), user])) };
+      });
+    }
+    if (playlistIdsToFind.length > 0) {
+      getBeatSaverPlaylists(playlistIdsToFind).then((playlists) => {
+        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map((playlist) => [playlist.playlist.playlistId.toString(), playlist])) };
+      });
+    }
+  });
+
+  let isLoading = $state(false);
   async function fetchSubmissions() {
-    await getSortedSubmissions({
+    isLoading = true;
+    const getSub = getSortedSubmissions({
       category: pageData.category,
-    }).then((data) => {
-      submissions = data;
     });
-
-    const mapIds = submissions.map((submission) => submission.bsrId!).filter(Boolean);
-    const userIds = submissions.filter(e => e.name && e.name.match(/\d+/) && !e.category.includes(`Pack`) && !e.category.includes(`OST`) ).map(submission => submission.name as string);
-    const playlistIds = submissions.filter(e => e.name && e.name.match(/\d+/) && e.category.includes(`Pack`)).map(submission => submission.name as string);
-
-    bsAPIData = Object.fromEntries((await getBeatSaverMaps(mapIds)).map(map => [map.id, map]));
-    bsAPIUserData = Object.fromEntries((await getBeatSaverUsers(userIds)).map(user => [user.id, user]));
-    bsAPIPlaylistData = Object.fromEntries((await Promise.all(playlistIds.map(id => getPlaylist(id)))).map(playlist => [playlist.playlist.playlistId, playlist]));
-    votes = await getVotes({
-      submissionIds: submissions.map((submission) => submission.id),
-    });
+    await getSub.refresh();
+    submissions = await getSub;
+    isLoading = false;
   }
+  onMount(async () => {
+    await fetchSubmissions();
+  });
 </script>
 
 <div class="flex-col-center gap-4">
-  <div class="flex-col-center rounded-2xl bg-black/50 p-4">
+  <div class="flex-col-center rounded-2xl bg-black/50 p-4 gap-1">
     <p>Submissions:</p>
-    <Button onclick={() => (promise = fetchSubmissions())}>Fetch Submissions</Button>
+    <Button onclick={async () => await fetchSubmissions()} disabled={isLoading}>{isLoading ? 'Loading...' : 'Fetch Submissions'}</Button>
     {let percentage = (votes.length / (submissions.length || 1)) * 100}
     <span class="w-64 rounded-2xl bg-gray-500">
       <span class="rounded-2xl bg-green-500 text-center" style="width: {percentage}%; display: inline-block;"><p class="px-4">{percentage.toFixed(1)}%</p></span>
@@ -62,16 +92,13 @@
     </div>
     
   </div>
-  {#await promise}
-    <div>Loading submissions...</div>
-  {:then}
     <div class="flex-row-center flex-wrap gap-2">
       {#each currentlyShowingSubmissions as submission, index (submission.id)}
         <JudgeMap
           sortedSubmission={submission}
-          bsAPI={bsAPIData[submission.bsrId!]}
-          bsAPIUser={bsAPIUserData[submission.name ?? ``]}
-          bsAPIPlaylist={bsAPIPlaylistData[submission.name ?? ``]}
+          bsAPI={bsAPIMapData[submission.bsrId!]}
+          bsAPIUser={bsAPIUserData[submission.name!]}
+          bsAPIPlaylist={bsAPIPlaylistData[submission.name!]}
           vote={votes.find((vote) => vote.submissionId === submission.id)}
           onVote={(vote) => {
             const existingIndex = votes.findIndex((v) => v.submissionId === submission.id);
@@ -85,5 +112,4 @@
         />
       {/each}
     </div>
-  {/await}
 </div>

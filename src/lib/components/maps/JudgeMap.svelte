@@ -52,6 +52,32 @@
     return text;
   });
 
+  let customData = $derived.by(() => {
+    if (!isNameRequiredSortedSubmission(props.sortedSubmission.category)) {
+      return undefined;
+    }
+
+    if (props.bsAPIUser) {
+      return {
+        name: props.bsAPIUser?.name ?? "Unknown User",
+        icon: props.bsAPIUser?.avatar,
+        link: `https://beatsaver.com/profile/${props.bsAPIUser?.id}`
+      };
+    } else if (props.bsAPIPlaylist) {
+      return {
+        name: props.bsAPIPlaylist?.playlist.name ?? "Unknown Playlist",
+        icon: props.bsAPIPlaylist?.playlist.playlistImage512,
+        link: `https://beatsaver.com/playlist/${props.bsAPIPlaylist?.playlist.playlistId}`
+      };
+    } else {
+        return {
+          name: props.sortedSubmission.name ?? "Unnamed Submission",
+          icon: undefined,
+          link: "#"
+        };
+    }
+  });
+
   // svelte-ignore state_referenced_locally
   let note = $state(props.vote?.note);
   // svelte-ignore state_referenced_locally
@@ -86,7 +112,7 @@
   });
 </script>
 
-<MapBase category={props.sortedSubmission.category} map={props.bsAPI} bsAPIUser={props.bsAPIUser} bsAPIPlaylist={props.bsAPIPlaylist} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} ringClass={voteClass} {...divProps}>
+<MapBase category={props.sortedSubmission.category} map={props.bsAPI} custom={customData} characteristic={props.sortedSubmission.characteristic} difficulty={props.sortedSubmission.difficulty} {subText} ringClass={voteClass} {...divProps}>
   {#snippet children()}
     <div class="flex-col-center min-w-24 gap-2">
         <Button class="w-full hover:bg-green-500/40 {props.vote?.score === `1` ? `ring-1 ring-green-500 bg-green-500/20` : ``}" onclick={() => { voteValue = `1`; handleVote(); }} disabled={!props.enableButtons}>Yes</Button>

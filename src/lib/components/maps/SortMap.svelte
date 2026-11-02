@@ -148,12 +148,10 @@
       })}
     >
       <p class="text-lg font-bold">Submission Details for {props.submission.nominationId}</p>
-      {#if !isNameRequired(props.submission.category)}
-        <MapBase category={props.submission.category} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} onclick={(e) => {
+      <MapBase category={props.submission.category} custom={customData} map={props.bsAPI} characteristic={props.submission.characteristic} difficulty={props.submission.difficulty} {subText} onclick={(e) => {
             e.stopPropagation()
             e.preventDefault()
         }} />
-      {/if}
       <div class="mt-4 grid grid-cols-2 gap-2">
         <input {...approveSubmission.fields.submissionId.as(`hidden`, props.submission.nominationId)} />
         <label for="category">Category</label>

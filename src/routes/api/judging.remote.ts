@@ -1,11 +1,11 @@
 import { command, getRequestEvent, query } from "$app/server";
 import { TTLCache } from "@isaacs/ttlcache";
 import { z } from "zod";
-import { getBulkMaps, getBulkUsers, getUser } from "../../lib/shared/getMap";
+import { getBulkMaps, getBulkUsers, getPlaylist, getUser } from "../../lib/shared/getMap";
 import { Judge, JudgeVote, SortedSubmission } from "../../lib/server/database";
 import { SortedSubmissionsCategory } from "../../lib/shared/goodies";
 import { getJudgeFromEvent } from "../../lib/server/auth";
-import type { BSMap, BSUser } from "../../lib/shared/beatsaverTypes";
+import type { BSMap, BSUser, BSPlaylist } from "../../lib/shared/beatsaverTypes";
 import { Op } from "sequelize";
 
 export const getJudge = query(async () => {
@@ -129,6 +129,27 @@ export const getBeatSaverUsers = query(z.array(z.string()), async (input) => {
     await Promise.all(promises);
 
     return [...cachedUsers.filter((id) => id !== null), ...fetchedUsers];
+});
+
+const playlistCache = new TTLCache<string, BSPlaylist | null>({ max: 100, ttl: 1000 * 60 * 60 * 24 * 3 }); // 3 day ttl
+export const getBeatSaverPlaylists = query(z.array(z.string()), async (input) => {
+    const { judge } = await getJudgeFromEvent();
+
+    let playlists: BSPlaylist[] = []
+    for (const id of input) {
+        if (playlistCache.has(id)) {
+            playlists.push(playlistCache.get(id)!);
+        } else {
+            const playlist = await getPlaylist(id).catch(() => null);
+            playlistCache.set(id, playlist);
+            console.log(`Cached playlist with ID: ${id}`);
+            if (playlist) {
+                playlists.push(playlist);
+            }
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
+    }
+    return playlists;
 });
 
 export const getVotes = query(z.object({

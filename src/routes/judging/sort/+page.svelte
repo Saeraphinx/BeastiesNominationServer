@@ -5,7 +5,7 @@
   import SortMap from "../../../lib/components/maps/SortMap.svelte";
   import type { BSMap, BSUser, BSPlaylist } from "../../../lib/shared/beatsaverTypes";
   import { getBulkMaps, getPlaylist } from "../../../lib/shared/getMap";
-  import { getBeatSaverMaps, getBeatSaverUsers } from "../../api/judging.remote";
+  import { getBeatSaverMaps, getBeatSaverPlaylists, getBeatSaverUsers } from "../../api/judging.remote";
   import Button from "../../../lib/components/common/Button.svelte";
   import { flip } from "svelte/animate";
   import { fade } from "svelte/transition";
@@ -57,9 +57,9 @@
         bsAPIUserData = { ...bsAPIUserData, ...Object.fromEntries(users.map((user) => [user.id, user])) };
       });
     }
-    if (playlistIdsToFind.length > 0) {
-      Promise.all(playlistIdsToFind.map((id) => getPlaylist(id))).then((playlists) => {
-        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map((playlist) => [playlist.playlist.playlistId, playlist])) };
+     if (playlistIdsToFind.length > 0) {
+      getBeatSaverPlaylists(playlistIdsToFind).then((playlists) => {
+        bsAPIPlaylistData = { ...bsAPIPlaylistData, ...Object.fromEntries(playlists.map((playlist) => [playlist.playlist.playlistId.toString(), playlist])) };
       });
     }
   });
