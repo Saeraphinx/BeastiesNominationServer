@@ -86,10 +86,10 @@
       {:else}
         <div class="w-full overflow-hidden overflow-x-hidden text-wrap">
           <p class="text-xs/tight text-gray-300">{props.subText ?? props.map?.id} | {props.map?.metadata.songAuthorName}</p>
-          <p class="text-lg/tight font-bold">
+          <a class="text-lg/tight font-bold" href="https://beatsaver.com/maps/{props.map?.id}" target="_blank" rel="noopener noreferrer">
             {props.map?.metadata.songName}
             <span class="pl-0.5 text-xs text-gray-300">{props.map?.metadata.songSubName}</span>
-          </p>
+          </a>
         </div>
         <div class="flex flex-row flex-wrap items-center justify-start gap-2">
           {#each mappers.arr as mapper}
