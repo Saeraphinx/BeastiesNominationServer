@@ -93,7 +93,13 @@
       </div>
     </div>
   {/if}
-  <p class="w-[50%] text-center">{m[`common.category.${props.submission.category}.dropdown`]()}</p>
+  <p class="w-[50%] text-center text-base/4">
+    {m[`common.category.${props.submission.category}.dropdown`]()}
+    <br>
+    <span class="text-white/80 text-xs/tight">
+      {props.submission.service}:{props.submission.submitterId}
+    </span>
+  </p>
   <span class="h-8 w-0.5 rounded bg-white/20"></span>
   <div class="flex w-[50%] flex-row justify-center gap-2">
     <Button class="w-20 border-2 border-green-600" disabled={isLoading} onclick={showSortDialog}>Approve</Button>
