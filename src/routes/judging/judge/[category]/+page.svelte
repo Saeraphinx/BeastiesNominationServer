@@ -80,7 +80,23 @@
 <div class="flex-col-center gap-4">
   <div class="flex-col-center rounded-2xl bg-black/50 p-4 gap-1">
     <p>Submissions:</p>
-    <Button onclick={async () => await fetchSubmissions()} disabled={isLoading}>{isLoading ? 'Loading...' : 'Fetch Submissions'}</Button>
+    <div class="flex-row-center gap-2">
+        <Button onclick={async () => await fetchSubmissions()} disabled={isLoading}>{isLoading ? 'Loading...' : 'Fetch Submissions'}</Button>
+        <Button onclick={async () => {
+            const response = await fetch(`/judging/judge/${pageData.category}/playlist?id=${judge.id}`);
+            if (response.ok) {
+              const blob = await response.blob();
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = `BNS2026-${pageData.category}-playlist.bplist`;
+              a.click();
+              URL.revokeObjectURL(url);
+            } else {
+              console.error('Failed to download playlist');
+            }
+        }} disabled={isLoading}>{isLoading ? 'Loading...' : 'Download Playlist'}</Button>
+    </div>
     {let percentage = (votes.length / (submissions.length || 1)) * 100}
     <span class="w-64 rounded-2xl bg-gray-500">
       <span class="rounded-2xl bg-green-500 text-center" style="width: {percentage}%; display: inline-block;"><p class="px-4">{percentage.toFixed(1)}%</p></span>
