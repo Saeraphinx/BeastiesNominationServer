@@ -156,7 +156,7 @@ export const updateNullValues = command(async () => {
         where: { 
             hash: null
         }
-    }).then(s => s.filter(submission => isNameRequiredSortedSubmission(submission.category)));
+    }).then(s => s.filter(submission => !isNameRequiredSortedSubmission(submission.category)));
 
     const mapIds = hasNullValues.map(submission => submission.bsrId).filter(id => id !== null);
     const mapData = await getBeatSaverMaps(mapIds);
