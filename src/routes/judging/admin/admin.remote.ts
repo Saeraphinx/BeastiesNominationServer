@@ -60,6 +60,25 @@ export const setUserCategories = command(z.object({
     await targetJudge.save();
     return targetJudge.toJSON();
 });
+
+export const setUserBSId = command(z.object({
+    judgeId: z.number(),
+    bsId: z.array(z.string())
+}), async ({ judgeId, bsId }) => {
+    const { judge } = await getJudgeFromEvent(); 
+    if (!judge.roles.includes("admin")) {
+        return { error: "Unauthorized" };
+    }
+
+    const targetJudge = await Judge.findByPk(judgeId);
+    if (!targetJudge) {
+        return { error: "Judge not found" };
+    }
+
+    targetJudge.beatSaverIds = bsId;
+    await targetJudge.save();
+    return targetJudge.toJSON();
+});
 // #endregion User Management
 
 // #region Vote Management
@@ -107,6 +126,24 @@ export const moveSubmission = command(z.object({
     await submission.save();
     let updated = await JudgeVote.destroy({ where: { submissionId } });
     return { submission: submission.toJSON(), deletedVotesCount: updated };
+});
+
+export const deleteSortedSubmission = command(z.object({
+    submissionId: z.number()
+}), async ({ submissionId }) => {
+    const { judge } = await getJudgeFromEvent(); 
+    if (!judge.roles.includes("admin")) {
+        return { error: "Unauthorized" };
+    }
+
+    const submission = await SortedSubmission.findByPk(submissionId);
+    if (!submission) {
+        return { error: "Submission not found" };
+    }
+
+    await JudgeVote.destroy({ where: { submissionId } });
+    await submission.destroy();
+    return { success: true };
 });
 
 export const updateNullValues = command(async () => {

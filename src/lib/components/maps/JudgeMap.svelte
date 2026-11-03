@@ -32,14 +32,15 @@
   });
 
   let subText = $derived.by(() => {
+    let text = `#${props.sortedSubmission.id}`
     if (isNameRequiredSortedSubmission(props.sortedSubmission.category) && !props.sortedSubmission.category.includes(`Pack`) && !props.sortedSubmission.category.includes(`OST`)) {
-        return `${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIUser?.stats?.firstUpload ?? "Unknown Upload Date"}`;
+        return `${text} |${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIUser?.stats?.firstUpload ?? "Unknown Upload Date"}`;
     } else if (props.sortedSubmission.category.includes(`Pack`)) {
-        return `${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIPlaylist?.playlist.createdAt ?? "Unknown Playlist"}`;
+        return `${text} |${props.sortedSubmission.name ?? "Unnamed Submission"} | ${props.bsAPIPlaylist?.playlist.createdAt ?? "Unknown Playlist"}`;
     } else if (props.sortedSubmission.category.includes(`OST`)) {
-        return ``;
+        return `${text}`;
     }
-    let text = `${props.bsAPI?.id}`;
+    text += ` | ${props.bsAPI?.id}`;
     if (props.sortedSubmission.category.startsWith(`Ranked`)) {
       let selectedDiff = props.bsAPI?.versions[0].diffs.find((diff) => diff.characteristic === props.sortedSubmission.characteristic && diff.difficulty === props.sortedSubmission.difficulty);
       text = `${text} | BL: ${selectedDiff?.blStars ?? "N/A"}★ | SS: ${selectedDiff?.stars ?? "N/A"}★`;
