@@ -81,8 +81,16 @@
 
   // svelte-ignore state_referenced_locally
   let note = $state(props.vote?.note);
+  let noteSynced = props.vote !== undefined;
+  // Votes load after mount, so pull the saved note in once when it first arrives
+  $effect(() => {
+    if (!noteSynced && props.vote) {
+      noteSynced = true;
+      note = props.vote.note;
+    }
+  });
   // svelte-ignore state_referenced_locally
-  let voteValue: `1` | `0` | `-1` | `0.5` = $state(props.vote?.score as `1` | `0` | `-1` | `0.5` ?? `0`);
+  let voteValue: `1` | `0` | `-1` | `0.5` = $state(props.vote?.score as `1` | `0` | `-1` | `0.5` ?? `-1`);
   const handleVotePromise = pDebounce.promise(async () => {
     let ret = vote({
       submissionId: props.sortedSubmission.id,

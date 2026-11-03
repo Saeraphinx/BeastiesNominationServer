@@ -72,8 +72,16 @@
     submissions = await getSub;
     isLoading = false;
   }
+  async function fetchVotes() {
+    const getV = getVotes({
+        submissionIds: currentlyShowingSubmissions.map((s) => s.id)
+    });
+    await getV.refresh();
+    votes = await getV;
+  }
   onMount(async () => {
     await fetchSubmissions();
+    await fetchVotes();
   });
 </script>
 
