@@ -2,7 +2,7 @@
   import type { InferAttributes } from "sequelize";
   import { onMount } from "svelte";
   import type { Judge } from "../../../lib/server/database";
-  import { deleteSortedSubmission, editUserRole, getUsers, moveSubmission, resetVotes, setUserBSId, setUserCategories, updateNullValues } from "./admin.remote";
+  import { deleteSortedSubmission, editUserRole, getUsers, moveSubmission, resetVotes, runInvolvedCheck, setUserBSId, setUserCategories, updateNullValues } from "./admin.remote";
   import Button from "../../../lib/components/common/Button.svelte";
   import { toast } from "svelte-sonner";
   import { flip } from "svelte/animate";
@@ -223,7 +223,7 @@
       </div>
       <Button
         onclick={async () => {
-          //const result = await runInvolvedCheck();
+          const result = await runInvolvedCheck();
           toast.success(`Involved check completed successfully.`);
         }}>Run Involved Check</Button
       >

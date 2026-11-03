@@ -180,3 +180,38 @@ export const updateNullValues = command(async () => {
 
     return { success: true, updatedCount };
 });
+
+export const runInvolvedCheck = command(async () => {
+    const { judge } = await getJudgeFromEvent(); 
+    if (!judge.roles.includes("admin")) {
+        throw new Error("Unauthorized");
+    }
+
+    const submissions = await SortedSubmission.findAll();
+    const judges = await Judge.findAll();
+    const judgeVotes = await JudgeVote.findAll();
+    let updatedCount = 0;
+    for (const submission of submissions) {
+        if (!isNameRequiredSortedSubmission(submission.category)) {
+            for (const judge of judges) {
+                if (judgeVotes.some(v => v.submissionId === submission.id && v.judgeId === judge.id)) {
+                    continue;
+                }
+
+                let shouldVote = false;
+                for (const involvedMappers of submission.involvedMappers) {
+                    if (judge.beatSaverIds.includes(involvedMappers)) {
+                        shouldVote = true;
+                        break;
+                    }
+                }
+                if (shouldVote) {
+                    await JudgeVote.create({ submissionId: submission.id, judgeId: judge.id, score: `0.5` });
+                    updatedCount++;
+                }
+            }
+        }
+    }
+
+    return { success: true, updatedCount };
+});
