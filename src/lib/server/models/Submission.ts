@@ -66,6 +66,7 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
     declare deletedAt: CreationOptional<Date | null>;
 
     private static recentSubmissions: NonAttribute<string[]> = [];
+    private static bypassKeys = [`4c036`, `4c7af`].map((key) => parseInt(key, 16));
 
     public static validateSubmission(content: { category: SubmissionCategory; bsrId?: string; name?: string; difficulty?: Difficulty; characteristic?: Characteristic }): RequestSubmissionStatus {
         let isName = isNameRequired(content.category);
@@ -113,8 +114,9 @@ export class Submission extends Model<InferAttributes<Submission>, InferCreation
                     return RequestSubmissionStatus.Invalid;
                 }
 
+                
                 // from 313841 (4c9f1) to ??? are eligible, except for RankedMap which has no restrictions
-                if ((bsrIdNoHex <= 313840 || bsrIdNoHex >= 9999999) && content.category != SubmissionCategory.RankedMap) {
+                if ((bsrIdNoHex <= 313840 || bsrIdNoHex >= 9999999) && content.category != SubmissionCategory.RankedMap && !Submission.bypassKeys.includes(bsrIdNoHex)) {
                     return RequestSubmissionStatus.OldKey;
                 }
             }

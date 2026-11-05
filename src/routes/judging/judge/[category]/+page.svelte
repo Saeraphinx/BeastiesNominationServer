@@ -74,7 +74,7 @@
   }
   async function fetchVotes() {
     const getV = getVotes({
-        submissionIds: currentlyShowingSubmissions.map((s) => s.id)
+        submissionIds: submissions.map((s) => s.id)
     });
     await getV.refresh();
     votes = await getV;
