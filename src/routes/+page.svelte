@@ -39,6 +39,13 @@
   let currentValidChars: Characteristic[] = $state(Object.values(CharacteristicEnum));
   let currentValidDiffs: Difficulty[] = $state(Object.values(DifficultyEnum));
   let ostMaps = [
+    `OST 9 | Confetti – LFG`,
+    `OST 9 | Star Slinger – Nostalgia is a Curse`,
+    `OST 9 | Camellia – Flameblade`,
+    `OST 9 | pineappleCITI – One of Us`,
+    `OST 9 | EEWK – Signal Jammer`,
+    `OST 9 | Azazal – Purr`,
+    `OST 9 | e_ku – Memory Marker`,
     `Shock Drop | Ray Parker Jr. - Ghostbusters`,
     `Shock Drop | ROSÉ & Bruno Mars - APT.`,
     `Hip Hop Mixtape 2 | Kendrick Lamar – tv off (feat. Lefty Gunplay)`,
